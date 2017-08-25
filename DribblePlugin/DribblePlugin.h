@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#pragma comment( lib, "BakkesMod Rewrite.lib" )
+#pragma comment( lib, "bakkesmod.lib" )
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 
 class DribblePlugin : public BakkesMod::Plugin::BakkesModPlugin

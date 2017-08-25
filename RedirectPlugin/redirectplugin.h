@@ -1,5 +1,5 @@
 #pragma once
-#pragma comment( lib, "BakkesMod Rewrite.lib" )
+#pragma comment( lib, "bakkesmod.lib" )
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 
 class RedirectPlugin : public BakkesMod::Plugin::BakkesModPlugin

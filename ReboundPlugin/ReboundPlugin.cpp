@@ -17,12 +17,13 @@ void ReboundPlugin::onLoad()
 			return;
 		TutorialWrapper tw = gw->GetGameEventAsTutorial();
 
-		Vector ballLoc = tw.GetBall().GetLocation();// ball->Location;
+		Vector ballLoc = tw.GetBall().GetLocation();
 
 		//Calculate nearest goal
 		CarWrapper player = tw.GetGameCar();
 		Vector playerLocLater = tw.GetGameCar().GetLocation() + (tw.GetGameCar().GetVelocity() * 200); //Calculate where player is facing
-		if (abs(player.GetVelocity().X) < 1 && abs(player.GetVelocity().X) < 1) {
+		if (abs(player.GetVelocity().X) < 1 && abs(player.GetVelocity().X) < 1) 
+		{
 			playerLocLater = ballLoc; //if player is not moving, set rebound to the goal the ball is closest to
 		}
 		Vector goal1Diff = tw.GetGoalLocation(0) - playerLocLater;
