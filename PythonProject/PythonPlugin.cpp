@@ -53,11 +53,11 @@ dict local_namespace;
 void PythonPlugin::reinit_python() {
 	try {
 		//global_namespace.clear();
-		//local_namespace.clear();
+		//olppplocal_namespace.clear();//
 
 		// Copy builtins to new global namespace
 		global_namespace = extract<dict>(main_module.attr("__dict__"));
-		//global_namespace["__builtins__"] = main_namespace["__builtins__"];
+		global_namespace["bakpy"] = boost::python::ptr(_bakPy.get());
 		global_namespace["cvar_manager"] = boost::python::ptr(cvarManager.get());
 		global_namespace["game_wrapper"] = boost::python::ptr(gameWrapper.get());
 	}
@@ -69,9 +69,10 @@ void PythonPlugin::reinit_python() {
 
 void PythonPlugin::onLoad()
 {
+	_bakPy = make_unique<BakPy>(BakPy(gameWrapper, cvarManager));
 	cvarManager->registerNotifier("py_exec", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
 		if (params.size() < 2) {
-			cm->log("usage: " + params.at(0) + " filename.py");
+			cm->log("usage: " + params.at(0) + "  filename.py");
 			return;
 		}
 		string path = this->getSafeFileName(params.at(1));
@@ -81,13 +82,31 @@ void PythonPlugin::onLoad()
 			return;
 		}
 		try {
-			exec_file(str(path), global_namespace, global_namespace);
+			_executes++;
+			global_namespace["script"] = exec_file(str(path), global_namespace, global_namespace);
 		}
 		catch (const error_already_set&) {
 			string err = parse_python_exception();
 			cm->log("Python threw error: " + err);
 		}
 	});
+
+	cvarManager->registerNotifier("py_run", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
+		if (params.size() < 2) {
+			cm->log("usage: " + params.at(0) + "  script");
+			return;
+		}
+		string script = params.at(1);
+		string path = this->getSafeFileName(params.at(1));
+		try {
+			object result = exec(boost::python::str(script), global_namespace, global_namespace);
+			cm->log(extract<std::string>(str(result)));
+		}
+		catch (const error_already_set&) {
+			string err = parse_python_exception();
+			cm->log("Python threw error: " + err);
+		}
+});
 
 
 #ifdef _AI_BUILD
@@ -106,6 +125,7 @@ void PythonPlugin::onLoad()
 			= object(handle<>(borrowed(PyImport_AddModule("__main__"))));
 
 		main_namespace = extract<dict>(main_module.attr("__dict__"));
+		main_namespace["bakpy"] = boost::python::ptr(_bakPy.get());
 		main_namespace["cvar_manager"] = boost::python::ptr(cvarManager.get());
 		main_namespace["game_wrapper"] = boost::python::ptr(gameWrapper.get());
 		reinit_python();
@@ -195,7 +215,11 @@ std::string parse_python_exception() {
 	return ret;
 }
 
-void PythonPlugin::set_timeout(string methodname, long long time)
+BakPy::BakPy(std::shared_ptr<GameWrapper> gw, std::shared_ptr<CVarManagerWrapper> cw) : gameWrapper(gw), cvarManager(cw)
+{
+}
+
+void BakPy::set_timeout(string methodname, float time)
 {
 	gameWrapper->SetTimeout([this, methodname](GameWrapper* gw) {
 		if (hasattr(main_module, methodname.c_str())) {

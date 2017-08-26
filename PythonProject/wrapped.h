@@ -7,13 +7,16 @@ using namespace boost::python;
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(log_overloads, ConsoleWrapper::log, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_angular_overloads, ActorWrapper::SetAngularVelocity, 1, 2);
+void (CVarWrapper::*setString)(string) = &CVarWrapper::setValue;
+void (CVarWrapper::*setInt)(int) = &CVarWrapper::setValue;
+void (CVarWrapper::*setFloat)(float) = &CVarWrapper::setValue;
 
 //class Helpers {};
 
 BOOST_PYTHON_MODULE(bakkesmod)
 {
-	class_<PythonPlugin>("Plugin").
-		def("set_timeout", &PythonPlugin::set_timeout);// .staticmethod("set_timeout");
+	class_<BakPy>("BakPy", no_init).
+		def("set_timeout", &BakPy::set_timeout);//.staticmethod("set_timeout");
 
 	//class_<Helpers>("Helpers").
 	//	def("get_safe_float_range", get_safe_float_range).staticmethod("get_safe_float_range").
@@ -29,7 +32,16 @@ BOOST_PYTHON_MODULE(bakkesmod)
 	//	def_readwrite("b", &LogLevel::b).
 	//	def_readwrite("a", &LogLevel::a);
 	class_<CVarWrapper>("CVarWrapper", no_init).
-		def("get_cvar_name", &CVarWrapper::getCVarName);
+		def("get_cvar_name", &CVarWrapper::getCVarName).
+		def("get_int_value", &CVarWrapper::getIntValue).
+		def("get_float_value", &CVarWrapper::getFloatValue).
+		def("get_bool_value", &CVarWrapper::getBoolValue).
+		def("get_string_value", &CVarWrapper::getStringValue).
+		def("get_description", &CVarWrapper::getDescription).
+		def("notify", &CVarWrapper::notify).
+		def("set_value", setString).
+		def("set_value", setInt).
+		def("set_value", setFloat);
 
 	class_<CVarManagerWrapper>("CVarManagerWrapper", no_init).
 		def("execute_command", &CVarManagerWrapper::executeCommand).
