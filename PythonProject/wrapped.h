@@ -16,7 +16,9 @@ void (CVarWrapper::*setFloat)(float) = &CVarWrapper::setValue;
 BOOST_PYTHON_MODULE(bakkesmod)
 {
 	class_<BakPy>("BakPy", no_init).
-		def("set_timeout", &BakPy::set_timeout);//.staticmethod("set_timeout");
+		def("set_timeout", &BakPy::set_timeout).
+		def("vector_to_rotator", VectorToRotator).staticmethod("vector_to_rotator").
+		def("rotator_to_vector", RotatorToVector).staticmethod("rotator_to_vector");;//.staticmethod("set_timeout");
 
 	//class_<Helpers>("Helpers").
 	//	def("get_safe_float_range", get_safe_float_range).staticmethod("get_safe_float_range").
@@ -132,7 +134,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def(self + Rotator()).
 		def(self - Rotator()).
 		def(self * Rotator()).
-		def(self / Rotator());;
+		def(self / Rotator());
 
 	class_<ActorWrapper>("ActorWrapper", no_init).
 		def("get_velocity", &ActorWrapper::GetVelocity).

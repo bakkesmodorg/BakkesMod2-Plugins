@@ -1,5 +1,5 @@
 #include "redirectplugin.h"
-#include "bakkesmod/utils/parser.h"
+#include "utils/parser.h"
 
 BAKKESMOD_PLUGIN(RedirectPlugin, "Redirect plugin", "0.2", PLUGINTYPE_FREEPLAY)
 

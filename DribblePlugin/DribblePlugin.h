@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #pragma comment( lib, "bakkesmod.lib" )
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 
