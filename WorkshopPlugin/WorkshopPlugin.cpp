@@ -142,7 +142,7 @@ void WorkshopPlugin::onLoad()
 		std::replace(shotFile.begin(), shotFile.end(), '"', '|');
 		cvarManager->executeCommand("sendback \"replay_snapshot_request_ans " + shotFile + "\"");
 	});
-	cvarManager->registerNotifier("workshop_playlist_ans", [this](vector<string> params) {
+	cvarManager->registerNotifier("requestplaylist_ans", [this](vector<string> params) {
 		if (params.size() < 3)
 			return;
 		string playlist_id = params.at(1);
@@ -155,8 +155,10 @@ void WorkshopPlugin::onLoad()
 		currentIndex = -1;
 		next_shot();
 	});
-	//cons->registerNotifier("workshop_playlist_prev", workshop_notifier);
-	cvarManager->registerCvar("workshop_playlist_random", "1");
+	//cons->registerNotifier("workshop_playlist_prev", workshop_notifier);//workshop_shot_random
+	//cvarManager->registerCvar("workshop_playlist_random", "1"); 
+	cvarManager->registerCvar("workshop_shot_random", "1");
+
 }
 
 void WorkshopPlugin::onUnload()
