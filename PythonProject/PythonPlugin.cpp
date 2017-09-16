@@ -1,8 +1,8 @@
 #include "PythonPlugin.h"
 #include "wrapped.h"
 #include <boost/python.hpp>
-#include "bakkesmod/utils/parser.h"
-#include "bakkesmod/utils/io.h"
+#include "utils/parser.h"
+#include "utils/io.h"
 
 const string PY_PATH = "./bakkesmod/py/";
 

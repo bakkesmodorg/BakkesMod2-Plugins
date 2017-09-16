@@ -5,10 +5,10 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Chris\Documents\bakkesmod\sdktest;%(AdditionalIncludeDirectories);C:\Users\Chris\Downloads\boost_1_60_0;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);C:\Users\Chris\Downloads\boost_1_60_0;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Chris\Documents\Visual Studio 2015\Projects\BakkesMod-rewrite\Release;%(AdditionalLibraryDirectories);C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\libs;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\lib;%(AdditionalLibraryDirectories);C:\Users\Chris\Downloads\boost_1_60_0\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\libs;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\lib;%(AdditionalLibraryDirectories);C:\Users\Chris\Downloads\boost_1_60_0\stage\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
