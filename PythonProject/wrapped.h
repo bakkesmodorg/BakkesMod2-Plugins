@@ -13,6 +13,11 @@ void (CVarWrapper::*setFloat)(float) = &CVarWrapper::setValue;
 
 //class Helpers {};
 
+#define PYTHON_ARRAY(WrappedArrayClass) \
+	class_<ArrayWrapper<WrappedArrayClass>>("ArrayWrapper#WrappedArrayClass", no_init).\
+		def("count", &ArrayWrapper<CarWrapper>::Count).\
+		def("get", &ArrayWrapper<CarWrapper>::Get);
+
 BOOST_PYTHON_MODULE(bakkesmod)
 {
 	class_<BakPy>("BakPy", no_init).
@@ -49,7 +54,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("execute_command", &CVarManagerWrapper::executeCommand).
 		//.def("register_notifier", CVarManagerWrapper::registerNotifier). //No need to give acces to this as t heyre C++ callbacks and python scripts should have standalone functions
 		def("register_cvar", &CVarManagerWrapper::registerCvar).
-		//def("log", &CVarManagerWrapper::log).
+		def("log", &CVarManagerWrapper::log).
 		def("get_cvar", &CVarManagerWrapper::getCvar);
 
 	class_<GameWrapper, boost::noncopyable>("GameWrapper", no_init).
@@ -430,5 +435,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("generate_shot", &TutorialWrapper::GenerateShot).
 		def("generate_goal_aim_location", &TutorialWrapper::GenerateGoalAimLocation).
 		def("get_goal_extent", &TutorialWrapper::GetGoalExtent);
+
+	PYTHON_ARRAY(CarWrapper)
+	PYTHON_ARRAY(PriWrapper)
+	PYTHON_ARRAY(BallWrapper)
 }
 
