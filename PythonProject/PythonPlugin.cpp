@@ -93,11 +93,10 @@ void PythonPlugin::onLoad()
 
 	cvarManager->registerNotifier("py_run", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
 		if (params.size() < 2) {
-			cm->log("usage: " + params.at(0) + "  script");
+			cm->log("usage: " + params.at(0) + " script");
 			return;
 		}
 		string script = params.at(1);
-		string path = this->getSafeFileName(params.at(1));
 		try {
 			object result = exec(boost::python::str(script), global_namespace, global_namespace);
 			cm->log(extract<std::string>(str(result)));
