@@ -136,7 +136,7 @@ void TrainingPlugin::onLoad()
 			{
 				if(shot.players[i].size() == 0)
 					continue;
-				auto playerdata = shot.players[i].at(random(0, shot.players[i].size()-1));
+				auto playerdata = select_randomly(shot.players[i].begin(), shot.players[i].end()); 
 				CarWrapper car = players.Get(i).GetCar();
 				car.Stop();
 
