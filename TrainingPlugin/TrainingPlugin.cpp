@@ -30,19 +30,19 @@ void TrainingPlugin::get_shot_data_from_console(shot_data* data) {
 	data->ball_torque_roll = cvarManager->getCvar("shot_initial_ball_torque_roll").getFloatValue();
 	data->ball_torque_yaw = cvarManager->getCvar("shot_initial_ball_torque_yaw").getFloatValue();
 
-	data->player_location_x = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_location_x").getStringValue(), p, b, s));
-	data->player_location_y = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_location_y").getStringValue(), p, b, s));
-	data->player_location_z = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_location_z").getStringValue(), p, b, s));
+	// data->player_location_x = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_location_x").getStringValue(), p, b, s));
+	// data->player_location_y = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_location_y").getStringValue(), p, b, s));
+	// data->player_location_z = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_location_z").getStringValue(), p, b, s));
 
 
 
-	data->player_velocity_x = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_velocity_x").getStringValue(), p, b, s));
-	data->player_velocity_y = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_velocity_y").getStringValue(), p, b, s));
-	data->player_velocity_z = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_velocity_z").getStringValue(), p, b, s));
+	// data->player_velocity_x = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_velocity_x").getStringValue(), p, b, s));
+	// data->player_velocity_y = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_velocity_y").getStringValue(), p, b, s));
+	// data->player_velocity_z = get_safe_float(parse(cvarManager->getCvar("shot_initial_player_velocity_z").getStringValue(), p, b, s));
 
-	data->player_rotation_pitch = get_safe_int(parse(cvarManager->getCvar("shot_initial_player_rotation_pitch").getStringValue(), p, b, s));
-	data->player_rotation_yaw = get_safe_int(parse(cvarManager->getCvar("shot_initial_player_rotation_yaw").getStringValue(), p, b, s));
-	data->player_rotation_roll = get_safe_int(parse(cvarManager->getCvar("shot_initial_player_rotation_roll").getStringValue(), p, b, s));
+	// data->player_rotation_pitch = get_safe_int(parse(cvarManager->getCvar("shot_initial_player_rotation_pitch").getStringValue(), p, b, s));
+	// data->player_rotation_yaw = get_safe_int(parse(cvarManager->getCvar("shot_initial_player_rotation_yaw").getStringValue(), p, b, s));
+	// data->player_rotation_roll = get_safe_int(parse(cvarManager->getCvar("shot_initial_player_rotation_roll").getStringValue(), p, b, s));
 }
 
 Vector TrainingPlugin::mirror_it(Vector v, bool mir) {
@@ -97,17 +97,17 @@ void TrainingPlugin::onLoad()
 	cvarManager->registerCvar("shot_initial_ball_torque_roll", "0");
 	cvarManager->registerCvar("shot_initial_ball_torque_yaw", "0");
 
-	cvarManager->registerCvar("shot_initial_player_location_x", "0");
-	cvarManager->registerCvar("shot_initial_player_location_y", "0");
-	cvarManager->registerCvar("shot_initial_player_location_z", "0");
+	// cvarManager->registerCvar("shot_initial_player_location_x", "0");
+	// cvarManager->registerCvar("shot_initial_player_location_y", "0");
+	// cvarManager->registerCvar("shot_initial_player_location_z", "0");
 
-	cvarManager->registerCvar("shot_initial_player_velocity_x", "0");
-	cvarManager->registerCvar("shot_initial_player_velocity_y", "0");
-	cvarManager->registerCvar("shot_initial_player_velocity_z", "0");
+	// cvarManager->registerCvar("shot_initial_player_velocity_x", "0");
+	// cvarManager->registerCvar("shot_initial_player_velocity_y", "0");
+	// cvarManager->registerCvar("shot_initial_player_velocity_z", "0");
 
-	cvarManager->registerCvar("shot_initial_player_rotation_pitch", "0");
-	cvarManager->registerCvar("shot_initial_player_rotation_yaw", "0");
-	cvarManager->registerCvar("shot_initial_player_rotation_roll", "0");
+	// cvarManager->registerCvar("shot_initial_player_rotation_pitch", "0");
+	// cvarManager->registerCvar("shot_initial_player_rotation_yaw", "0");
+	// cvarManager->registerCvar("shot_initial_player_rotation_roll", "0");
 
 	cvarManager->registerCvar("shot_randomization", "0"); //Shot randomization to velocity, in unreal units
 
@@ -119,7 +119,10 @@ void TrainingPlugin::onLoad()
 		if (!gameWrapper->IsInTutorial() || !is_loaded)
 			return;
 		get_shot_data_from_console(&s_data);
+		auto shot = currentShot.getShot();
 		TutorialWrapper tw = gameWrapper->GetGameEventAsTutorial();
+		ArrayWrapper<PRIWrapper> players = tw.GetPlayers();
+
 		bool mirror = should_mirror();
 		if (tw.IsInFreePlay())
 		{
@@ -129,11 +132,19 @@ void TrainingPlugin::onLoad()
 			ball.Stop();
 			ball.SetLocation(mirror_it(s_data.get_ball_start_location(), mirror));
 			ball.Stop();
-			CarWrapper car = tw.GetGameCar();
-			car.Stop();
-			car.SetLocation(mirror_it(s_data.get_player_start_location(), mirror));
-			car.SetCarRotation(mirror_it(s_data.get_player_start_rotation(), mirror));
-			car.SetVelocity(mirror_it(s_data.get_player_start_velocity(), mirror));
+			for(int i = 0; i < players.Count(); i++)
+			{
+				if(shot.players[i].size() == 0)
+					continue;
+				auto playerdata = shot.players[i].at(random(0, shot.players[i].size()-1));
+				CarWrapper car = players.Get(i).GetCar();
+				car.Stop();
+
+				car.SetLocation(mirror_it(playerdata.location.getVector(), mirror));
+				car.SetCarRotation(mirror_it(playerdata.rotation.getRotator(), mirror));
+				car.SetVelocity(mirror_it(playerdata.velocity.getVector(), mirror));	
+			}
+			
 			if (!currentShot.getShot().options.script.empty()) {
 				cvarManager->executeCommand(currentShot.getShot().options.script);
 			}

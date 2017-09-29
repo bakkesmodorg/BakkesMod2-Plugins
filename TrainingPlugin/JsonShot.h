@@ -54,6 +54,7 @@ struct ball {
 };
 
 struct player {
+	int player_idx = 0;
 	VectorString location;
 	RotatorString rotation;
 	VectorString velocity;
@@ -62,7 +63,7 @@ struct player {
 
 struct start {
 	vector<ball> balls;
-	vector<player> players;
+	std::map<int, vector<player>> players;
 	start() {}
 };
 

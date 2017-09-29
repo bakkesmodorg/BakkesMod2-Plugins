@@ -49,6 +49,10 @@ ball parseJSONBall(json js) {
 
 player parseJSONPlayer(json js) {
 	player p;
+	if(js.count("index") > 0)
+	{
+		p.player_idx = get_safe_int(js, "index");
+	}
 	if (js.count("location") > 0) {
 		p.location = parseJSONVector(js["location"]);
 	}
@@ -109,11 +113,12 @@ void JsonShot::init(GameWrapper* gw, CVarManagerWrapper* cons)
 			json player = start["player"];
 			if (player.is_array()) {
 				for (auto& element : player) {
-					currentshot.start.players.push_back(parseJSONPlayer(element));
+					auto player = parseJSONPlayer(player);
+					currentshot.start.players[player.player_index].push_back(player);
 				}
 			}
 			else {
-				currentshot.start.players.push_back(parseJSONPlayer(player));
+				currentshot.start.players[0].push_back(parseJSONPlayer(element));				
 			}
 		}
 	}
@@ -185,17 +190,17 @@ void JsonShot::set(GameWrapper* gw, CVarManagerWrapper * cons)
 			cons->getCvar("shot_initial_ball_velocity_z").setValue(to_string(shotVec.Z));
 		}
 	}
-	cons->getCvar("shot_initial_player_location_x").setValue(p.location.x);
-	cons->getCvar("shot_initial_player_location_y").setValue(p.location.y);
-	cons->getCvar("shot_initial_player_location_z").setValue(p.location.z);
+	// cons->getCvar("shot_initial_player_location_x").setValue(p.location.x);
+	// cons->getCvar("shot_initial_player_location_y").setValue(p.location.y);
+	// cons->getCvar("shot_initial_player_location_z").setValue(p.location.z);
 
-	cons->getCvar("shot_initial_player_velocity_x").setValue(p.velocity.x);
-	cons->getCvar("shot_initial_player_velocity_y").setValue(p.velocity.y);
-	cons->getCvar("shot_initial_player_velocity_z").setValue(p.velocity.z);
+	// cons->getCvar("shot_initial_player_velocity_x").setValue(p.velocity.x);
+	// cons->getCvar("shot_initial_player_velocity_y").setValue(p.velocity.y);
+	// cons->getCvar("shot_initial_player_velocity_z").setValue(p.velocity.z);
 
-	cons->getCvar("shot_initial_player_rotation_pitch").setValue(p.rotation.pitch);
-	cons->getCvar("shot_initial_player_rotation_yaw").setValue(p.rotation.yaw);
-	cons->getCvar("shot_initial_player_rotation_roll").setValue(p.rotation.roll);
+	// cons->getCvar("shot_initial_player_rotation_pitch").setValue(p.rotation.pitch);
+	// cons->getCvar("shot_initial_player_rotation_yaw").setValue(p.rotation.yaw);
+	// cons->getCvar("shot_initial_player_rotation_roll").setValue(p.rotation.roll);
 }
 
 json_shot JsonShot::getShot()
