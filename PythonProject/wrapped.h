@@ -2,6 +2,15 @@
 #define BOOST_PYTHON_STATIC_LIB  
 #include "boost/python/detail/wrap_python.hpp"
 #include <boost/python.hpp>
+#include "bakkesmod/wrappers/ballwrapper.h"
+#include "bakkesmod/wrappers/boostwrapper.h"
+#include "bakkesmod/wrappers/camerawrapper.h"
+#include "bakkesmod/wrappers/carwrapper.h"
+#include "bakkesmod/wrappers/gameeventwrapper.h"
+#include "bakkesmod/wrappers/priwrapper.h"
+#include "bakkesmod/wrappers/serverwrapper.h"
+#include "bakkesmod/wrappers/replaywrapper.h"
+#include "bakkesmod/wrappers/tutorialwrapper.h"
 
 using namespace boost::python;
 
@@ -331,8 +340,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("set_max_score", &ServerWrapper::SetMaxScore).
 		def("get_total_game_time_played", &ServerWrapper::GetTotalGameTimePlayed).
 		def("set_total_game_time_played", &ServerWrapper::SetTotalGameTimePlayed).
-		def("get_games_played", &ServerWrapper::GetGamesPlayed).
-		def("set_games_played", &ServerWrapper::SetGamesPlayed).
+		//def("get_games_played", &ServerWrapper::GetGamesPlayed).
+		//def("set_games_played", &ServerWrapper::SetGamesPlayed).
 		def("get_play_replays", &ServerWrapper::GetPlayReplays).
 		def("set_play_replays", &ServerWrapper::SetPlayReplays).
 		def("get_ball_has_been_hit", &ServerWrapper::GetBallHasBeenHit).

@@ -72,7 +72,7 @@ void PythonPlugin::onLoad()
 	_bakPy = make_unique<BakPy>(BakPy(gameWrapper, cvarManager));
 	cvarManager->registerNotifier("py_exec", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
 		if (params.size() < 2) {
-			cm->log("usage: " + params.at(0) + "  filename.py");
+			cm->log("usage: " + params.at(0) + " filename.py [params]");
 			return;
 		}
 		string path = this->getSafeFileName(params.at(1));
