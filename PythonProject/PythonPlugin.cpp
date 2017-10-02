@@ -150,7 +150,7 @@ namespace boost {
 }
 
 
-#ifdef AI_BUILD
+#ifdef TICK_BUILD
 void PythonPlugin::on_tick(string ignoredParam)
 {
 	if (hasattr(main_module, "on_tick")) {
