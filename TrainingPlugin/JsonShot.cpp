@@ -3,6 +3,9 @@
 #include "utils/io.h"
 #include <fstream>
 #include "cvareval.h"
+#include "bakkesmod/wrappers/tutorialwrapper.h"
+#include "bakkesmod/wrappers/wrapperstructs.h"
+#include "utils\parser.h"
 float get_safe_floats(string x) {
 	return 0;
 }
@@ -51,7 +54,7 @@ player parseJSONPlayer(json js) {
 	player p;
 	if(js.count("index") > 0)
 	{
-		p.player_idx = get_safe_int(js, "index");
+		p.player_idx = get_safe_int(js["index"]);
 	}
 	if (js.count("location") > 0) {
 		p.location = parseJSONVector(js["location"]);
@@ -113,12 +116,12 @@ void JsonShot::init(GameWrapper* gw, CVarManagerWrapper* cons)
 			json player = start["player"];
 			if (player.is_array()) {
 				for (auto& element : player) {
-					auto player = parseJSONPlayer(player);
-					currentshot.start.players[player.player_index].push_back(player);
+					auto p = parseJSONPlayer(player);
+					currentshot.start.players[p.player_idx].push_back(p);
 				}
 			}
 			else {
-				currentshot.start.players[0].push_back(parseJSONPlayer(element));				
+				currentshot.start.players[0].push_back(parseJSONPlayer(player));				
 			}
 		}
 	}
@@ -164,7 +167,7 @@ void JsonShot::setVelocity(GameWrapper* gw, CVarManagerWrapper * cons, Vector ba
 void JsonShot::set(GameWrapper* gw, CVarManagerWrapper * cons)
 {
 	ball b = *select_randomly(shot.start.balls.begin(), shot.start.balls.end());
-	player p = *select_randomly(shot.start.players.begin(), shot.start.players.end());
+	//player p = *select_randomly(shot.start.players.begin(), shot.start.players.end());
 	speed s = shot.speed;
 
 	cons->getCvar("shot_mirror").setValue(shot.options.disablemirror ? "0" : rand() % 2 + 1 == 1 ? "1" : "0");

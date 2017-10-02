@@ -4,6 +4,9 @@
 #include <string>
 #include <algorithm>
 
+#include "bakkesmod\wrappers\replaywrapper.h"
+
+
 #include <Windows.h>
 #include <stdio.h>
 

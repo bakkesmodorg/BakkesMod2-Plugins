@@ -1,5 +1,8 @@
 #include "defenderplugin.h"
 #include "utils\parser.h"
+
+#include "bakkesmod\wrappers\tutorialwrapper.h"
+
 BAKKESMOD_PLUGIN(DefenderPlugin, "Defender plugin", "0.1", PLUGINTYPE_FREEPLAY)
 
 

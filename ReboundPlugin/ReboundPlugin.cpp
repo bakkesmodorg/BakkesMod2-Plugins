@@ -1,4 +1,5 @@
 #include "ReboundPlugin.h"
+#include "bakkesmod\wrappers\tutorialwrapper.h"
 
 #include <math.h>
 

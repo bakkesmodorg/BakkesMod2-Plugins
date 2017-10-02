@@ -1,6 +1,8 @@
 #include "redirectplugin.h"
 #include "utils/parser.h"
 
+#include "bakkesmod\wrappers\tutorialwrapper.h"
+
 BAKKESMOD_PLUGIN(RedirectPlugin, "Redirect plugin", "0.2", PLUGINTYPE_FREEPLAY)
 
 void RedirectPlugin::onLoad()

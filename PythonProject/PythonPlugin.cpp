@@ -20,36 +20,6 @@ dict main_namespace;
 dict global_namespace;
 dict local_namespace;
 
-
-#ifdef _AI_BUILD
-	else if (command.compare("py_ai") == 0) {
-		//Py_Finalize();
-		//Py_Initialize();
-		reinit_python();
-
-		if (params.size() < 2) {
-			cons->log("usage: " + command + " filename.py");
-			return;
-		}
-		string path = PY_PATH + params.at(1);
-		if (!file_exists(path) && !string_ends_with(path, ".py")) {
-			path += ".py";
-		}
-		if (!file_exists(path)) {
-			cons->log("Python script " + path + " does not exist!");
-			return;
-		}
-		try {
-			exec_file(str(path), global_namespace, global_namespace);
-		}
-		catch (const error_already_set&) {
-			string err = parse_python_exception();
-			cons->log("Python threw error: " + err);
-		}
-	}
-#endif
-
-
 void PythonPlugin::reinit_python() {
 	try {
 		//global_namespace.clear();
@@ -107,10 +77,34 @@ void PythonPlugin::onLoad()
 		}
 });
 
+#ifdef TICK_BUILD
+	cvarManager->registerNotifier("py_tickable", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
+		if (params.size() < 2) {
+			cm->log("usage: " + params.at(0) + " filename");
+			return;
+		}
+		reinit_python(); //This doesn't work well enough I think
+		string path = PY_PATH + params.at(1);
+		if (!file_exists(path) && !string_ends_with(path, ".py")) {
+			path += ".py";
+		}
+		if (!file_exists(path)) {
+			cvarManager->log("Python script " + path + " does not exist!");
+			return;
+		}
+		try {
+			exec_file(str(path), global_namespace, global_namespace);
+		}
+		catch (const error_already_set&) {
+			string err = parse_python_exception();
+			cvarManager->log("Python threw error: " + err);
+		}
+	});
 
-#ifdef _AI_BUILD
-	cons->registerNotifier("py_ai", reboundplugin_ConsoleNotifier);
+	gameWrapper->HookEvent("Function Engine.GameViewportClient.Tick", bind(&PythonPlugin::on_tick, this, _1));
+
 #endif
+
 	try {
 		Py_SetPath(wstring(L"./bakkesmod/libs/python36.zip").c_str());
 		
@@ -154,12 +148,14 @@ namespace boost {
 		}
 	}
 }
-#ifdef _AI_BUILD
-void PythonPlugin::on_tick(ControllerInput * input, CarWrapper * localCar, BallWrapper * ball)
+
+
+#ifdef AI_BUILD
+void PythonPlugin::on_tick(string ignoredParam)
 {
 	if (hasattr(main_module, "on_tick")) {
 		auto tick_func = main_module.attr("on_tick");
-		tick_func(ptr(input));
+		tick_func();
 	}
 }
 #endif

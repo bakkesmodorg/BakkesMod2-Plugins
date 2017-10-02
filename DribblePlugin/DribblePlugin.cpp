@@ -1,5 +1,7 @@
 #include "DribblePlugin.h"
-
+#include "bakkesmod\wrappers\tutorialwrapper.h"
+#include "bakkesmod\wrappers\ballwrapper.h"
+#include "bakkesmod\wrappers\gameeventwrapper.h"
 BAKKESMOD_PLUGIN(DribblePlugin, "Dribble plugin", "0.1", PLUGINTYPE_FREEPLAY)
 
 

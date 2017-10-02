@@ -2,6 +2,8 @@
 #include "cvareval.h"
 #include <math.h>
 
+#include "bakkesmod\wrappers\tutorialwrapper.h"
+#include "bakkesmod\wrappers\priwrapper.h"
 
 BAKKESMOD_PLUGIN(TrainingPlugin, "Training plugin", "0.1.1", PLUGINTYPE_FREEPLAY | PLUGINTYPE_CUSTOM_TRAINING)
 
@@ -121,7 +123,7 @@ void TrainingPlugin::onLoad()
 		get_shot_data_from_console(&s_data);
 		auto shot = currentShot.getShot();
 		TutorialWrapper tw = gameWrapper->GetGameEventAsTutorial();
-		ArrayWrapper<PRIWrapper> players = tw.GetPlayers();
+		ArrayWrapper<CarWrapper> players = tw.GetPlayers();
 
 		bool mirror = should_mirror();
 		if (tw.IsInFreePlay())
@@ -134,10 +136,10 @@ void TrainingPlugin::onLoad()
 			ball.Stop();
 			for(int i = 0; i < players.Count(); i++)
 			{
-				if(shot.players[i].size() == 0)
+				if(shot.start.players[i].size() == 0)
 					continue;
-				auto playerdata = select_randomly(shot.players[i].begin(), shot.players[i].end()); 
-				CarWrapper car = players.Get(i).GetCar();
+				auto playerdata = *select_randomly(shot.start.players[i].begin(), shot.start.players[i].end());
+				CarWrapper car = players.Get(i);
 				car.Stop();
 
 				car.SetLocation(mirror_it(playerdata.location.getVector(), mirror));

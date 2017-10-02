@@ -18,11 +18,7 @@ public:
 
 
 class PythonPlugin : public
-#ifdef _AI_BUILD
-	BakkesMod::Plugin::BotPlugin
-#else
 	BakkesMod::Plugin::BakkesModPlugin
-#endif
 {
 private:
 	string getSafeFileName(string initialName);
@@ -33,8 +29,8 @@ public:
 	
 	virtual void onLoad();
 	virtual void onUnload();
-#ifdef _AI_BUILD
-	virtual void on_tick(ControllerInput *input, CarWrapper *localCar, BallWrapper *ball);
+#ifdef TICK_BUILD
+	virtual void on_tick(std::string ignoredParam);
 #endif
 };
 

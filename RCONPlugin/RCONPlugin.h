@@ -20,7 +20,7 @@ struct connection_data
 {
 	bool authenticated = false;
 	int tries = 0;
-	std::vector<string> listeners;
+	std::vector<std::string> listeners;
 };
 
 typedef std::map<connection_ptr, connection_data >::iterator auth_iter;
