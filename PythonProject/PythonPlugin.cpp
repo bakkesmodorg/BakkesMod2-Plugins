@@ -78,6 +78,9 @@ void PythonPlugin::onLoad()
 });
 
 #ifdef TICK_BUILD
+	enableTickable = make_shared<bool>(true);
+	cvarManager->registerCvar("py_tickable_enabled", "1", "Enables tickable execution", true, true, 0, true, 1).bindTo(enableTickable);
+
 	cvarManager->registerNotifier("py_tickable", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
 		if (params.size() < 2) {
 			cm->log("usage: " + params.at(0) + " filename");
@@ -153,7 +156,7 @@ namespace boost {
 #ifdef TICK_BUILD
 void PythonPlugin::on_tick(string ignoredParam)
 {
-	if (hasattr(main_module, "on_tick")) {
+	if (*enableTickable && hasattr(main_module, "on_tick")) {
 		auto tick_func = main_module.attr("on_tick");
 		tick_func();
 	}

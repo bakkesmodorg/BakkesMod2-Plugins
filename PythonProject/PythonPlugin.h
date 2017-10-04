@@ -24,6 +24,9 @@ private:
 	string getSafeFileName(string initialName);
 	std::unique_ptr<BakPy> _bakPy;
 	int _executes = 0;
+#ifdef TICK_BUILD
+	std::shared_ptr<bool> enableTickable;
+#endif
 public:
 	void reinit_python();
 	
