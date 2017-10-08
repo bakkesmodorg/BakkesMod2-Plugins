@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorkshopPlugin", "WorkshopP
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrainingPlugin", "TrainingPlugin\TrainingPlugin.vcxproj", "{24E28F5D-B79A-493E-B7FB-13307A0598A9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MechanicalPlugin", "MechanicalPlugin\MechanicalPlugin.vcxproj", "{9A22D5CD-1070-40E1-88AA-05B699BEABDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -91,6 +93,14 @@ Global
 		{24E28F5D-B79A-493E-B7FB-13307A0598A9}.Release|x64.Build.0 = Release|x64
 		{24E28F5D-B79A-493E-B7FB-13307A0598A9}.Release|x86.ActiveCfg = Release|Win32
 		{24E28F5D-B79A-493E-B7FB-13307A0598A9}.Release|x86.Build.0 = Release|Win32
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Debug|x64.ActiveCfg = Debug|x64
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Debug|x64.Build.0 = Debug|x64
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Debug|x86.ActiveCfg = Debug|Win32
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Debug|x86.Build.0 = Debug|Win32
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Release|x64.ActiveCfg = Release|x64
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Release|x64.Build.0 = Release|x64
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Release|x86.ActiveCfg = Release|Win32
+		{9A22D5CD-1070-40E1-88AA-05B699BEABDC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
