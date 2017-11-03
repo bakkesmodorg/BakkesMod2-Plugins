@@ -69,6 +69,13 @@ string WorkshopPlugin::createReplaySnapshot() {
 	replace(json_template, "{{ball_vel_z}}", to_string(b.GetVelocity().Z));
 
 
+	replace(json_template, "{{ball_rot_pitch}}", to_string(b.GetRotation().Pitch));
+	replace(json_template, "{{ball_rot_roll}}", to_string(b.GetRotation().Roll));
+	replace(json_template, "{{ball_rot_yaw}}", to_string(b.GetRotation().Yaw));
+
+	replace(json_template, "{{ball_torque_x}}", to_string(b.GetAngularVelocity().X));
+	replace(json_template, "{{ball_torque_y}}", to_string(b.GetAngularVelocity().Y));
+	replace(json_template, "{{ball_torque_z}}", to_string(b.GetAngularVelocity().Z));
 
 	string fileName = getSafeFileName(REPLAY_SHOT_DIRECTORY, "replay");
 	//replace(json_template, "{{name}}", fileName);

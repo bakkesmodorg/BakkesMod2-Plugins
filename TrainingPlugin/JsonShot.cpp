@@ -47,6 +47,9 @@ ball parseJSONBall(json js) {
 	if (js.count("torque") > 0) {
 		b.angvel = parseJSONVector(js["torque"]);
 	}
+	if (js.count("rotation") > 0) {
+		b.rotation = parseJSONRotator(js["rotation"]);
+	}
 	return b;
 }
 
@@ -174,6 +177,15 @@ void JsonShot::set(GameWrapper* gw, CVarManagerWrapper * cons)
 	cons->getCvar("shot_initial_ball_location_x").setValue(b.location.x);
 	cons->getCvar("shot_initial_ball_location_y").setValue(b.location.y);
 	cons->getCvar("shot_initial_ball_location_z").setValue(b.location.z);
+
+	cons->getCvar("shot_initial_ball_pitch").setValue(b.rotation.pitch);
+	cons->getCvar("shot_initial_ball_yaw").setValue(b.rotation.yaw);
+	cons->getCvar("shot_initial_ball_roll").setValue(b.rotation.roll);
+
+	cons->getCvar("shot_initial_ball_torque_pitch").setValue(b.angvel.x);
+	cons->getCvar("shot_initial_ball_torque_yaw").setValue(b.angvel.y);
+	cons->getCvar("shot_initial_ball_torque_roll").setValue(b.angvel.z);
+
 	if (shot.options.use_velocity) {
 		cons->getCvar("shot_initial_ball_velocity_x").setValue(b.velocity.x);
 		cons->getCvar("shot_initial_ball_velocity_y").setValue(b.velocity.y);

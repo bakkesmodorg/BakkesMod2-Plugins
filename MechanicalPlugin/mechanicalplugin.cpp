@@ -23,11 +23,11 @@ void MechanicalPlugin::onLoad()
 	disableJump = make_shared<bool>(false);
 	disableBoost = make_shared<bool>(false);
 
-	cvarManager->registerCvar("mech_limit_steer", "1", "Clamps steer", true, true, 0.f, true, 1.f).bindTo(limitSteer);
-	cvarManager->registerCvar("mech_limit_throttle", "1", "Clamps throttle", true, true, 0.f, true, 1.f).bindTo(limitThrottle);
-	cvarManager->registerCvar("mech_limit_yaw", "1", "Clamps yaw", true, true, 0.f, true, 1.f).bindTo(limitYaw);
-	cvarManager->registerCvar("mech_limit_pitch", "1", "Clamps pitch", true, true, 0.f, true, 1.f).bindTo(limitYaw);
-	cvarManager->registerCvar("mech_limit_roll", "1", "Clamps roll", true, true, 0.f, true, 1.f).bindTo(limitRoll);
+	cvarManager->registerCvar("mech_steer_limit", "1", "Clamps steer", true, true, 0.f, true, 1.f).bindTo(limitSteer);
+	cvarManager->registerCvar("mech_throttle_limit", "1", "Clamps throttle", true, true, 0.f, true, 1.f).bindTo(limitThrottle);
+	cvarManager->registerCvar("mech_yaw_limit", "1", "Clamps yaw", true, true, 0.f, true, 1.f).bindTo(limitYaw);
+	cvarManager->registerCvar("mech_pitch_limit", "1", "Clamps pitch", true, true, 0.f, true, 1.f).bindTo(limitYaw);
+	cvarManager->registerCvar("mech_roll_limit", "1", "Clamps roll", true, true, 0.f, true, 1.f).bindTo(limitRoll);
 
 	cvarManager->registerCvar("mech_disable_handbrake", "0", "Disables handbrake", true, true, 0.f, true, 1.f).bindTo(disableHandbrake);
 	cvarManager->registerCvar("mech_disable_jump", "0", "Disables jump", true, true, 0.f, true, 1.f).bindTo(disableJump);
@@ -48,11 +48,14 @@ void MechanicalPlugin::OnPreAsync(std::string funcName)
 		for (int i = 0; i < players.Count(); i++)
 		{
 			auto player = players.Get(i);
+			if (player.IsNull())
+				continue;
 			ControllerInput ci = player.GetInput();
 			if (*disableHandbrake)
 			{
 				ci.Handbrake = false;
 			}
+
 			if (*disableBoost) 
 			{
 				ci.ActivateBoost = false;

@@ -16,6 +16,10 @@ struct shot_data {
 	float ball_torque_roll = 0;
 	float ball_torque_yaw = 0;
 
+	float ball_rotation_pitch = 0;
+	float ball_rotation_yaw = 0;
+	float ball_rotation_roll = 0;
+
 	float player_location_x = 0;
 	float player_location_y = 0;
 	float player_location_z = 0;
@@ -36,9 +40,13 @@ struct shot_data {
 		return Vector(ball_velocity_x, ball_velocity_y, ball_velocity_z);
 	};
 
-	Vector get_ball_start_rotation() {
+	Vector get_ball_start_angvel() {
 		return Vector(ball_torque_pitch, ball_torque_roll, ball_torque_yaw);
 	};
+
+	Rotator get_ball_start_rotation() {
+		return Rotator(ball_rotation_pitch, ball_rotation_yaw, ball_rotation_roll);
+	}
 
 	Vector get_player_start_location() {
 		return Vector(player_location_x, player_location_y, player_location_z);
