@@ -286,7 +286,7 @@ void RewindPlugin::record()
 	if (b.IsNull() || c.IsNull())
 		return;
 
-	if (history.size() == max_history)
+	if (history.size() > max_history)
 	{
 		history.erase(history.begin());
 	}

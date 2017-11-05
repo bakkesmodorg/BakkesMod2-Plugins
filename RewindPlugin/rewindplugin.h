@@ -2,6 +2,7 @@
 #pragma comment( lib, "bakkesmod.lib" )
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 
+//Rewindplugin: initial version created by CJ (
 class RewindPlugin : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
