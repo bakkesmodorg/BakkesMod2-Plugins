@@ -33,7 +33,7 @@ void MechanicalPlugin::onLoad()
 	cvarManager->registerCvar("mech_disable_jump", "0", "Disables jump", true, true, 0.f, true, 1.f).bindTo(disableJump);
 	cvarManager->registerCvar("mech_disable_boost", "0", "Disables boost", true, true, 0.f, true, 1.f).bindTo(disableBoost);
 
-	gameWrapper->HookEvent("Function TAGame.PlayerController_TA.PrePhysicsStep", bind(&MechanicalPlugin::OnPreAsync, this, _1));
+	gameWrapper->HookEvent("Function PlayerController_TA.Driving.PlayerMove", bind(&MechanicalPlugin::OnPreAsync, this, _1));
 }
 
 void MechanicalPlugin::onUnload()

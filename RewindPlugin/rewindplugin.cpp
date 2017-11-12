@@ -72,13 +72,20 @@ public:
 		ball_velocity = lhs.ball_velocity + (((rhs.ball_velocity - lhs.ball_velocity) / snap) * custom_elapsed);
 		car_velocity = lhs.car_velocity + (((rhs.car_velocity - lhs.car_velocity) / snap) * custom_elapsed);
 
-		ball_rotation = lhs.ball_rotation + (((rhs.ball_rotation - lhs.ball_rotation) / snapR) * custom_elapsed);
+		//ball_rotation = lhs.ball_rotation + (((rhs.ball_rotation - lhs.ball_rotation) / snapR) * custom_elapsed);
+
+		CustomRotator brot1 = (lhs.ball_rotation.diffTo(rhs.ball_rotation));
+		CustomRotator brot2 = brot1 / snapR;
+		CustomRotator brot3 = brot2*CustomRotator(custom_elapsed);
+		ball_rotation = lhs.ball_rotation + brot3;// (((rhs.car_rotation - lhs.car_rotation) / snapR) * custom_elapsed);
+
+
 
 		float difd = (rhs.car_rotation.Pitch._value - lhs.car_rotation.Pitch._value);
 
 		CustomRotator rot1 = (lhs.car_rotation.diffTo(rhs.car_rotation));
 		CustomRotator rot2 = rot1 / snapR;
-		CustomRotator rot3 = rot2*custom_elapsed;
+		CustomRotator rot3 = rot2*CustomRotator(custom_elapsed);
 		car_rotation = lhs.car_rotation + rot3;// (((rhs.car_rotation - lhs.car_rotation) / snapR) * custom_elapsed);
 
 		ball_ang_velocity = lhs.ball_ang_velocity + (((rhs.ball_ang_velocity - lhs.ball_ang_velocity) / snap) * custom_elapsed);
@@ -113,12 +120,14 @@ float tickTime = 0;
 
 void RewindPlugin::onLoad()
 {
-	gameWrapper->HookEvent("Function TAGame.PlayerController_TA.PrePhysicsStep", bind(&RewindPlugin::OnPreAsync, this, _1));
+	//Patch 1.39, psyonix removed prephysicssteps does not get called anymore
+	gameWrapper->HookEvent("Function PlayerController_TA.Driving.PlayerMove", bind(&RewindPlugin::OnPreAsync, this, _1)); //Function TAGame.PlayerController_TA.PrePhysicsStep
 
-	cvarManager->registerCvar("sv_rewind_button", "XboxTypeS_X", "Button for rewind controls");
-	cvarManager->getCvar("sv_rewind_button").addOnValueChanged([this](std::string old , CVarWrapper now) {
+	cvarManager->registerCvar("sv_rewind_button", "XboxTypeS_LeftThumbStick", "Button for rewind controls").addOnValueChanged([this](std::string old, CVarWrapper now) {
 		rewindKey = this->gameWrapper->GetFNameIndexByString(now.getStringValue());
+		cvarManager->log("Rewind button is now " + to_string(rewindKey));
 	});
+	cvarManager->getCvar("sv_rewind_button").notify();
 	recorderEnabled = true;
 
 	cvarManager->registerNotifier("sv_rewind_play", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
@@ -286,7 +295,7 @@ void RewindPlugin::record()
 	if (b.IsNull() || c.IsNull())
 		return;
 
-	if (history.size() > max_history)
+	if (history.size() >= max_history)
 	{
 		history.erase(history.begin());
 	}

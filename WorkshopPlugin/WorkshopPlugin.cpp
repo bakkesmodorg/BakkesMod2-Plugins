@@ -55,6 +55,10 @@ string WorkshopPlugin::createReplaySnapshot() {
 	replace(json_template, "{{player_loc_y}}", to_string(aw.GetLocation().Y));
 	replace(json_template, "{{player_loc_z}}", to_string(aw.GetLocation().Z));
 
+	replace(json_template, "{{player_vel_x}}", to_string(aw.GetVelocity().X));
+	replace(json_template, "{{player_vel_y}}", to_string(aw.GetVelocity().Y));
+	replace(json_template, "{{player_vel_z}}", to_string(aw.GetVelocity().Z));
+
 	replace(json_template, "{{player_rot_pitch}}", to_string(aw.GetRotation().Pitch));
 	replace(json_template, "{{player_rot_roll}}", to_string(aw.GetRotation().Roll));
 	replace(json_template, "{{player_rot_yaw}}", to_string(aw.GetRotation().Yaw));

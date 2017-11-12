@@ -192,16 +192,16 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("set_recharge_rate", &BoostWrapper::SetRechargeRate).
 		def("get_recharge_delay", &BoostWrapper::GetRechargeDelay).
 		def("set_recharge_delay", &BoostWrapper::SetRechargeDelay).
-		def("get_only_apply_recharge_to_my_half", &BoostWrapper::GetOnlyApplyRechargeToMyHalf).
-		def("set_only_apply_recharge_to_my_half", &BoostWrapper::SetOnlyApplyRechargeToMyHalf).
-		def("get_only_apply_recharge_to_opposing_half", &BoostWrapper::GetOnlyApplyRechargeToOpposingHalf).
-		def("set_only_apply_recharge_to_opposing_half", &BoostWrapper::SetOnlyApplyRechargeToOpposingHalf).
-		def("get_demolish_on_empty_my_half", &BoostWrapper::GetDemolishOnEmptyMyHalf).
-		def("set_demolish_on_empty_my_half", &BoostWrapper::SetDemolishOnEmptyMyHalf).
-		def("get_demolish_on_empty_opposing_half", &BoostWrapper::GetDemolishOnEmptyOpposingHalf).
-		def("set_demolish_on_empty_opposing_half", &BoostWrapper::SetDemolishOnEmptyOpposingHalf).
-		def("get_cached_on_my_half", &BoostWrapper::GetCachedOnMyHalf).
-		def("set_cached_on_my_half", &BoostWrapper::SetCachedOnMyHalf).
+		//def("get_only_apply_recharge_to_my_half", &BoostWrapper::GetOnlyApplyRechargeToMyHalf).
+		//def("set_only_apply_recharge_to_my_half", &BoostWrapper::SetOnlyApplyRechargeToMyHalf).
+		//def("get_only_apply_recharge_to_opposing_half", &BoostWrapper::GetOnlyApplyRechargeToOpposingHalf).
+		//def("set_only_apply_recharge_to_opposing_half", &BoostWrapper::SetOnlyApplyRechargeToOpposingHalf).
+		//def("get_demolish_on_empty_my_half", &BoostWrapper::GetDemolishOnEmptyMyHalf).
+		//def("set_demolish_on_empty_my_half", &BoostWrapper::SetDemolishOnEmptyMyHalf).
+		//def("get_demolish_on_empty_opposing_half", &BoostWrapper::GetDemolishOnEmptyOpposingHalf).
+		//def("set_demolish_on_empty_opposing_half", &BoostWrapper::SetDemolishOnEmptyOpposingHalf).
+		//def("get_cached_on_my_half", &BoostWrapper::GetCachedOnMyHalf).
+		//def("set_cached_on_my_half", &BoostWrapper::SetCachedOnMyHalf).
 		def("get_current_boost_amount", &BoostWrapper::GetCurrentBoostAmount).
 		def("get_is_unlimited_boost", &BoostWrapper::GetIsUnlimitedBoost).
 		def("set_boost_amount", &BoostWrapper::SetBoostAmount).
