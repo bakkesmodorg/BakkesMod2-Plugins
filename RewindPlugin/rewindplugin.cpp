@@ -3,7 +3,7 @@
 #include "utils/customrotator.h"
 
 #include "bakkesmod\wrappers\tutorialwrapper.h"
-#include "bakkesmod\wrappers\boostwrapper.h"
+#include "bakkesmod\wrappers\carcomponent\boostwrapper.h"
 
 
 using namespace std::placeholders;

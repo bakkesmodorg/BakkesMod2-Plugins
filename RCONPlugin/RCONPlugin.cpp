@@ -33,6 +33,7 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 	connection_ptr con = s->get_con_from_hdl(hdl);
 	try {
 		auto input = parseConsoleInput(msg->get_payload());
+		//cvarManager->log(msg->get_payload());
 		if (!is_authenticated(con))
 		{
 			if (input->size() > 0 && input->at(0).size() == 2 && input->at(0).at(0).compare("rcon_password") == 0)
@@ -64,6 +65,7 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 	catch (const websocketpp::lib::error_code& e) {
 		std::cout << "Echo failed because: " << e
 			<< "(" << e.message() << ")" << std::endl;
+		//cvarManager->log("Websocket error");
 	}
 }
 

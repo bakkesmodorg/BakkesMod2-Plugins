@@ -3,7 +3,7 @@
 #include "boost/python/detail/wrap_python.hpp"
 #include <boost/python.hpp>
 #include "bakkesmod/wrappers/ballwrapper.h"
-#include "bakkesmod/wrappers/boostwrapper.h"
+#include "bakkesmod/wrappers/carcomponent/boostwrapper.h"
 #include "bakkesmod/wrappers/camerawrapper.h"
 #include "bakkesmod/wrappers/carwrapper.h"
 #include "bakkesmod/wrappers/gameeventwrapper.h"

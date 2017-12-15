@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RedirectPlugin", "RedirectPlugin\RedirectPlugin.vcxproj", "{6E6E9AB3-E857-4949-A937-71A71E5B6631}"
 EndProject
@@ -62,7 +62,6 @@ Global
 		{970BE6EE-7BB7-4DC0-97F2-62DB652ECE44}.Release|x64.ActiveCfg = Release|x64
 		{970BE6EE-7BB7-4DC0-97F2-62DB652ECE44}.Release|x64.Build.0 = Release|x64
 		{970BE6EE-7BB7-4DC0-97F2-62DB652ECE44}.Release|x86.ActiveCfg = Release|Win32
-		{970BE6EE-7BB7-4DC0-97F2-62DB652ECE44}.Release|x86.Build.0 = Release|Win32
 		{FFBE4144-C3E7-4C99-B41A-17133EB1021B}.Debug|x64.ActiveCfg = Debug|x64
 		{FFBE4144-C3E7-4C99-B41A-17133EB1021B}.Debug|x64.Build.0 = Debug|x64
 		{FFBE4144-C3E7-4C99-B41A-17133EB1021B}.Debug|x86.ActiveCfg = Debug|Win32
@@ -114,5 +113,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D6617AC7-A454-4FF4-9712-CA886E400966}
 	EndGlobalSection
 EndGlobal
