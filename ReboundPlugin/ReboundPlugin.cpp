@@ -9,7 +9,7 @@ void ReboundPlugin::onLoad()
 {
 	cvarManager->registerCvar("rebound_shotspeed", "780", "Shotspeed to use for rebounds", true, true, 0, true, 2000);
 	cvarManager->registerCvar("rebound_addedheight", "(300, 1400)", "Height above the backboard to shoot", true, true, -5000, true, 10000);
-	cvarManager->registerCvar("rebound_side_offset", "0", "Variance for backboard shots (0 = only above net)", true, true, -5000, true, 5000);
+	cvarManager->registerCvar("rebound_side_offset", "(0, 500)", "Variance for backboard shots (0 = only above net)", true, true, -5000, true, 5000);
 	cvarManager->registerCvar("rebound_addedspin", "0", "Added rotational velocity to give when doing a backboard shot", true, true, -50000, true, 50000);
 	cvarManager->registerCvar("rebound_resetspin", "0", "Whether or not to remove the existing spin on the ball", true, true, 0, true, 1);
 

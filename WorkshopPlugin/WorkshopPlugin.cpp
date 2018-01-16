@@ -91,6 +91,15 @@ string WorkshopPlugin::createReplaySnapshot() {
 
 void WorkshopPlugin::onLoad()
 {
+	cvarManager->registerNotifier("echome", [this](vector<string> params) {
+		if (params.size() < 2)
+			return;
+
+		string echo_back = params.at(1);
+		cvarManager->executeCommand("sendback you sent me \"" + echo_back + "\"");
+
+	});
+
 	cvarManager->registerNotifier("workshop_shot_load", [this](vector<string> params) {
 		if (params.size() < 2)
 			return;

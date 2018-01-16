@@ -27,7 +27,6 @@ void RedirectPlugin::onLoad()
 		
 		
 		float ballSpeed = cvarManager->getCvar("redirect_shot_speed").getIntValue();
-		float offset = cvarManager->getCvar("redirect_pass_offset").getIntValue();
 		float offset_z = cvarManager->getCvar("redirect_pass_offset_z").getIntValue();
 		
 		bool predict = cvarManager->getCvar("redirect_pass_predict").getBoolValue();
@@ -38,8 +37,8 @@ void RedirectPlugin::onLoad()
 
 		bool onGround = cvarManager->getCvar("redirect_on_ground").getBoolValue();
 		
-		int offsetX = random(0, (int)offset);
-		int offsetY = random(0, (int)offset);
+		int offsetX = cvarManager->getCvar("redirect_pass_offset").getIntValue();
+		int offsetY = cvarManager->getCvar("redirect_pass_offset").getIntValue();
 		int offsetZ = random(offset_z / 3, offset_z);
 		Vector offsetVec = Vector(offsetX, offsetY, offsetZ);
 		
