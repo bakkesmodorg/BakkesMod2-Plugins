@@ -8,7 +8,7 @@ BAKKESMOD_PLUGIN(RedirectPlugin, "Redirect plugin", "0.2", PLUGINTYPE_FREEPLAY)
 void RedirectPlugin::onLoad()
 {
 	cvarManager->registerCvar("redirect_shot_speed", "(850, 1100)", "Speed to shoot the ball at", true, true, 0, true, 2000);
-	cvarManager->registerCvar("redirect_pass_offset", "50", "Default X/Y offset to shoot ahead");
+	cvarManager->registerCvar("redirect_pass_offset", "(-50, 50)", "Default X/Y offset to shoot ahead");
 	cvarManager->registerCvar("redirect_pass_offset_z", "200", "Default Z offset for passing");
 	cvarManager->registerCvar("redirect_pass_predict", "1", "Predict where the player will be when the pass arrives", true, true, 0, true, 1);
 	cvarManager->registerCvar("redirect_on_ground", "0", "Pass over the floor", true, true, 0, true, 1);

@@ -38,7 +38,7 @@ void RecoveryPlugin::onUnload()
 void RecoveryPlugin::CheckForBump()
 {
 	if (!recoveryEnabled || !gameWrapper->IsInTutorial())
-		return; //Player stopped defender training or left freeplay
+		return; //Player stopped recovery training or left freeplay
 
 	gameWrapper->SetTimeout([this](GameWrapper* gw) {
 		this->CheckForBump();
