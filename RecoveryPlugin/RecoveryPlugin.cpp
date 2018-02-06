@@ -10,7 +10,7 @@ void RecoveryPlugin::onLoad()
 {
 	cvarManager->registerCvar("recovery_bumpspeed_angular", "(0, 6)", "How hard you will get thrown rotationally", true, true, 0.f, true, 10.f);
 	cvarManager->registerCvar("recovery_bumpspeed_linear", "(800, 1100)", "How hard you will get thrown", true, true, 0.f, true, 1999.9);
-	cvarManager->registerCvar("recovery_bumpspeed_linear_z", "(400, 700)", "How hard you will get thrown (height)", true, true, 0.f, true, 1999.9);
+	cvarManager->registerCvar("recovery_bumpspeed_linear_z", "(400, 700)", "How hard you will get thrown (height)", true, true, -2000.f, true, 1999.9);
 	cvarManager->registerCvar("recovery_cooldown", "(3000, 6000)", "Minimum time to wait after a bump", true, true, 0.f, true, 120000.f);
 
 	cvarManager->registerNotifier("recovery_start", [this](std::vector<string> params) {
@@ -87,6 +87,7 @@ void RecoveryPlugin::ExecuteBump()
 
 	angularBump.X = random(0, 1) == 1  ? angularBump.X : -angularBump.X;
 	angularBump.Y = random(0, 1) == 1 ? angularBump.Y : -angularBump.Y;
+	angularBump.Z = random(0, 1) == 1 ? angularBump.Z : -angularBump.Z;
 
 	linearBump.X = random(0, 1) == 1 ? linearBump.X : -linearBump.X;
 	linearBump.Y = random(0, 1) == 1 ? linearBump.Y : -linearBump.Y;
