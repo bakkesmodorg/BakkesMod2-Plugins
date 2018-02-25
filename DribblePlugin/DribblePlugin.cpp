@@ -1,9 +1,9 @@
 #include "DribblePlugin.h"
-#include "bakkesmod\wrappers\tutorialwrapper.h"
-#include "bakkesmod\wrappers\ballwrapper.h"
-#include "bakkesmod\wrappers\gameeventwrapper.h"
-BAKKESMOD_PLUGIN(DribblePlugin, "Dribble plugin", "0.1", PLUGINTYPE_FREEPLAY)
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
+#include "bakkesmod\wrappers\GameObject\CarWrapper.h"
 
+BAKKESMOD_PLUGIN(DribblePlugin, "Dribble plugin", "0.1", PLUGINTYPE_FREEPLAY)
 
 void DribblePlugin::onLoad()
 {
@@ -24,6 +24,9 @@ void DribblePlugin::onLoad()
 		ball.SetLocation(car.GetLocation() + addToBall);
 		ball.SetVelocity(playerVelocity);
 	});
+
+	
+	
 
 	//Experimental training for shooting the ball somewhere near the player (helps with practicing car orientation and quick thinking)
 	cvarManager->registerCvar("shootatme_bounds_x", "(-200, 200)");
@@ -49,3 +52,4 @@ void DribblePlugin::onLoad()
 void DribblePlugin::onUnload()
 {
 }
+

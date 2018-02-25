@@ -1,7 +1,9 @@
 #include "redirectplugin.h"
 #include "utils/parser.h"
 
-#include "bakkesmod\wrappers\tutorialwrapper.h"
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\CarWrapper.h"
+#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
 
 BAKKESMOD_PLUGIN(RedirectPlugin, "Redirect plugin", "0.2", PLUGINTYPE_FREEPLAY)
 

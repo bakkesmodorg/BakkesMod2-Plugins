@@ -1,6 +1,7 @@
 #include "ReboundPlugin.h"
-#include "bakkesmod\wrappers\tutorialwrapper.h"
-
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\CarWrapper.h"
+#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
 #include <math.h>
 
 BAKKESMOD_PLUGIN(ReboundPlugin, "Rebound plugin", "0.1", PLUGINTYPE_FREEPLAY)

@@ -2,20 +2,19 @@
 #define BOOST_PYTHON_STATIC_LIB  
 #include "boost/python/detail/wrap_python.hpp"
 #include <boost/python.hpp>
-#include "bakkesmod/wrappers/ballwrapper.h"
-#include "bakkesmod/wrappers/carcomponent/boostwrapper.h"
-#include "bakkesmod/wrappers/camerawrapper.h"
-#include "bakkesmod/wrappers/carwrapper.h"
-#include "bakkesmod/wrappers/gameeventwrapper.h"
-#include "bakkesmod/wrappers/priwrapper.h"
-#include "bakkesmod/wrappers/serverwrapper.h"
-#include "bakkesmod/wrappers/replaywrapper.h"
-#include "bakkesmod/wrappers/tutorialwrapper.h"
-
+#include "bakkesmod/wrappers/GameObject/BallWrapper.h"
+#include "bakkesmod/wrappers/GameObject/CarComponent/BoostWrapper.h"
+#include "bakkesmod/wrappers/GameObject/CameraWrapper.h"
+#include "bakkesmod/wrappers/GameObject/CarWrapper.h"
+#include "bakkesmod/wrappers/GameEvent/ServerWrapper.h"
+#include "bakkesmod/wrappers/GameObject/PriWrapper.h"
+#include "bakkesmod/wrappers/ReplayWrapper.h"
+#include "bakkesmod/wrappers/GameEvent/TutorialWrapper.h"
+#include "bakkesmod/wrappers/ArrayWrapper.h"
 using namespace boost::python;
 
 //BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(log_overloads, ConsoleWrapper::log, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_angular_overloads, ActorWrapper::SetAngularVelocity, 1, 2);
+//BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_angular_overloads, ActorWrapper::SetAngularVelocity, 1, 2);
 void (CVarWrapper::*setString)(string) = &CVarWrapper::setValue;
 void (CVarWrapper::*setInt)(int) = &CVarWrapper::setValue;
 void (CVarWrapper::*setFloat)(float) = &CVarWrapper::setValue;
@@ -24,8 +23,8 @@ void (CVarWrapper::*setFloat)(float) = &CVarWrapper::setValue;
 
 #define PYTHON_ARRAY(WrappedArrayClass) \
 	class_<ArrayWrapper<WrappedArrayClass>>("ArrayWrapper#WrappedArrayClass", no_init).\
-		def("count", &ArrayWrapper<CarWrapper>::Count).\
-		def("get", &ArrayWrapper<CarWrapper>::Get);
+		def("count", &ArrayWrapper<WrappedArrayClass>::Count).\
+		def("get", &ArrayWrapper<WrappedArrayClass>::Get);
 
 BOOST_PYTHON_MODULE(bakkesmod)
 {
@@ -70,7 +69,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("is_in_tutorial", &GameWrapper::IsInTutorial).
 		def("is_in_replay", &GameWrapper::IsInReplay).
 		def("is_in_custom_training", &GameWrapper::IsInCustomTraining).
-		def("get_game_event", &GameWrapper::GetGameEvent).
+		//def("get_game_event", &GameWrapper::GetGameEvent).
 		def("get_game_event_as_tutorial", &GameWrapper::GetGameEventAsTutorial).
 		def("get_game_event_as_server", &GameWrapper::GetGameEventAsServer).
 		def("get_game_event_as_replay", &GameWrapper::GetGameEventAsReplay).
@@ -165,23 +164,23 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		//def("freeze", &ActorWrapper::Freeze).
 		//def("is_hooked", &ActorWrapper::IsHooked).
 		def("get_angular_velocity", &ActorWrapper::GetAngularVelocity).
-		def("set_angular_velocity", &ActorWrapper::SetAngularVelocity, set_angular_overloads()).
+		//def("set_angular_velocity", &ActorWrapper::SetAngularVelocity, set_angular_overloads()).
 		def("is_null", &ActorWrapper::IsNull);
 
 	class_<BallWrapper, bases<ActorWrapper>>("BallWrapper", no_init).
-		def("get_gravity_scale", &BallWrapper::GetGravityScale).
-		def("set_gravity_scale", &BallWrapper::SetGravityScale).
+		/*def("get_gravity_scale", &BallWrapper::GetGravityScale).
+		def("set_gravity_scale", &BallWrapper::SetGravityScale).*/
 		def("get_explosion_time", &BallWrapper::GetExplosionTime).
-		def("set_explosion_time", &BallWrapper::SetExplosionTime).
-		def("get_last_touch_time", &BallWrapper::GetLastTouchTime);
+		def("set_explosion_time", &BallWrapper::SetExplosionTime);
+		/*def("get_last_touch_time", &BallWrapper::GetLastTouchTime);*/
 
 	class_<BoostWrapper, bases<ActorWrapper>>("BoostWrapper", no_init).
 		def("get_max_boost_amount", &BoostWrapper::GetMaxBoostAmount).
 		def("set_max_boost_amount", &BoostWrapper::SetMaxBoostAmount).
 		def("get_start_boost_amount", &BoostWrapper::GetStartBoostAmount).
 		def("set_start_boost_amount", &BoostWrapper::SetStartBoostAmount).
-		def("get_is_active", &BoostWrapper::GetIsActive).
-		def("set_is_active", &BoostWrapper::SetIsActive).
+		/*def("get_is_active", &BoostWrapper::GetIsActive).
+		def("set_is_active", &BoostWrapper::SetIsActive).*/
 		def("get_boost_consumption_rate", &BoostWrapper::GetBoostConsumptionRate).
 		def("set_boost_consumption_rate", &BoostWrapper::SetBoostConsumptionRate).
 		def("get_boost_force", &BoostWrapper::GetBoostForce).
@@ -203,10 +202,10 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		//def("get_cached_on_my_half", &BoostWrapper::GetCachedOnMyHalf).
 		//def("set_cached_on_my_half", &BoostWrapper::SetCachedOnMyHalf).
 		def("get_current_boost_amount", &BoostWrapper::GetCurrentBoostAmount).
-		def("get_is_unlimited_boost", &BoostWrapper::GetIsUnlimitedBoost).
+		def("get_is_unlimited_boost", &BoostWrapper::GetbUnlimitedBoost).
 		def("set_boost_amount", &BoostWrapper::SetBoostAmount).
-		def("add_boost_amount", &BoostWrapper::AddBoostAmount).
-		def("set_is_unlimited_boost", &BoostWrapper::SetIsUnlimitedBoost);
+		def("add_boost_amount", &BoostWrapper::GiveBoost2).
+		def("set_is_unlimited_boost", &BoostWrapper::SetbUnlimitedBoost);
 
 	//class_<CalculationHelpers>("CalculationHelpers", no_init).
 	//	def("predict_ball", &CalculationHelpers::PredictBall);
@@ -239,37 +238,37 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("project", &CanvasWrapper::Project);
 
 	class_<CarWrapper, bases<ActorWrapper>>("CarWrapper", no_init).
-		def("get_is_driving", &CarWrapper::GetIsDriving).
-		def("set_is_driving", &CarWrapper::SetIsDriving).
-		def("get_is_on_ground", &CarWrapper::GetIsOnGround).
-		def("set_is_on_ground", &CarWrapper::SetIsOnGround).
-		def("get_has_jumped", &CarWrapper::GetHasJumped).
-		def("set_has_jumped", &CarWrapper::SetHasJumped).
-		def("get_has_double_jumped", &CarWrapper::GetHasDoubleJumped).
-		def("set_has_double_jumped", &CarWrapper::SetHasDoubleJumped).
+		def("get_is_driving", &CarWrapper::GetbDriving).
+		def("set_is_driving", &CarWrapper::SetbDriving).
+		def("get_is_on_ground", &CarWrapper::GetbOnGround).
+		def("set_is_on_ground", &CarWrapper::SetbOnGround).
+		def("get_has_jumped", &CarWrapper::GetbJumped).
+		def("set_has_jumped", &CarWrapper::SetbJumped).
+		def("get_has_double_jumped", &CarWrapper::GetbDoubleJumped).
+		def("set_has_double_jumped", &CarWrapper::SetbDoubleJumped).
 		def("get_added_ball_force_multiplier", &CarWrapper::GetAddedBallForceMultiplier).
 		def("set_added_ball_force_multiplier", &CarWrapper::SetAddedBallForceMultiplier).
-		def("get_disable_gravity", &CarWrapper::GetDisableGravity).
-		def("set_disable_gravity", &CarWrapper::SetDisableGravity).
-		def("get_demolish_on_opposing_ground", &CarWrapper::GetDemolishOnOpposingGround).
-		def("set_demolish_on_opposing_ground", &CarWrapper::SetDemolishOnOpposingGround).
-		def("get_was_on_opposing_ground", &CarWrapper::GetWasOnOpposingGround).
-		def("set_was_on_opposing_ground", &CarWrapper::SetWasOnOpposingGround).
-		def("get_demolish_on_goal_zone", &CarWrapper::GetDemolishOnGoalZone).
-		def("set_demolish_on_goal_zone", &CarWrapper::SetDemolishOnGoalZone).
-		def("get_was_in_goal_zone", &CarWrapper::GetWasInGoalZone).
-		def("set_was_in_goal_zone", &CarWrapper::SetWasInGoalZone).
-		def("get_override_handbrake_on", &CarWrapper::GetOverrideHandbrakeOn).
-		def("set_override_handbrake_on", &CarWrapper::SetOverrideHandbrakeOn).
-		def("get_override_boost_on", &CarWrapper::GetOverrideBoostOn).
-		def("set_override_boost_on", &CarWrapper::SetOverrideBoostOn).
+		//def("get_disable_gravity", &CarWrapper::GetbDisableGravity).
+		//def("set_disable_gravity", &CarWrapper::SetbDisableGravity).
+		//def("get_demolish_on_opposing_ground", &CarWrapper::GetDemolishOnOpposingGround).
+		//def("set_demolish_on_opposing_ground", &CarWrapper::SetDemolishOnOpposingGround).
+		//def("get_was_on_opposing_ground", &CarWrapper::GetWasOnOpposingGround).
+		//def("set_was_on_opposing_ground", &CarWrapper::SetWasOnOpposingGround).
+		//def("get_demolish_on_goal_zone", &CarWrapper::GetDemolishOnGoalZone).
+		//def("set_demolish_on_goal_zone", &CarWrapper::SetDemolishOnGoalZone).
+		//def("get_was_in_goal_zone", &CarWrapper::GetWasInGoalZone).
+		//def("set_was_in_goal_zone", &CarWrapper::SetWasInGoalZone).
+		//def("get_override_handbrake_on", &CarWrapper::GetOverrideHandbrakeOn).
+		//def("set_override_handbrake_on", &CarWrapper::SetOverrideHandbrakeOn).
+		//def("get_override_boost_on", &CarWrapper::GetOverrideBoostOn).
+		//def("set_override_boost_on", &CarWrapper::SetOverrideBoostOn).
 		def("get_added_car_force_multiplier", &CarWrapper::GetAddedCarForceMultiplier).
 		def("set_added_car_force_multiplier", &CarWrapper::SetAddedCarForceMultiplier).
 		def("get_max_time_for_dodge", &CarWrapper::GetMaxTimeForDodge).
 		def("set_max_time_for_dodge", &CarWrapper::SetMaxTimeForDodge).
 		def("get_last_wheels_hit_ball_time", &CarWrapper::GetLastWheelsHitBallTime).
 		def("set_last_wheels_hit_ball_time", &CarWrapper::SetLastWheelsHitBallTime).
-		def("get_boost", &CarWrapper::GetBoost).
+		def("get_boost", &CarWrapper::GetBoostComponent).
 		def("get_pri", &CarWrapper::GetPRI).
 		def("is_boost_cheap", &CarWrapper::IsBoostCheap).
 		def("set_boost_cheap", &CarWrapper::SetBoostCheap).
@@ -280,18 +279,18 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("get_input", &CarWrapper::GetInput).
 		def("set_input", &CarWrapper::SetInput);
 
-	class_<GameEventWrapper, bases<ActorWrapper>>("GameEventWrapper", no_init).
-		def("get_ball", &GameEventWrapper::GetBall).
-		def("is_training", &GameEventWrapper::IsTraining).
-		def("is_in_free_play", &GameEventWrapper::IsInFreePlay).
-		def("is_server", &GameEventWrapper::IsServer).
-		def("kick_bots", &GameEventWrapper::KickBots).
-		def("get_pri_car", &GameEventWrapper::GetPRICar);
+	//class_<GameEventWrapper, bases<ActorWrapper>>("GameEventWrapper", no_init).
+	//	def("get_ball", &GameEventWrapper::GetBall).
+	//	def("is_training", &GameEventWrapper::IsTraining).
+	//	def("is_in_free_play", &GameEventWrapper::IsInFreePlay).
+	//	def("is_server", &GameEventWrapper::IsServer).
+	//	def("kick_bots", &GameEventWrapper::KickBots).
+	//	def("get_pri_car", &GameEventWrapper::GetPRICar);
 
 	class_<PriWrapper, bases<ActorWrapper>>("PriWrapper", no_init).
 		def("get_score", &PriWrapper::GetScore).
-		def("set_score", &PriWrapper::SetScore).
-		def("get_goals", &PriWrapper::GetGoals).
+		def("set_score", &PriWrapper::SetScore);
+		/*def("get_goals", &PriWrapper::GetGoals).
 		def("set_goals", &PriWrapper::SetGoals).
 		def("get_assists", &PriWrapper::GetAssists).
 		def("set_assists", &PriWrapper::SetAssists).
@@ -323,11 +322,11 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("get_team_index", &PriWrapper::GetTeamIndex).
 		def("get_player_name", &PriWrapper::GetPlayerName).
 		def("is_spectator", &PriWrapper::IsSpectator).
-		def("get_body", &PriWrapper::GetBody);
+		def("get_body", &PriWrapper::GetBody);*/
 
 	class_<ServerWrapper, bases<GameEventWrapper>>("ServerWrapper", no_init).
-		def("get_time_remaining", &ServerWrapper::GetTimeRemaining).
-		def("set_time_remaining", &ServerWrapper::SetTimeRemaining).
+		//def("get_time_remaining", &ServerWrapper::GetTimeRemaining).
+		//def("set_time_remaining", &ServerWrapper::SetTimeRemaining).
 		def("get_podium_time", &ServerWrapper::GetPodiumTime).
 		def("set_podium_time", &ServerWrapper::SetPodiumTime).
 		def("get_game_speed", &ServerWrapper::GetGameSpeed).
@@ -342,18 +341,18 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("set_total_game_time_played", &ServerWrapper::SetTotalGameTimePlayed).
 		//def("get_games_played", &ServerWrapper::GetGamesPlayed).
 		//def("set_games_played", &ServerWrapper::SetGamesPlayed).
-		def("get_play_replays", &ServerWrapper::GetPlayReplays).
-		def("set_play_replays", &ServerWrapper::SetPlayReplays).
-		def("get_ball_has_been_hit", &ServerWrapper::GetBallHasBeenHit).
-		def("set_ball_has_been_hit", &ServerWrapper::SetBallHasBeenHit).
-		def("get_over_time", &ServerWrapper::GetOverTime).
-		def("set_over_time", &ServerWrapper::SetOverTime).
-		def("get_unlimited_time", &ServerWrapper::GetUnlimitedTime).
-		def("set_unlimited_time", &ServerWrapper::SetUnlimitedTime).
-		def("get_disable_goal_delay", &ServerWrapper::GetDisableGoalDelay).
-		def("set_disable_goal_delay", &ServerWrapper::SetDisableGoalDelay).
-		def("get_match_ended", &ServerWrapper::GetMatchEnded).
-		def("set_match_ended", &ServerWrapper::SetMatchEnded).
+		//def("get_play_replays", &ServerWrapper::GetPlayReplays).
+		//def("set_play_replays", &ServerWrapper::SetPlayReplays).
+		//def("get_ball_has_been_hit", &ServerWrapper::GetBallHasBeenHit).
+		//def("set_ball_has_been_hit", &ServerWrapper::SetBallHasBeenHit).
+		//def("get_over_time", &ServerWrapper::GetOverTime).
+		//def("set_over_time", &ServerWrapper::SetOverTime).
+		//def("get_unlimited_time", &ServerWrapper::GetUnlimitedTime).
+		//def("set_unlimited_time", &ServerWrapper::SetUnlimitedTime).
+		//def("get_disable_goal_delay", &ServerWrapper::GetDisableGoalDelay).
+		//def("set_disable_goal_delay", &ServerWrapper::SetDisableGoalDelay).
+		//def("get_match_ended", &ServerWrapper::GetMatchEnded).
+		//def("set_match_ended", &ServerWrapper::SetMatchEnded).
 		def("get_total_game_balls", &ServerWrapper::GetTotalGameBalls).
 		def("set_total_game_balls", &ServerWrapper::SetTotalGameBalls).
 		def("get_post_goal_time", &ServerWrapper::GetPostGoalTime).
@@ -372,20 +371,20 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("set_lobby_spawn_restart_time", &ServerWrapper::SetLobbySpawnRestartTime).
 		def("get_countdown_time", &ServerWrapper::GetCountdownTime).
 		def("set_countdown_time", &ServerWrapper::SetCountdownTime).
-		def("get_team", &ServerWrapper::GetTeam).
+		/*def("get_team", &ServerWrapper::GetTeam).*/
 		def("get_pris", &ServerWrapper::GetPRIs).
-		def("get_players", &ServerWrapper::GetPlayers).
-		def("get_goal_location", &ServerWrapper::GetGoalLocation).
-		def("get_scored_on_team", &ServerWrapper::GetScoredOnTeam).
+		//def("get_players", &ServerWrapper::GetPlayers).
+		//def("get_goal_location", &ServerWrapper::GetGoalLocation).
+		//def("get_scored_on_team", &ServerWrapper::GetScoredOnTeam).
 		def("spawn_ball", &ServerWrapper::SpawnBall).
-		def("get_balls", &ServerWrapper::GetBalls).
-		def("remove_ball", &ServerWrapper::RemoveBall).
+		//def("get_balls", &ServerWrapper::GetBalls).
+		//def("remove_ball", &ServerWrapper::RemoveBall).
 		def("move_to_ground", &ServerWrapper::MoveToGround).
 		//def("spawn_bot_with_ai", &ServerWrapper::SpawnBotWithAI).
 		//def("get_user_input", &ServerWrapper::GetUserInput).
-		def("start_countdown", &ServerWrapper::StartCountdown).
+		//def("start_countdown", &ServerWrapper::StartCountdown).
 		def("reset_balls", &ServerWrapper::ResetBalls).
-		def("set_game_state_time", &ServerWrapper::SetGameStateTime).
+		//def("set_game_state_time", &ServerWrapper::SetGameStateTime).
 		def("set_all_driving", &ServerWrapper::SetAllDriving);
 
 	class_<ReplayWrapper, bases<ServerWrapper>>("ReplayWrapper", no_init).
@@ -397,13 +396,13 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("skip_to_time", &ReplayWrapper::SkipToTime);
 
 
-	class_<TeamWrapper, bases<ActorWrapper>>("TeamWrapper", no_init).
-		def("get_score", &TeamWrapper::GetScore).
-		def("set_score", &TeamWrapper::SetScore).
-		def("get_team_size", &TeamWrapper::GetTeamSize).
-		def("get_index", &TeamWrapper::GetIndex).
-		def("get_bot_count", &TeamWrapper::GetBotCount).
-		def("get_human_count", &TeamWrapper::GetHumanCount);
+	//class_<TeamWrapper, bases<ActorWrapper>>("TeamWrapper", no_init).
+	//	def("get_score", &TeamWrapper::GetScore).
+	//	def("set_score", &TeamWrapper::SetScore).
+	//	def("get_team_size", &TeamWrapper::GetTeamSize).
+	//	def("get_index", &TeamWrapper::GetIndex).
+	//	def("get_bot_count", &TeamWrapper::GetBotCount).
+	//	def("get_human_count", &TeamWrapper::GetHumanCount);
 
 	class_<TutorialWrapper, bases<ServerWrapper>>("TutorialWrapper", no_init).
 		def("get_team_num", &TutorialWrapper::GetTeamNum).
@@ -412,22 +411,22 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("set_redo_count", &TutorialWrapper::SetRedoCount).
 		def("get_redo_total", &TutorialWrapper::GetRedoTotal).
 		def("set_redo_total", &TutorialWrapper::SetRedoTotal).
-		def("get_countdown_time_left", &TutorialWrapper::GetCountdownTimeLeft).
-		def("set_countdown_time_left", &TutorialWrapper::SetCountdownTimeLeft).
+		//def("get_countdown_time_left", &TutorialWrapper::GetCountdownTimeLeft).
+		//def("set_countdown_time_left", &TutorialWrapper::SetCountdownTimeLeft).
 		def("get_ball_goal_num", &TutorialWrapper::GetBallGoalNum).
 		def("set_ball_goal_num", &TutorialWrapper::SetBallGoalNum).
-		def("get_only_score_in_ball_goal_num", &TutorialWrapper::GetOnlyScoreInBallGoalNum).
-		def("set_only_score_in_ball_goal_num", &TutorialWrapper::SetOnlyScoreInBallGoalNum).
-		def("get_is_unlimited_boost", &TutorialWrapper::GetIsUnlimitedBoost).
-		def("set_is_unlimited_boost", &TutorialWrapper::SetIsUnlimitedBoost).
-		def("get_show_boost_meter", &TutorialWrapper::GetShowBoostMeter).
+		//def("get_only_score_in_ball_goal_num", &TutorialWrapper::GetOnlyScoreInBallGoalNum).
+		//def("set_only_score_in_ball_goal_num", &TutorialWrapper::SetOnlyScoreInBallGoalNum).
+		//def("get_is_unlimited_boost", &TutorialWrapper::GetIsUnlimitedBoost).
+		//def("set_is_unlimited_boost", &TutorialWrapper::SetIsUnlimitedBoost).
+		//def("get_show_boost_meter", &TutorialWrapper::GetShowBoostMeter).
 		def("set_show_boost_meter", &TutorialWrapper::SetShowBoostMeter).
 		def("get_ball_bounce_scale", &TutorialWrapper::GetBallBounceScale).
 		def("set_ball_bounce_scale", &TutorialWrapper::SetBallBounceScale).
 		def("get_ball_spawn_location", &TutorialWrapper::GetBallSpawnLocation).
 		def("set_ball_spawn_location", &TutorialWrapper::SetBallSpawnLocation).
-		def("get_ball_start_velocity", &TutorialWrapper::GetBallStartVelocity).
-		def("set_ball_start_velocity", &TutorialWrapper::SetBallStartVelocity).
+		//def("get_ball_start_velocity", &TutorialWrapper::GetBallStartVelocity).
+		//def("set_ball_start_velocity", &TutorialWrapper::SetBallStartVelocity).
 		def("get_total_field_extent", &TutorialWrapper::GetTotalFieldExtent).
 		def("set_total_field_extent", &TutorialWrapper::SetTotalFieldExtent).
 		def("redo", &TutorialWrapper::Redo).
@@ -446,7 +445,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("get_goal_extent", &TutorialWrapper::GetGoalExtent);
 
 	PYTHON_ARRAY(CarWrapper)
-	PYTHON_ARRAY(PriWrapper)
+	//PYTHON_ARRAY(PriWrapper)
 	PYTHON_ARRAY(BallWrapper)
 }
 

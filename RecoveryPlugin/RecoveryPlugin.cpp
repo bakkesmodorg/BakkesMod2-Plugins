@@ -1,7 +1,8 @@
 #include "RecoveryPlugin.h"
 #include "utils\parser.h"
 
-#include "bakkesmod\wrappers\tutorialwrapper.h"
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\CarWrapper.h"
 
 BAKKESMOD_PLUGIN(RecoveryPlugin, "Recovery plugin", "0.1", PLUGINTYPE_FREEPLAY)
 
@@ -55,7 +56,7 @@ float RecoveryPlugin::GetBumpTimeout()
 	{
 		auto gameCar = training.GetGameCar();
 		
-		if (gameCar.GetIsOnGround() || gameCar.GetIsOnWall()) //player has landed
+		if (gameCar.IsOnGround() || gameCar.IsOnWall()) //player has landed
 		{
 			ExecuteBump();
 			return lastCooldownTime;
@@ -93,7 +94,7 @@ void RecoveryPlugin::ExecuteBump()
 	linearBump.Y = random(0, 1) == 1 ? linearBump.Y : -linearBump.Y;
 
 	auto car = tutorial.GetGameCar();
-	car.SetAngularVelocity(angularBump);
+	car.SetAngularVelocity(angularBump, 0);
 	car.SetVelocity(linearBump);
 
 

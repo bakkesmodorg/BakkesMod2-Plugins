@@ -1,7 +1,8 @@
 #include "defenderplugin.h"
 #include "utils\parser.h"
 
-#include "bakkesmod\wrappers\tutorialwrapper.h"
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
 
 BAKKESMOD_PLUGIN(DefenderPlugin, "Defender plugin", "0.1", PLUGINTYPE_FREEPLAY)
 

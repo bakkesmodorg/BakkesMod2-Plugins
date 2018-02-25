@@ -2,9 +2,11 @@
 #include "cvareval.h"
 #include <math.h>
 
-#include "bakkesmod\wrappers\tutorialwrapper.h"
-#include "bakkesmod\wrappers\priwrapper.h"
-
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\PriWrapper.h"
+#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
+#include "bakkesmod\wrappers\GameObject\CarWrapper.h"
+#include "bakkesmod\wrappers\ArrayWrapper.h"
 BAKKESMOD_PLUGIN(TrainingPlugin, "Training plugin", "0.1.1", PLUGINTYPE_FREEPLAY | PLUGINTYPE_CUSTOM_TRAINING)
 
 void TrainingPlugin::get_shot_data_from_console(shot_data* data) {
@@ -139,7 +141,7 @@ void TrainingPlugin::onLoad()
 		get_shot_data_from_console(&s_data);
 		auto shot = currentShot.getShot();
 		ServerWrapper tw = gameWrapper->GetGameEventAsServer();
-		ArrayWrapper<CarWrapper> players = tw.GetPlayers();
+		ArrayWrapper<CarWrapper> players = tw.GetCars();
 
 		bool mirror = should_mirror();
 		if (true)
@@ -192,7 +194,7 @@ void TrainingPlugin::onLoad()
 					currentShot.setVelocity(gw, _cvarManager.get(), mirror_it(ball.GetLocation(), mirror));
 					get_shot_data_from_console(&s_data);
 					ball.SetVelocity(mirror_it(s_data.get_ball_start_velocity(), mirror));
-					ball.SetAngularVelocity(mirror_it(s_data.get_ball_start_angvel(), mirror));
+					ball.SetAngularVelocity(mirror_it(s_data.get_ball_start_angvel(), mirror), 0);
 					ball.SetRotation(mirror_it(s_data.get_ball_start_rotation(), mirror));
 				}
 

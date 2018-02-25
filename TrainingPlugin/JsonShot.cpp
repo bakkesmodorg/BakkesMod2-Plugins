@@ -3,8 +3,8 @@
 #include "utils/io.h"
 #include <fstream>
 #include "cvareval.h"
-#include "bakkesmod/wrappers/tutorialwrapper.h"
-#include "bakkesmod/wrappers/wrapperstructs.h"
+#include "bakkesmod/wrappers/GameEvent/TutorialWrapper.h"
+#include "bakkesmod/wrappers/WrapperStructs.h"
 #include "utils\parser.h"
 float get_safe_floats(string x) {
 	return 0;

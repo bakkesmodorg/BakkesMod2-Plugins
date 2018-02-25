@@ -2,9 +2,12 @@
 #include "utils/parser.h"
 #include "utils/customrotator.h"
 
-#include "bakkesmod\wrappers\tutorialwrapper.h"
-#include "bakkesmod\wrappers\carcomponent\boostwrapper.h"
+#include "bakkesmod/wrappers/GameEvent/TutorialWrapper.h"
+#include "bakkesmod/wrappers/GameObject/CarComponent/BoostWrapper.h"
+#include "bakkesmod/wrappers/GameObject/CarWrapper.h"
+#include "bakkesmod/wrappers/GameObject/BallWrapper.h"
 
+#include "bakkesmod/wrappers/ArrayWrapper.h"
 
 using namespace std::placeholders;
 
@@ -42,8 +45,7 @@ public:
 		car_rotation = c.GetRotation();
 		ball_ang_velocity = b.GetAngularVelocity();
 		car_ang_velocity = c.GetAngularVelocity();
-
-		boost_amount = c.GetBoost().IsNull() ? 0 : c.GetBoost().GetCurrentBoostAmount();
+		boost_amount = c.GetBoostComponent().IsNull() ? 0 : c.GetBoostComponent().GetCurrentBoostAmount();
 		timestamp = ts;
 	}
 
@@ -104,10 +106,10 @@ public:
 		b.SetRotation(ball_rotation.ToRotator());
 		c.SetRotation(car_rotation.ToRotator());
 
-		b.SetAngularVelocity(ball_ang_velocity);
-		c.SetAngularVelocity(car_ang_velocity);
+		b.SetAngularVelocity(ball_ang_velocity, 0);
+		c.SetAngularVelocity(car_ang_velocity, 0);
 
-		c.GetBoost().SetBoostAmount(boost_amount);
+		c.GetBoostComponent().SetBoostAmount(boost_amount);
 	}
 };
 
@@ -193,7 +195,7 @@ void RewindPlugin::OnPreAsync(std::string funcName)
 		//cvarManager->log("Pressed: " + to_string(gameWrapper->IsKeyPressed(idx)));
 		if (gameWrapper->IsKeyPressed(rewindKey))
 		{
-			auto players = gameWrapper->GetGameEventAsServer().GetPlayers();
+			auto players = gameWrapper->GetGameEventAsServer().GetCars();
 			if (players.Count() > 0) 
 			{
 				ControllerInput ci = players.Get(0).GetInput();

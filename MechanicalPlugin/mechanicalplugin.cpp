@@ -1,7 +1,8 @@
 #include "MechanicalPlugin.h"
-#include "bakkesmod\wrappers\tutorialwrapper.h"
-#include "bakkesmod\wrappers\ballwrapper.h"
-#include "bakkesmod\wrappers\gameeventwrapper.h"
+#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
+#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
+#include "bakkesmod\wrappers\GameObject\CarWrapper.h"
+#include "bakkesmod\wrappers\ArrayWrapper.h"
 using namespace std::placeholders;
 
 BAKKESMOD_PLUGIN(MechanicalPlugin, "Mechanical training plugin", "0.1", PLUGINTYPE_FREEPLAY)
@@ -44,7 +45,7 @@ void MechanicalPlugin::OnPreAsync(std::string funcName)
 {
 	if (gameWrapper->IsInTutorial() || gameWrapper->IsInCustomTraining())
 	{
-		auto players = gameWrapper->GetGameEventAsServer().GetPlayers();
+		auto players = gameWrapper->GetGameEventAsServer().GetCars();
 		for (int i = 0; i < players.Count(); i++)
 		{
 			auto player = players.Get(i);

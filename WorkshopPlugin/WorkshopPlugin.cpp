@@ -4,8 +4,9 @@
 #include <string>
 #include <algorithm>
 
-#include "bakkesmod\wrappers\replaywrapper.h"
-
+#include "bakkesmod/wrappers/ReplayWrapper.h"
+#include "bakkesmod/wrappers/GameObject/BallWrapper.h"
+#include "bakkesmod/wrappers/GameObject/CarWrapper.h"
 
 #include <Windows.h>
 #include <stdio.h>
