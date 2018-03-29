@@ -56,8 +56,9 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 			return;
 		}
 		string payload = msg->get_payload();
-		gameWrapper->Execute([payload, &_cvarManager = cvarManager](GameWrapper* gw) {
-			_cvarManager->executeCommand(payload, false);
+		gameWrapper->Execute([payload, &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
+
+			_cvarManager->executeCommand(payload, log);
 		});
 
 		delete input;
@@ -102,9 +103,11 @@ void RCONPlugin::run_server() {
 
 void RCONPlugin::onLoad()
 {
+	logRcon = std::make_shared<bool>(false);
 	cvarManager->registerCvar("rcon_password", "password");
 	cvarManager->registerCvar("rcon_port", "9002"); //Registered in the main dll now
 	cvarManager->registerCvar("rcon_timeout", "5");
+	cvarManager->registerCvar("rcon_log", "0", "Log all incoming rcon commands", true, true, 0, true, 1, true).bindTo(logRcon);
 	cvarManager->registerNotifier("sendback", [this](vector<string> commands) {
 		if (commands.size() > 1)
 		{

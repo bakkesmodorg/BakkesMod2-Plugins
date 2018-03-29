@@ -28,6 +28,7 @@ typedef std::map<connection_ptr, connection_data >::iterator auth_iter;
 class RCONPlugin : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
+	std::shared_ptr<bool> logRcon;
 	std::map<connection_ptr, connection_data> auths;
 	server ws_server;
 	void on_message(server* s, websocketpp::connection_hdl hdl, message_ptr msg);
