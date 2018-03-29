@@ -1,4 +1,5 @@
 #include "ReboundPlugin.h"
+#include "bakkesmod\wrappers\ArrayWrapper.h"
 #include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
 #include "bakkesmod\wrappers\GameObject\CarWrapper.h"
 #include "bakkesmod\wrappers\GameObject\BallWrapper.h"
@@ -18,6 +19,10 @@ void ReboundPlugin::onLoad()
 		if (!gw->IsInTutorial())
 			return;
 		TutorialWrapper tw = gw->GetGameEventAsTutorial();
+
+		//If there are less than 2 goals, its probably a workshop map, dont rebound here
+		if (tw.GetGoals().Count() < 2)
+			return;
 
 		Vector ballLoc = tw.GetBall().GetLocation();
 
