@@ -1,0 +1,173 @@
+[33mcommit b5f708de21b4a54c3d4bcf2b0bb2851a0e73ba2f[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Thu Mar 29 16:10:44 2018 +0200
+
+    Added rcon_log cvar
+
+[33mcommit 92e50d4c2aa0f99fda908a51173ad87a8b529a78[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Thu Mar 29 16:10:36 2018 +0200
+
+    Fixed issue on workshop crash when theres no goals
+
+[33mcommit 47a0f0103c562341766e3600b9553d4e87bc7298[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Sun Feb 25 12:19:10 2018 +0100
+
+    Added macro plugin
+
+[33mcommit e5e9cfeba2abed86f19a4cacee0ae613beb50b61[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Sun Feb 25 11:02:30 2018 +0100
+
+    Made plugins work for new SDK
+
+[33mcommit f651a96058b1be437940c4463ec6c2bef5e4c000[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Tue Feb 6 22:35:19 2018 +0100
+
+    Fixed inverse gravity (?) & added randomized angular Z speed
+
+[33mcommit b8f0d957c157380a46e605ce5adf511bc5a494f5[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Wed Jan 31 23:30:05 2018 +0100
+
+    Added recovery plugin
+
+[33mcommit e54189a24a2b8349acb549719d4381f4b74e9e50[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Tue Jan 16 14:47:45 2018 +0100
+
+    Created recovery plugin
+
+[33mcommit cacc37b853c26daf1be83c2cdb39a783c82eca40[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Tue Jan 16 14:04:39 2018 +0100
+
+    Made offset use ranges
+
+[33mcommit 6c0b8153616f8bd253e42af8e258d3247ecf3012[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Fri Dec 15 01:23:11 2017 +0100
+
+    Fixing plugins for github
+
+[33mcommit 2237f3c3b7545acd2b9a37cdc8710f1428204ca2[m
+Author: Chris <chris.m@live.nl>
+Date:   Sun Nov 12 22:24:47 2017 +0100
+
+    Fixed rewindplugin and python
+
+[33mcommit 8a82f9519bf82a3bac2b0f255d1a13c8a955da72[m
+Author: Chris <chris.m@live.nl>
+Date:   Mon Nov 6 00:29:56 2017 +0100
+
+    commiting changes before update
+
+[33mcommit 705ddb3ae9f8f87fa304b2e08f92023ec34de0f4[m
+Author: Chris <chris.m@live.nl>
+Date:   Fri Nov 3 14:26:25 2017 +0100
+
+    Added rewindplugin
+
+[33mcommit f88840b5bc5fd97eee4ec976f3783f3b347d098f[m
+Author: Chris <chris.m@live.nl>
+Date:   Sun Oct 8 17:55:48 2017 +0200
+
+    Added mechanical limiter
+
+[33mcommit 6c049437636e2eafff39e858db669395996bc831[m
+Author: Chris <chris.m@live.nl>
+Date:   Wed Oct 4 22:39:51 2017 +0200
+
+    Added py_tickable_enabled to pythonproject
+
+[33mcommit 50e8f923c7ff6ca74dce1837674fe7089744b723[m
+Author: Chris <chris.m@live.nl>
+Date:   Mon Oct 2 15:41:47 2017 +0200
+
+    Fixed compile error
+
+[33mcommit ccc0ca5040f76007d1ff51560f1bd19857075369[m
+Author: Chris <chris.m@live.nl>
+Date:   Mon Oct 2 15:20:18 2017 +0200
+
+    Added tickable to python project
+
+[33mcommit 382191810b626fda812ac4da4c7fdf3cda0e209a[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Fri Sep 29 11:50:36 2017 +0200
+
+    Why not use get_randomly
+
+[33mcommit c2760d322c6b7f60f530a0df82f8f6adb35f345a[m
+Author: Bakkes <chris.m@live.nl>
+Date:   Fri Sep 29 11:48:27 2017 +0200
+
+    Added support for multiple players, can't compile it so its probably full of errors
+
+[33mcommit b2446de3766a4b3ae1ffd7c3371678d3c041353d[m
+Author: Chris <chris.m@live.nl>
+Date:   Fri Sep 29 09:46:36 2017 +0200
+
+    Fixed python plugin
+
+[33mcommit 042ac67d9b1a2c47eb3ab578c5d5ff4bac0891dc[m
+Author: Chris <chris.m@live.nl>
+Date:   Sun Sep 17 22:18:29 2017 +0200
+
+    Added array wrapping
+
+[33mcommit 396e81afc5796d6d565a80500f4f4f1aba3592ca[m
+Author: Chris <chris.m@live.nl>
+Date:   Sun Sep 17 21:46:04 2017 +0200
+
+    Removed unused line
+
+[33mcommit 2ef97749d165b2d3fecf723d5eb0370d967861cc[m
+Author: Chris <chris.m@live.nl>
+Date:   Sat Sep 16 13:58:49 2017 +0200
+
+    Fixed playlist load crash
+
+[33mcommit c7691a7f44af905959b9e7bef8439c8c86eaac44[m
+Author: Chris <chris.m@live.nl>
+Date:   Sat Sep 16 13:28:53 2017 +0200
+
+    Ported training plugin to new system
+
+[33mcommit 063f239ebf58f1900375614ddde773bfd6a2171a[m
+Author: Chris <chris.m@live.nl>
+Date:   Sat Sep 16 13:10:35 2017 +0200
+
+    Ported workshopplugin to new plugin system
+
+[33mcommit 38a6ec683f279577db8eac9ffb899401766d52cb[m
+Author: Chris <chris.m@live.nl>
+Date:   Sat Sep 16 12:55:33 2017 +0200
+
+    Ported RCONPlugin to new system
+
+[33mcommit 6d85b1d3aaa2b5370962f4103d513c46629b3180[m
+Author: Chris <chris.m@live.nl>
+Date:   Sun Sep 10 18:07:04 2017 +0200
+
+    Cleanup
+
+[33mcommit 9047bc698c440d028fd2ff754f50f68dd7e245e9[m
+Author: Chris <chris.m@live.nl>
+Date:   Sat Aug 26 18:42:52 2017 +0200
+
+    committing before i do something stupid
+
+[33mcommit ed47790d343740bf13b9c35f89fa60ab74dc6807[m
+Author: Chris <chris.m@live.nl>
+Date:   Fri Aug 25 21:42:49 2017 +0200
+
+    Made python project + ITS EMBEDDED IN THE PLUGIN!
+
+[33mcommit bcdc7db0044e22cb58eed581a4fa063e0b84d014[m
+Author: Chris <chris.m@live.nl>
+Date:   Fri Aug 25 16:51:48 2017 +0200
+
+    Added 3 default plugins

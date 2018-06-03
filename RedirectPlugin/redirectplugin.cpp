@@ -23,6 +23,9 @@ void RedirectPlugin::onLoad()
 			return;
 		TutorialWrapper training = gameWrapper->GetGameEventAsTutorial();
 
+		if (training.GetGameCar().IsNull() || training.GetBall().IsNull())
+			return;
+
 		Vector playerPosition = training.GetGameCar().GetLocation();
 		Vector ballPosition = training.GetBall().GetLocation();
 		Vector playerVelocity = training.GetGameCar().GetVelocity();

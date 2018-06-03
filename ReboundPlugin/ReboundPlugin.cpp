@@ -24,6 +24,9 @@ void ReboundPlugin::onLoad()
 		if (tw.GetGoals().Count() < 2)
 			return;
 
+		if (tw.GetGameCar().IsNull() || tw.GetBall().IsNull())
+			return;
+
 		Vector ballLoc = tw.GetBall().GetLocation();
 
 		//Calculate nearest goal

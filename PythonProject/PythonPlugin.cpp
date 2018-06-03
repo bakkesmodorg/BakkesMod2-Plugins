@@ -4,6 +4,7 @@
 #include "utils/parser.h"
 #include "utils/io.h"
 
+unusedbutneededtocompile abc;
 const string PY_PATH = "./bakkesmod/py/";
 
 #ifdef _AI_BUILD
@@ -28,8 +29,8 @@ void PythonPlugin::reinit_python() {
 		// Copy builtins to new global namespace
 		global_namespace = extract<dict>(main_module.attr("__dict__"));
 		global_namespace["bakpy"] = boost::python::ptr(_bakPy.get());
-		global_namespace["cvar_manager"] = boost::python::ptr(cvarManager.get());
-		global_namespace["game_wrapper"] = boost::python::ptr(gameWrapper.get());
+		global_namespace["cvarManager"] = boost::python::ptr(cvarManager.get());
+		global_namespace["gameWrapper"] = boost::python::ptr(gameWrapper.get());
 	}
 	catch (const error_already_set&) {
 		string err = parse_python_exception();
@@ -122,8 +123,8 @@ void PythonPlugin::onLoad()
 
 		main_namespace = extract<dict>(main_module.attr("__dict__"));
 		main_namespace["bakpy"] = boost::python::ptr(_bakPy.get());
-		main_namespace["cvar_manager"] = boost::python::ptr(cvarManager.get());
-		main_namespace["game_wrapper"] = boost::python::ptr(gameWrapper.get());
+		main_namespace["cvarManager"] = boost::python::ptr(cvarManager.get());
+		main_namespace["gameWrapper"] = boost::python::ptr(gameWrapper.get());
 		reinit_python();
 	}
 	catch (const error_already_set&) {

@@ -4,7 +4,7 @@
 #include <string>
 #include <algorithm>
 
-#include "bakkesmod/wrappers/ReplayWrapper.h"
+#include "bakkesmod/wrappers/ReplayServerWrapper.h"
 #include "bakkesmod/wrappers/GameObject/BallWrapper.h"
 #include "bakkesmod/wrappers/GameObject/CarWrapper.h"
 
@@ -43,7 +43,7 @@ void WorkshopPlugin::next_shot()
 
 
 string WorkshopPlugin::createReplaySnapshot() {
-	ReplayWrapper gew = gameWrapper->GetGameEventAsReplay();
+	ReplayServerWrapper gew = gameWrapper->GetGameEventAsReplay();
 	BallWrapper b = gew.GetBall();
 	ActorWrapper aw = gew.GetViewTarget();
 	//data needed: ball loc, ball vel, vt loc, vt rotation

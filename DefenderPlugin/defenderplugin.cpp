@@ -12,12 +12,18 @@ void DefenderPlugin::onLoad()
 	cvarManager->registerCvar("defender_shotspeed", "(800, 1100)", "The speed to use when using defender training", true, true, 0.f, true, 1999.9);
 	cvarManager->registerCvar("defender_cooldown", "(3000, 6000)", "Time to wait after shooting/saving a ball", true, true, 0.f, true, 120000.f);
 
+	cvarManager->registerNotifier("defender_shoot", [this](std::vector<string> params) {
+		defenderEnabled = true;
+		ExecuteShot();
+		defenderEnabled = false;
+	});
 	cvarManager->registerNotifier("defender_start", [this](std::vector<string> params) {
 		if (!gameWrapper->IsInTutorial())
 		{
 			cvarManager->log("You need to be in freeplay to use this plugin.");
 			return;
 		}
+
 		cvarManager->executeCommand("cl_freeplay_enablegoal 0");
 		this->defenderEnabled = true;
 		this->CheckForShot();
@@ -49,6 +55,8 @@ float DefenderPlugin::HandleShot()
 	if (!gameWrapper->IsInTutorial() || !defenderEnabled)
 		return .5f;
 	TutorialWrapper training = gameWrapper->GetGameEventAsTutorial();
+	if ( training.GetBall().IsNull())
+		return 1.f;
 	BallWrapper b = training.GetBall();
 	float touchTime = b.GetLastTouchTime();
 
