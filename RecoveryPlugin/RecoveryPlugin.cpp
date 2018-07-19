@@ -23,11 +23,11 @@ void RecoveryPlugin::onLoad()
 		lastCooldownTime = cvarManager->getCvar("recovery_cooldown").getFloatValue() / 1000;
 		this->recoveryEnabled = true;
 		this->CheckForBump();
-	});
+	}, "Starts the recovery mode which will bump you with the given settings.", PERMISSION_FREEPLAY);
 
 	cvarManager->registerNotifier("recovery_stop", [this](std::vector<string> params) {
 		this->recoveryEnabled = false;
-	});
+	}, "Stops the recovery plugin.", PERMISSION_ALL);
 
 }
 

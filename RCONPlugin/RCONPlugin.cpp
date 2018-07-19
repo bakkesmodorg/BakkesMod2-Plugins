@@ -108,6 +108,18 @@ void RCONPlugin::onLoad()
 	cvarManager->registerCvar("rcon_port", "9002"); //Registered in the main dll now
 	cvarManager->registerCvar("rcon_timeout", "5");
 	cvarManager->registerCvar("rcon_log", "0", "Log all incoming rcon commands", true, true, 0, true, 1, true).bindTo(logRcon);
+	cvarManager->registerNotifier("rcon_disconnect", [this](vector<string> commands) {
+		ws_server.stop_listening();
+		for (auth_iter iterator = auths.begin(); iterator != auths.end(); iterator++)
+		{
+			if (iterator->first.get()->get_state() == websocketpp::session::state::open)
+			{
+				iterator->first->close(1000, "Shutting down BM");
+				cvarManager->log("Closing websocket connection");
+			}
+		}
+		ws_server.stop();
+	}, "Disconnects all rcon connections", PERMISSION_ALL);
 	cvarManager->registerNotifier("sendback", [this](vector<string> commands) {
 		if (commands.size() > 1)
 		{
@@ -119,7 +131,7 @@ void RCONPlugin::onLoad()
 				}
 			}
 		}
-	}); 
+	}, "Sends text to all connected clients. Usage: sendback abc def ghi \"hij klm\"", PERMISSION_ALL); 
 
 
 	//thread t(run_server);
@@ -129,5 +141,17 @@ void RCONPlugin::onLoad()
 
 void RCONPlugin::onUnload()
 {
-	ws_server.stop();
+	if (!ws_server.stopped()) {
+		ws_server.stop_listening();
+		for (auth_iter iterator = auths.begin(); iterator != auths.end(); )
+		{
+			if (iterator->first.get()->get_state() == websocketpp::session::state::open)
+			{
+				iterator->first->close(1000, "Shutting down BM");
+				iterator->first->terminate(make_error_code(websocketpp::error::value::general));
+			}
+			iterator = auths.erase(iterator);
+		}
+		ws_server.stop();
+	}
 }

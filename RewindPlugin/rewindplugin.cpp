@@ -142,7 +142,7 @@ void RewindPlugin::onLoad()
 		rewinderEnabled = false;
 		recorderEnabled = true;
 		favorite = history.back();
-	});
+	}, "Plays the currently saved rewind back", PERMISSION_FREEPLAY);
 	cvarManager->registerNotifier("sv_rewind_favorite", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
 		if (!gameWrapper->IsInTutorial())
 			return;
@@ -151,7 +151,7 @@ void RewindPlugin::onLoad()
 		TutorialWrapper tw = gameWrapper->GetGameEventAsTutorial();
 		tw.GetGameCar().Stop();
 		overwrite.apply(tw);
-	});
+	}, "Sets the car to the last favorited rewind point", PERMISSION_FREEPLAY);
 	//cvarManager->registerNotifier("sv_rewind_on", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
 	//	if (!gameWrapper->IsInTutorial())
 	//		return;

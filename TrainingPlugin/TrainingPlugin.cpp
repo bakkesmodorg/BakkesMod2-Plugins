@@ -209,7 +209,7 @@ void TrainingPlugin::onLoad()
 			tw.SetCarSpawnLocation(mirror_it(s_data.get_player_start_location(), mirror));
 			tw.SetCarSpawnRotation(mirror_it(s_data.get_player_start_rotation(), mirror));*/
 		}
-	});
+	}, "Resets the shot from the BakkesMod workshop (deprecated)", PERMISSION_FREEPLAY);
 	cvarManager->registerNotifier("shot_load", [this](vector<string> commands) {
 		if (!gameWrapper->IsInGame() || commands.size() == 1)
 			return;
@@ -217,12 +217,12 @@ void TrainingPlugin::onLoad()
 		currentShot = JsonShot(file);
 		currentShot.init(gameWrapper.get(), cvarManager.get());
 		is_loaded = true;
-	});
+	}, "Loads a shot from the BakkesMod workshop. Usage: shot_load shotid (deprecated)", PERMISSION_FREEPLAY);
 	cvarManager->registerNotifier("shot_generate", [this](vector<string> commands) {
 		if (!gameWrapper->IsInGame() || !is_loaded || gameWrapper->IsInCustomTraining())
 			return;
 		currentShot.set(gameWrapper.get(), cvarManager.get());
-	});
+	}, "Generates a new shot from the shot loaded fromBakkesMod workshop (deprecated)", PERMISSION_FREEPLAY);
 }
 
 void TrainingPlugin::onUnload()

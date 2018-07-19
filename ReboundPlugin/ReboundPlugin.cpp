@@ -65,7 +65,7 @@ void ReboundPlugin::onLoad()
 
 		tw.GetBall().SetVelocity(shot);
 		tw.GetBall().SetAngularVelocity(addedSpin, true);
-	});
+	}, "Shoots a shot at the backboard you're driving towards.", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
 
 void ReboundPlugin::onUnload()

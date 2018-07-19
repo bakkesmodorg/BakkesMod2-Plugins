@@ -12,11 +12,16 @@ BAKKESMOD_PLUGIN(MacroPlugin, "Macro plugin", "0.2", PLUGINTYPE_FREEPLAY)
 
 void MacroPlugin::onLoad()
 {
-	cvarManager->registerNotifier("plot_start", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1));
-	cvarManager->registerNotifier("plot_playback", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1));
-	cvarManager->registerNotifier("plot_save", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1));
-	cvarManager->registerNotifier("plot_load", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MacroPlugin::OnPreAsync, this, std::placeholders::_1));
+	cvarManager->registerNotifier("plot_start", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1), "Starts/stops recording of macro", PERMISSION_FREEPLAY);
+	cvarManager->registerNotifier("plot_playback", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1), "Plays back last recorded macro", PERMISSION_FREEPLAY);
+	cvarManager->registerNotifier("plot_save", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1), "Saves recorded macro to given file (requires /recordings/ folder). Usage: plot_save savename", PERMISSION_ALL);
+	cvarManager->registerNotifier("plot_load", std::bind(&MacroPlugin::OnMacroCommand, this, std::placeholders::_1), "Loads recorded macro from given file. Usage: plot_load savename", PERMISSION_ALL);
+	//gameWrapper->HookEvent("Function TAGame.Car_TA.SetVehicleInput", bind(&MacroPlugin::OnPreAsync, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.Car_TA.SetVehicleInput", bind(&MacroPlugin::OnPreAsync, this, std::placeholders::_1));
+	//cvarManager->log("Trying to hook");
+	//gameWrapper->HookEventPost("Test", bind(&MacroPlugin::OnPreAsync, this, std::placeholders::_1), 1);
+	//gameWrapper->HookEvent("Test", bind(&MacroPlugin::OnPreAsync, this, std::placeholders::_1));
+	//gameWrapper->HookEventPost("Test", bind(&MacroPlugin::OnPreAsync, this, std::placeholders::_1), 1);
 }
 
 void MacroPlugin::onUnload()
@@ -98,6 +103,11 @@ void MacroPlugin::OnMacroCommand(std::vector<std::string> params)
 		string filename = params.at(1);
 		if (command.compare("plot_save") == 0)
 		{
+			//cvarManager->log("sizeof vector " + to_string(sizeof(Vector)));
+			//cvarManager->log("sizeof rotator " + to_string(sizeof(Rotator)));
+			//cvarManager->log("sizeof controllerinput " + to_string(sizeof(ControllerInput)));
+			//cvarManager->log("sizeof header " + to_string(sizeof(float) + sizeof(float) + sizeof(float) + ));
+
 			std::ofstream out(("./bakkesmod/recordings/" + filename).c_str(), ios::out | ios::trunc | ios::binary);
 			write_pod(out, currentRecording.starttime);
 			write_pod(out, currentRecording.endtime);
@@ -105,9 +115,55 @@ void MacroPlugin::OnMacroCommand(std::vector<std::string> params)
 			write_pod(out, sizzze);
 			for (unsigned int i = 0; i < sizzze; i++) 
 			{
+				struct SaveFile
+				{
+					float Throttle = .0f;
+					float Steer = .0f;
+					float Pitch = .0f;
+					float Yaw = .0f;
+					float Roll = .0f;
+					float DodgeForward = .0f;
+					float DodgeStrafe = .0f;
+					bool Jump = false;
+					bool ActivateBoost = false;
+					bool HoldingBoost = false;
+					bool Handbrake = false;
+					bool Jumped = false;
+				};
+				SaveFile sv;
 				std::shared_ptr<frame> f = currentRecording.frames->at(i);
 				write_pod(out, f->timestamp);
-				write_pod(out, f->input);
+				//write_pod(out, f->input);
+				sv.Throttle = f->input.Throttle;
+				sv.Steer = f->input.Steer;
+				sv.Pitch = f->input.Pitch;
+				sv.Yaw = f->input.Yaw;
+				sv.Roll = f->input.Roll;
+				sv.DodgeForward = f->input.DodgeForward;
+				sv.DodgeStrafe = f->input.DodgeStrafe;
+				sv.Jump = f->input.Jump;
+				sv.ActivateBoost = f->input.ActivateBoost;
+				sv.HoldingBoost = f->input.HoldingBoost;
+				sv.Handbrake = f->input.Handbrake;
+				sv.Jumped = f->input.Jumped;
+				/*write_pod(out, f->input.Throttle);
+				write_pod(out, f->input.Steer);
+				write_pod(out, f->input.Pitch);
+				write_pod(out, f->input.Yaw);
+				write_pod(out, f->input.Roll);
+				write_pod(out, f->input.DodgeForward);
+				write_pod(out, f->input.DodgeStrafe);
+				bool jump = f->input.Jump;
+				write_pod(out, jump);
+				bool ActivateBoost = f->input.ActivateBoost;
+				write_pod(out, ActivateBoost);
+				bool HoldingBoost = f->input.HoldingBoost;
+				write_pod(out, HoldingBoost);
+				bool Handbrake = f->input.Handbrake;
+				write_pod(out, Handbrake);
+				bool Jumped = f->input.Jumped;
+				write_pod(out, Jumped);*/
+				write_pod(out, sv);
 				write_pod(out, f->locationData);
 				write_pod(out, f->rotationData);
 				write_pod(out, f->velocityData);
@@ -144,6 +200,7 @@ void MacroPlugin::OnMacroCommand(std::vector<std::string> params)
 
 void MacroPlugin::OnPreAsync(std::string funcName)
 {
+	//cvarManager->log("preasync");
 	if (currentStatus == PlotStatus_RECORDING)
 	{
 		OnRecordTick();
@@ -152,6 +209,11 @@ void MacroPlugin::OnPreAsync(std::string funcName)
 	{
 		OnPlaybackTick();
 	}
+}
+
+void MacroPlugin::OnPostAsync(std::string funcName)
+{
+	//cvarManager->log("postasync");
 }
 
 void MacroPlugin::OnRecordTick()
@@ -182,30 +244,36 @@ void MacroPlugin::OnPlaybackTick()
 	auto players = gameWrapper->GetGameEventAsServer().GetCars();
 	if (players.Count() > 0)
 	{
-		while (server.GetSecondsElapsed() - playbackStartTime > currentPlaybackFrame->timestamp - currentRecording.starttime)
+		//while (server.GetSecondsElapsed() - playbackStartTime > currentPlaybackFrame->timestamp - currentRecording.starttime)
+			
+		if (currentPlaybackIndex > currentRecording.frames->size() - 1)
 		{
-			currentPlaybackIndex++;
-			if (currentPlaybackIndex > currentRecording.frames->size() - 1)
-			{
-				int nameIndex = 0;
-				string filename = "./bakkesmod/recordings/playback_" + to_string(nameIndex) + ".data";
-				while (file_exists(filename)) {
-					nameIndex++;
-					filename = "./bakkesmod/recordings/playback_" + to_string(nameIndex) + ".data";
-				}
-				logPlaybackData(filename);
-				currentStatus = PlotStatus_STOPPED;
-				return;
+			int nameIndex = 0;
+			string filename = "./bakkesmod/recordings/playback_" + to_string(nameIndex) + ".data";
+			while (file_exists(filename)) {
+				nameIndex++;
+				filename = "./bakkesmod/recordings/playback_" + to_string(nameIndex) + ".data";
 			}
-			currentPlaybackFrame = currentRecording.frames->at(currentPlaybackIndex);
+			logPlaybackData(filename);
+			currentStatus = PlotStatus_STOPPED;
+			return;
 		}
+		currentPlaybackFrame = currentRecording.frames->at(currentPlaybackIndex);
+		//cvarManager->log("Frame & steer: " + to_string(currentPlaybackIndex) + " - " + to_string(currentPlaybackFrame->input.Steer));
+
+		//cvarManager->log("boost & brake: " + to_string(currentPlaybackFrame->input.HoldingBoost) + " - " + to_string(currentPlaybackFrame->input.Handbrake));
 		//std::shared_ptr<frame> nextFrame = currentRecording.frames->at(currentPlaybackIndex + 1);
 		//frame interpedFrame = interp(currentPlaybackFrame, nextFrame, (currentPlaybackFrame->timestamp - currentRecording.starttime) - (server.GetSecondsElapsed() - playbackStartTime));
 		auto player0 = players.Get(0);
-		player0.SetInput(currentPlaybackFrame->input);
+		
+		//player0.SetInput(currentPlaybackFrame->input);
 		auto location = player0.GetLocation();
 		string data_string = to_string(server.GetSecondsElapsed()) + "," + to_string(location.X) + "," + to_string(location.Y) + "," + to_string(location.Z);
 		playbackData.push_back(data_string);
+		static ControllerInput input;// = new ControllerInput();
+		memcpy(&input, &currentPlaybackFrame->input, sizeof(ControllerInput));
+		gameWrapper->OverrideParams(&input, sizeof(ControllerInput));
+		currentPlaybackIndex++;
 	}
 }
 
@@ -213,6 +281,10 @@ frame MacroPlugin::interp(std::shared_ptr<frame> f1, std::shared_ptr<frame> f2, 
 {
 	float frameDiff = f2->timestamp - f1->timestamp;
 	frame newFrame;
+
+	memcpy(&newFrame, f1.get(), sizeof(frame));
+	return newFrame;
+	//No interpolatioooooooooon
 	newFrame.input.ActivateBoost = f1->input.ActivateBoost;
 	newFrame.input.Handbrake = f1->input.Handbrake;
 	newFrame.input.HoldingBoost = f1->input.HoldingBoost;

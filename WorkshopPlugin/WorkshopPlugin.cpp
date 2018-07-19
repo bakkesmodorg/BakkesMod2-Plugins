@@ -99,7 +99,7 @@ void WorkshopPlugin::onLoad()
 		string echo_back = params.at(1);
 		cvarManager->executeCommand("sendback you sent me \"" + echo_back + "\"");
 
-	});
+	}, "Sends the given string back to the rcon client", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("workshop_shot_load", [this](vector<string> params) {
 		if (params.size() < 2)
@@ -117,7 +117,7 @@ void WorkshopPlugin::onLoad()
 			cvarManager->executeCommand("sendback requestshot \"" + shot_id + "\"");
 			load_after_request = shot_id;
 		}
-	});
+	}, "Loads a shot from the BakkesMod workshop (deprecated)", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("workshop_playlist_load", [this](vector<string> params) {
 		if (params.size() < 2)
@@ -125,13 +125,13 @@ void WorkshopPlugin::onLoad()
 
 		string playlist_id = params.at(1);
 		cvarManager->executeCommand("sendback requestplaylist \"" + playlist_id + " \"");
-	});
+	}, "Loads a playlist from the BakkesMod workshop. Usage: workshop_playlist_load playlistid (deprecated)", PERMISSION_ALL);
 	cvarManager->registerNotifier("workshop_playlist_next", [this](vector<string> params) {
 		if (!shotList.empty())
 		{
 			next_shot();
 		}
-	});
+	}, "Goes to into the next shot from the playlist loaded from the BakkesMod workshop (deprecated)", PERMISSION_ALL);
 	cvarManager->registerNotifier("requestshot_ans", [this](vector<string> params) {
 		if (params.size() < 3)
 			return;
@@ -147,13 +147,13 @@ void WorkshopPlugin::onLoad()
 			cvarManager->executeCommand("workshop_shot_load " + load_after_request);
 			load_after_request = "";
 		}
-	});
+	}, "Answer from BakkesMod workshop (should only be used by external RCON clients, not users) (deprecated)", PERMISSION_ALL);
 	cvarManager->registerNotifier("replay_snapshot", [this](vector<string> params) {
 		if (!gameWrapper->IsInReplay()) {
 			return;
 		}
 		createReplaySnapshot();
-	});
+	}, "Takes a replay snapshot from the current replay (deprecated)", PERMISSION_REPLAY);
 	cvarManager->registerNotifier("replay_snapshot_request", [this](vector<string> params) {
 		if (!gameWrapper->IsInReplay()) {
 			cvarManager->executeCommand("sendback \"echo You need to be watching a replay to use this.\"");
@@ -165,7 +165,9 @@ void WorkshopPlugin::onLoad()
 			std::istreambuf_iterator<char>());
 		std::replace(shotFile.begin(), shotFile.end(), '"', '|');
 		cvarManager->executeCommand("sendback \"replay_snapshot_request_ans " + shotFile + "\"");
-	});
+	}, "Sends a replay snapshot from the current replay to the BakkesMod workshop (Should only be used by rcon clients) (deprecated)", PERMISSION_ALL); 
+	//Permission all since we need to send data back to the client
+
 	cvarManager->registerNotifier("requestplaylist_ans", [this](vector<string> params) {
 		if (params.size() < 3)
 			return;
@@ -178,7 +180,7 @@ void WorkshopPlugin::onLoad()
 		split(shots, shotList, ',');
 		currentIndex = -1;
 		next_shot();
-	});
+	}, "Answer from BakkesMod workshop about the current playlist (should only be used by external RCON clients, not users) (deprecated)", PERMISSION_ALL);
 	//cons->registerNotifier("workshop_playlist_prev", workshop_notifier);//workshop_shot_random
 	//cvarManager->registerCvar("workshop_playlist_random", "1"); 
 	cvarManager->registerCvar("workshop_shot_random", "1");

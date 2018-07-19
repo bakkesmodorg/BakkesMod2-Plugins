@@ -18,7 +18,7 @@ void RedirectPlugin::onLoad()
 	cvarManager->registerCvar("redirect_predict_multiplier_x", "2", "X offset to use when passing (playerVelocityX * value)");
 	cvarManager->registerCvar("redirect_predict_multiplier_y", "2", "Y offset to use when passing (playerVelocityY * value)");
 
-	cvarManager->registerNotifier("redirect_shoot",  [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
+	cvarManager->registerNotifier("redirect_shoot", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
 		if (!gameWrapper->IsInTutorial())
 			return;
 		TutorialWrapper training = gameWrapper->GetGameEventAsTutorial();
@@ -55,7 +55,7 @@ void RedirectPlugin::onLoad()
 		if (onGround)
 			shotData.Z = 0;
 		training.GetBall().SetVelocity(shotData);
-	});
+	}, "Passes the ball to you with the given settings.", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
 
 void RedirectPlugin::onUnload()

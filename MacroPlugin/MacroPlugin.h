@@ -37,6 +37,7 @@ public:
 	void logPlaybackData(string filename);
 	void OnMacroCommand(std::vector<std::string> params);
 	void OnPreAsync(std::string funcName);
+	void OnPostAsync(std::string funcName);
 	void OnRecordTick();
 	void OnPlaybackTick();
 	static frame interp(std::shared_ptr<frame> f1, std::shared_ptr<frame> f2, float elaps);

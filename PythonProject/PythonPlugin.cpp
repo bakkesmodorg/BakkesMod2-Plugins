@@ -60,7 +60,7 @@ void PythonPlugin::onLoad()
 			string err = parse_python_exception();
 			cm->log("Python threw error: " + err);
 		}
-	});
+	}, "Executes python file from /py/ folder. Usage: py_exec pythonfile", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("py_run", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
 		if (params.size() < 2) {
@@ -76,7 +76,7 @@ void PythonPlugin::onLoad()
 			string err = parse_python_exception();
 			cm->log("Python threw error: " + err);
 		}
-});
+	}, "Runs python script. (Warning: should probably use py_exec instead) Usage: py_run pythonfile", PERMISSION_ALL);
 
 #ifdef TICK_BUILD
 	enableTickable = make_shared<bool>(true);
@@ -103,7 +103,7 @@ void PythonPlugin::onLoad()
 			string err = parse_python_exception();
 			cvarManager->log("Python threw error: " + err);
 		}
-	});
+	}, "Registers python script which will be ticked every gametick", PERMISSION_ALL);
 
 	gameWrapper->HookEvent("Function Engine.GameViewportClient.Tick", bind(&PythonPlugin::on_tick, this, _1));
 

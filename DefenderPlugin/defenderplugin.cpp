@@ -1,8 +1,8 @@
 #include "defenderplugin.h"
-#include "utils\parser.h"
-
-#include "bakkesmod\wrappers\GameEvent\TutorialWrapper.h"
-#include "bakkesmod\wrappers\GameObject\BallWrapper.h"
+#include "bakkesmod/wrappers/GameEvent/TutorialWrapper.h"
+#include "bakkesmod/wrappers/GameObject/BallWrapper.h"
+#include "utils/parser.h"
+#include <string.h>
 
 BAKKESMOD_PLUGIN(DefenderPlugin, "Defender plugin", "0.1", PLUGINTYPE_FREEPLAY)
 
@@ -16,7 +16,7 @@ void DefenderPlugin::onLoad()
 		defenderEnabled = true;
 		ExecuteShot();
 		defenderEnabled = false;
-	});
+	}, "Shoots a single defender plugin shot", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 	cvarManager->registerNotifier("defender_start", [this](std::vector<string> params) {
 		if (!gameWrapper->IsInTutorial())
 		{
@@ -27,11 +27,11 @@ void DefenderPlugin::onLoad()
 		cvarManager->executeCommand("cl_freeplay_enablegoal 0");
 		this->defenderEnabled = true;
 		this->CheckForShot();
-	});
+	}, "Starts defender training (needs to be in freeplay in order to execute)", PERMISSION_FREEPLAY);
 
 	cvarManager->registerNotifier("defender_stop", [this](std::vector<string> params) {
 		this->defenderEnabled = false;
-	});
+	}, "Stops defender training", PERMISSION_FREEPLAY);
 
 }
 

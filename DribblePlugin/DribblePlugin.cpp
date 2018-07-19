@@ -23,7 +23,7 @@ void DribblePlugin::onLoad()
 
 		ball.SetLocation(car.GetLocation() + addToBall);
 		ball.SetVelocity(playerVelocity);
-	});
+	}, "Spawns the ball on top of your car", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
 	
 	
@@ -46,7 +46,7 @@ void DribblePlugin::onLoad()
 										cm->getCvar("shootatme_bounds_z").getFloatValue());
 		Vector shot = tutorial.GenerateShot(ball.GetLocation(), location, cm->getCvar("shootatme_speed").getFloatValue());
 		ball.SetVelocity(shot);
-	});
+	}, "Shoots the ball at the car (like redirect plugin but does not look at car movement)", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
 
 void DribblePlugin::onUnload()

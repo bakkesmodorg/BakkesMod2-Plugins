@@ -93,9 +93,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def(init<>()).
 		def_readwrite("Time", &PredictionInfo::Time).
 		def_readwrite("Location", &PredictionInfo::Location).
-		def_readwrite("Velocity", &PredictionInfo::Velocity).
+		def_readwrite("Velocity", &PredictionInfo::Velocity)/*.
 		def_readwrite("HitWall", &PredictionInfo::HitWall).
-		def_readwrite("HitFloor", &PredictionInfo::HitFloor);
+		def_readwrite("HitFloor", &PredictionInfo::HitFloor)*/;
 
 	class_<ControllerInput>("ControllerInput").
 		def(init<>()).
