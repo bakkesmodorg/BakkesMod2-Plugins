@@ -97,20 +97,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def_readwrite("HitWall", &PredictionInfo::HitWall).
 		def_readwrite("HitFloor", &PredictionInfo::HitFloor)*/;
 
-	class_<ControllerInput>("ControllerInput").
-		def(init<>()).
-		def_readwrite("throttle", &ControllerInput::Throttle).
-		def_readwrite("steer", &ControllerInput::Steer).
-		def_readwrite("pitch", &ControllerInput::Pitch).
-		def_readwrite("yaw", &ControllerInput::Yaw).
-		def_readwrite("roll", &ControllerInput::Roll).
-		def_readwrite("dodge_forward", &ControllerInput::DodgeForward).
-		def_readwrite("dodge_strafe", &ControllerInput::DodgeStrafe).
-		def_readwrite("jump", &ControllerInput::Jump).
-		def_readwrite("activate_boost", &ControllerInput::ActivateBoost).
-		def_readwrite("holding_boost", &ControllerInput::HoldingBoost).
-		def_readwrite("handbrake", &ControllerInput::Handbrake).
-		def_readwrite("jumped", &ControllerInput::Jumped);
 
 	class_<POV>("POV").
 		def(init<>()).

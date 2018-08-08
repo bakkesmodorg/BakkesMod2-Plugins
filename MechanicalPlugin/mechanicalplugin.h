@@ -5,6 +5,7 @@
 class MechanicalPlugin : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
+	shared_ptr<bool> enabled;
 	shared_ptr<float> limitSteer;
 	shared_ptr<float> limitThrottle;
 	shared_ptr<float> limitYaw;
@@ -17,5 +18,11 @@ public:
 	virtual void onLoad();
 	virtual void onUnload();
 	void OnPreAsync(std::string funcName);
+
+
+	void OnFreeplayLoad(std::string eventName);
+	void OnFreeplayDestroy(std::string eventName);
+	void OnEnabledChanged(std::string oldValue, CVarWrapper cvar);
+
 };
 
