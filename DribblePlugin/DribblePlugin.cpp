@@ -12,8 +12,11 @@ void DribblePlugin::onLoad()
 		if (!gw->IsInTutorial())
 			return;
 		TutorialWrapper tutorial = gw->GetGameEventAsTutorial();
+
 		BallWrapper ball = tutorial.GetBall();
 		CarWrapper car = tutorial.GetGameCar();
+		if (ball.IsNull() || car.IsNull())
+			return;
 
 		Vector playerVelocity = car.GetVelocity();
 		Vector addToBall = Vector(playerVelocity.X, playerVelocity.Y, 170);
