@@ -77,7 +77,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -94,13 +95,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);F:\boost_1_65_1;C:\Users\Chris\AppData\Local\Programs\Python\Python36;C:\Users\Chris\AppData\Local\Programs\Python\Python36\include;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);TICK_BUILD;</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);F:\boost_1_65_1;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>F:\boost_1_65_1\stage\lib;F:\Bakkesmod\development\BakkesMod-rewrite\Release;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\;C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Chris\AppData\Local\Programs\Python\Python36-32\libs;%(AdditionalLibraryDirectories);F:\boost_1_65_1\stage\lib\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

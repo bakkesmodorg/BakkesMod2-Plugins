@@ -24,7 +24,7 @@ void MechanicalPlugin::onLoad()
 	disableHandbrake = make_shared<bool>(false);
 	disableJump = make_shared<bool>(false);
 	disableBoost = make_shared<bool>(false);
-
+	holdBoost = make_shared<bool>(false);
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Tutorial_TA.OnInit", bind(&MechanicalPlugin::OnFreeplayLoad, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Tutorial_TA.Destroyed", bind(&MechanicalPlugin::OnFreeplayDestroy, this, std::placeholders::_1));
 
@@ -41,56 +41,71 @@ void MechanicalPlugin::onLoad()
 	cvarManager->registerCvar("mech_disable_jump", "0", "Disables jump", true, true, 0.f, true, 1.f).bindTo(disableJump);
 	cvarManager->registerCvar("mech_disable_boost", "0", "Disables boost", true, true, 0.f, true, 1.f).bindTo(disableBoost);
 
+	cvarManager->registerCvar("mech_hold_boost", "0", "Holds boost", true, true, 0.f, true, 1.f).bindTo(holdBoost);
+	/*gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
+		bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));*/
 
-	//gameWrapper->HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MechanicalPlugin::OnPreAsync, this, _1));
+	//gameWrapper->HookEventWithCallerPost<PlayerControllerWrapper >("Function TAGame.PlayerController_TA.PlayerMove", std::bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	// > HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MechanicalPlugin::OnPreAsync, this, _1));
 }
 
 void MechanicalPlugin::onUnload()
 {
 }
 
-void MechanicalPlugin::OnPreAsync(std::string funcName)
+void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 {
+	//cvarManager->log("PreAsync");
 	if (gameWrapper->IsInTutorial())
 	{
-		auto players = gameWrapper->GetGameEventAsServer().GetCars();
-		for (int i = 0; i < players.Count(); i++)
-		{
-			auto player = players.Get(i);
-			if (player.IsNull())
-				continue;
-			ControllerInput ci = player.GetInput();
+		//cvarManager->log("PreAsync in tut");
+		//auto players = gameWrapper->GetGameEventAsServer().GetCars();
+		//for (int i = 0; i < players.Count(); i++)
+		//{
+		//	auto player = players.Get(i);
+		//	if (player.IsNull())
+		//		continue;
+			ControllerInput* ci = (ControllerInput*)params;
 			if (*disableHandbrake)
 			{
-				ci.Handbrake = false;
+				ci->Handbrake = false;
 			}
 
 			if (*disableBoost) 
 			{
-				ci.ActivateBoost = false;
-				ci.HoldingBoost = false;
+				ci->ActivateBoost = false;
+				ci->HoldingBoost = false;
 			}
 
 			if (*disableJump) 
 			{
-				ci.Jump = false;
-				ci.Jumped = false;
+				ci->Jump = false;
+				ci->Jumped = false;
 			}
 
-			ci.Steer = clip(ci.Steer, -abs(*limitSteer), abs(*limitSteer));
-			ci.Throttle = clip(ci.Throttle, -abs(*limitThrottle), abs(*limitThrottle));
-			ci.Yaw = clip(ci.Yaw, -abs(*limitYaw), abs(*limitYaw));
-			ci.Pitch = clip(ci.Pitch, -abs(*limitPitch), abs(*limitPitch));
-			ci.Roll = clip(ci.Roll, -abs(*limitRoll), abs(*limitRoll));
-			player.SetInput(ci);
-		}
+			if (*holdBoost)
+			{
+				ci->ActivateBoost = true;
+				ci->HoldingBoost = true;
+				//cvarManager->log("blocked boost");
+			}
+
+			ci->Steer = clip(ci->Steer, -abs(*limitSteer), abs(*limitSteer));
+			ci->Throttle = clip(ci->Throttle, -abs(*limitThrottle), abs(*limitThrottle));
+			ci->Yaw = clip(ci->Yaw, -abs(*limitYaw), abs(*limitYaw));
+			ci->Pitch = clip(ci->Pitch, -abs(*limitPitch), abs(*limitPitch));
+			ci->Roll = clip(ci->Roll, -abs(*limitRoll), abs(*limitRoll));
+			//player.SetInput(ci);
+			
+		
 	}
 }
 
 void MechanicalPlugin::OnFreeplayLoad(std::string eventName)
 {
 	if(*enabled)
-		gameWrapper->HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MechanicalPlugin::OnPreAsync, this, _1));
+		gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
+			bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 void MechanicalPlugin::OnFreeplayDestroy(std::string eventName)
@@ -102,7 +117,8 @@ void MechanicalPlugin::OnEnabledChanged(std::string oldValue, CVarWrapper cvar)
 {
 	if (cvar.getBoolValue() && gameWrapper->IsInTutorial())
 	{
-		gameWrapper->HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MechanicalPlugin::OnPreAsync, this, _1));
+		gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
+			bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 	}
 	else
 	{

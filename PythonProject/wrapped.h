@@ -3,6 +3,7 @@
 #include "boost/python/detail/wrap_python.hpp"
 #include <boost/python.hpp>
 #include "bakkesmod/wrappers/includes.h"
+#include "bakkesmod/wrappers/replayserverwrapper.h"
 #include "bakkesmod/wrappers/arraywrapper.h"
 using namespace boost::python;
 
@@ -14,6 +15,7 @@ void (CVarWrapper::*setFloat)(float) = &CVarWrapper::setValue;
 
 //class Helpers {};
 struct unusedbutneededtocompile {
+public:
 	unusedbutneededtocompile() {}
 	ArrayWrapper<ActorWrapper> aaa = ArrayWrapper<ActorWrapper>(uintptr_t(NULL));
 	ArrayWrapper<TeamWrapper> aab = ArrayWrapper<TeamWrapper>(uintptr_t(NULL));
@@ -29,7 +31,11 @@ struct unusedbutneededtocompile {
 #define PYTHON_ARRAY(WrappedArrayClass) \
 	class_<ArrayWrapper<WrappedArrayClass>, boost::noncopyable>("ArrayWrapper#WrappedArrayClass", no_init).\
 		def("Count", &ArrayWrapper<WrappedArrayClass>::Count).\
-		def("Get", &ArrayWrapper<WrappedArrayClass>::Get);
+def("Get", &ArrayWrapper<WrappedArrayClass>::Get);
+//#define PYTHON_ARRAY(WrappedArrayClass) \
+//	class_<ArrayWrapper WrappedArrayClass>, ArrayWrapper<class WrappedArrayClass>, ArrayWrapper<WrappedArrayClass>*, boost::noncopyable>("ArrayWrapper#WrappedArrayClass", no_init).\
+//		def("Count", &ArrayWrapper<class WrappedArrayClass>::Count).\
+//		def("Get", &ArrayWrapper<class WrappedArrayClass>::Get);
 
 BOOST_PYTHON_MODULE(bakkesmod)
 {
@@ -145,6 +151,10 @@ BOOST_PYTHON_MODULE(bakkesmod)
 
 	class_<ObjectWrapper>("ObjectWrapper", no_init);
 
+
+
+
+
 	class_<ActorWrapper, bases<ObjectWrapper>>("ActorWrapper", no_init).
 		def("GetVelocity", &ActorWrapper::GetVelocity).
 		def("SetVelocity", &ActorWrapper::SetVelocity).
@@ -205,7 +215,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbAlwaysEncroachCheck", &ActorWrapper::SetbAlwaysEncroachCheck).
 		def("GetbHasAlternateTargetLocation", &ActorWrapper::GetbHasAlternateTargetLocation).
 		def("GetbAlwaysRelevant", &ActorWrapper::GetbAlwaysRelevant).
-		def("GetbGameInstanceRelevant", &ActorWrapper::GetbGameInstanceRelevant).
 		def("GetbReplicateInstigator", &ActorWrapper::GetbReplicateInstigator).
 		def("GetbReplicateMovement", &ActorWrapper::GetbReplicateMovement).
 		def("GetbUpdateSimulatedPosition", &ActorWrapper::GetbUpdateSimulatedPosition).
@@ -280,8 +289,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetLifeSpan", &ActorWrapper::GetLifeSpan).
 		def("GetCreationTime", &ActorWrapper::GetCreationTime).
 		def("GetLastRenderTime", &ActorWrapper::GetLastRenderTime).
+		def("GetHiddenEditorViews", &ActorWrapper::GetHiddenEditorViews).
+		def("SetHiddenEditorViews", &ActorWrapper::SetHiddenEditorViews).
 		def("GetCollisionComponent", &ActorWrapper::GetCollisionComponent);
-
 
 	class_<PrimitiveComponentWrapper, bases<ObjectWrapper>>("PrimitiveComponentWrapper", no_init).
 		def("GetRBChannel", &PrimitiveComponentWrapper::GetRBChannel).
@@ -398,7 +408,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetScriptRigidBodyCollisionThreshold", &PrimitiveComponentWrapper::GetScriptRigidBodyCollisionThreshold).
 		def("SetScriptRigidBodyCollisionThreshold", &PrimitiveComponentWrapper::SetScriptRigidBodyCollisionThreshold);
 
-
 	class_<PlayerReplicationInfoWrapper, bases<ActorWrapper>>("PlayerReplicationInfoWrapper", no_init).
 		def("GetScore", &PlayerReplicationInfoWrapper::GetScore).
 		def("SetScore", &PlayerReplicationInfoWrapper::SetScore).
@@ -410,6 +419,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetTTSSpeaker", &PlayerReplicationInfoWrapper::SetTTSSpeaker).
 		def("GetNumLives", &PlayerReplicationInfoWrapper::GetNumLives).
 		def("SetNumLives", &PlayerReplicationInfoWrapper::SetNumLives).
+		def("GetPlayerName", &PlayerReplicationInfoWrapper::GetPlayerName).
+		def("GetOldName", &PlayerReplicationInfoWrapper::GetOldName).
 		def("GetPlayerID", &PlayerReplicationInfoWrapper::GetPlayerID).
 		def("SetPlayerID", &PlayerReplicationInfoWrapper::SetPlayerID).
 		def("GetbAdmin", &PlayerReplicationInfoWrapper::GetbAdmin).
@@ -438,11 +449,155 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbUnregistered", &PlayerReplicationInfoWrapper::SetbUnregistered).
 		def("GetStartTime", &PlayerReplicationInfoWrapper::GetStartTime).
 		def("SetStartTime", &PlayerReplicationInfoWrapper::SetStartTime).
+		def("GetStringSpectating", &PlayerReplicationInfoWrapper::GetStringSpectating).
+		def("GetStringUnknown", &PlayerReplicationInfoWrapper::GetStringUnknown).
 		def("GetKills", &PlayerReplicationInfoWrapper::GetKills).
 		def("SetKills", &PlayerReplicationInfoWrapper::SetKills).
 		def("GetExactPing", &PlayerReplicationInfoWrapper::GetExactPing).
-		def("SetExactPing", &PlayerReplicationInfoWrapper::SetExactPing);
+		def("SetExactPing", &PlayerReplicationInfoWrapper::SetExactPing).
+		def("GetSavedNetworkAddress", &PlayerReplicationInfoWrapper::GetSavedNetworkAddress).
+		def("GetUniqueId", &PlayerReplicationInfoWrapper::GetUniqueId).
+		def("SetUniqueId", &PlayerReplicationInfoWrapper::SetUniqueId);
 
+	class_<GameSettingPlaylistWrapper, bases<ObjectWrapper>>("GameSettingPlaylistWrapper", no_init).
+		def("GetTitle", &GameSettingPlaylistWrapper::GetTitle).
+		def("GetDescription", &GameSettingPlaylistWrapper::GetDescription).
+		def("GetPlayerCount", &GameSettingPlaylistWrapper::GetPlayerCount).
+		def("SetPlayerCount", &GameSettingPlaylistWrapper::SetPlayerCount).
+		def("GetbStandard", &GameSettingPlaylistWrapper::GetbStandard).
+		def("SetbStandard", &GameSettingPlaylistWrapper::SetbStandard).
+		def("GetbRanked", &GameSettingPlaylistWrapper::GetbRanked).
+		def("SetbRanked", &GameSettingPlaylistWrapper::SetbRanked).
+		def("GetbSolo", &GameSettingPlaylistWrapper::GetbSolo).
+		def("SetbSolo", &GameSettingPlaylistWrapper::SetbSolo).
+		def("GetbNew", &GameSettingPlaylistWrapper::GetbNew).
+		def("SetbNew", &GameSettingPlaylistWrapper::SetbNew).
+		def("GetbApplyQuitPenalty", &GameSettingPlaylistWrapper::GetbApplyQuitPenalty).
+		def("SetbApplyQuitPenalty", &GameSettingPlaylistWrapper::SetbApplyQuitPenalty).
+		def("GetbAllowForfeit", &GameSettingPlaylistWrapper::GetbAllowForfeit).
+		def("SetbAllowForfeit", &GameSettingPlaylistWrapper::SetbAllowForfeit).
+		def("GetbDisableRankedReconnect", &GameSettingPlaylistWrapper::GetbDisableRankedReconnect).
+		def("SetbDisableRankedReconnect", &GameSettingPlaylistWrapper::SetbDisableRankedReconnect).
+		def("GetbAllowClubs", &GameSettingPlaylistWrapper::GetbAllowClubs).
+		def("SetbAllowClubs", &GameSettingPlaylistWrapper::SetbAllowClubs).
+		def("GetbPlayersVSBots", &GameSettingPlaylistWrapper::GetbPlayersVSBots).
+		def("SetbPlayersVSBots", &GameSettingPlaylistWrapper::SetbPlayersVSBots).
+		def("GetPlaylistId", &GameSettingPlaylistWrapper::GetPlaylistId).
+		def("SetPlaylistId", &GameSettingPlaylistWrapper::SetPlaylistId).
+		def("GetServerCommand", &GameSettingPlaylistWrapper::GetServerCommand);
+
+	class_<PlayerControllerWrapper, bases<ActorWrapper>>("PlayerControllerWrapper", no_init).
+		def("GetbAdjustingSimTime", &PlayerControllerWrapper::GetbAdjustingSimTime).
+		def("SetbAdjustingSimTime", &PlayerControllerWrapper::SetbAdjustingSimTime).
+		def("GetbReplicatedSimTimeScalingEnabled", &PlayerControllerWrapper::GetbReplicatedSimTimeScalingEnabled).
+		def("SetbReplicatedSimTimeScalingEnabled", &PlayerControllerWrapper::SetbReplicatedSimTimeScalingEnabled).
+		def("GetbReceivedPlayerAndPRI", &PlayerControllerWrapper::GetbReceivedPlayerAndPRI).
+		def("SetbReceivedPlayerAndPRI", &PlayerControllerWrapper::SetbReceivedPlayerAndPRI).
+		def("GetbReceivedServerShutdownMessage", &PlayerControllerWrapper::GetbReceivedServerShutdownMessage).
+		def("SetbReceivedServerShutdownMessage", &PlayerControllerWrapper::SetbReceivedServerShutdownMessage).
+		def("GetbPendingIdleKick", &PlayerControllerWrapper::GetbPendingIdleKick).
+		def("SetbPendingIdleKick", &PlayerControllerWrapper::SetbPendingIdleKick).
+		def("GetbUseDebugInputs", &PlayerControllerWrapper::GetbUseDebugInputs).
+		def("SetbUseDebugInputs", &PlayerControllerWrapper::SetbUseDebugInputs).
+		def("GetbJumpPressed", &PlayerControllerWrapper::GetbJumpPressed).
+		def("SetbJumpPressed", &PlayerControllerWrapper::SetbJumpPressed).
+		def("GetbBoostPressed", &PlayerControllerWrapper::GetbBoostPressed).
+		def("SetbBoostPressed", &PlayerControllerWrapper::SetbBoostPressed).
+		def("GetbHandbrakePressed", &PlayerControllerWrapper::GetbHandbrakePressed).
+		def("SetbHandbrakePressed", &PlayerControllerWrapper::SetbHandbrakePressed).
+		def("GetbHasPitchedBack", &PlayerControllerWrapper::GetbHasPitchedBack).
+		def("SetbHasPitchedBack", &PlayerControllerWrapper::SetbHasPitchedBack).
+		def("GetbAllowAsymmetricalMute", &PlayerControllerWrapper::GetbAllowAsymmetricalMute).
+		def("SetbAllowAsymmetricalMute", &PlayerControllerWrapper::SetbAllowAsymmetricalMute).
+		def("GetbResetCamera", &PlayerControllerWrapper::GetbResetCamera).
+		def("SetbResetCamera", &PlayerControllerWrapper::SetbResetCamera).
+		def("GetTimeClientAckdAdjustSimTime", &PlayerControllerWrapper::GetTimeClientAckdAdjustSimTime).
+		def("SetTimeClientAckdAdjustSimTime", &PlayerControllerWrapper::SetTimeClientAckdAdjustSimTime).
+		def("GetReplicatedInputBufferSize", &PlayerControllerWrapper::GetReplicatedInputBufferSize).
+		def("SetReplicatedInputBufferSize", &PlayerControllerWrapper::SetReplicatedInputBufferSize).
+		def("GetCar", &PlayerControllerWrapper::GetCar).
+		def("SetCar", &PlayerControllerWrapper::SetCar).
+		def("GetPRI", &PlayerControllerWrapper::GetPRI).
+		def("SetPRI", &PlayerControllerWrapper::SetPRI).
+		def("GetVehicleInput", &PlayerControllerWrapper::GetVehicleInput).
+		def("SetVehicleInput", &PlayerControllerWrapper::SetVehicleInput).
+		def("GetLoginURL", &PlayerControllerWrapper::GetLoginURL).
+		def("GetVoiceFilter", &PlayerControllerWrapper::GetVoiceFilter).
+		def("SetVoiceFilter", &PlayerControllerWrapper::SetVoiceFilter).
+		def("GetChatFilter", &PlayerControllerWrapper::GetChatFilter).
+		def("SetChatFilter", &PlayerControllerWrapper::SetChatFilter).
+		def("GetFollowTarget", &PlayerControllerWrapper::GetFollowTarget).
+		def("SetFollowTarget", &PlayerControllerWrapper::SetFollowTarget).
+		def("GetMoveActorGrabOffset", &PlayerControllerWrapper::GetMoveActorGrabOffset).
+		def("SetMoveActorGrabOffset", &PlayerControllerWrapper::SetMoveActorGrabOffset).
+		def("GetMoveActorGrabIncrement", &PlayerControllerWrapper::GetMoveActorGrabIncrement).
+		def("SetMoveActorGrabIncrement", &PlayerControllerWrapper::SetMoveActorGrabIncrement).
+		def("GetMinMoveActorGrabDistance", &PlayerControllerWrapper::GetMinMoveActorGrabDistance).
+		def("SetMinMoveActorGrabDistance", &PlayerControllerWrapper::SetMinMoveActorGrabDistance).
+		def("GetMouseIncrementSpeed", &PlayerControllerWrapper::GetMouseIncrementSpeed).
+		def("SetMouseIncrementSpeed", &PlayerControllerWrapper::SetMouseIncrementSpeed).
+		def("GetBallVelocityIncrementAmount", &PlayerControllerWrapper::GetBallVelocityIncrementAmount).
+		def("SetBallVelocityIncrementAmount", &PlayerControllerWrapper::SetBallVelocityIncrementAmount).
+		def("GetBallVelocityIncrementFireCount", &PlayerControllerWrapper::GetBallVelocityIncrementFireCount).
+		def("SetBallVelocityIncrementFireCount", &PlayerControllerWrapper::SetBallVelocityIncrementFireCount).
+		def("GetBallVelocityIncrementFireCountMax", &PlayerControllerWrapper::GetBallVelocityIncrementFireCountMax).
+		def("SetBallVelocityIncrementFireCountMax", &PlayerControllerWrapper::SetBallVelocityIncrementFireCountMax).
+		def("GetBallVelocityIncrementSpeedDefault", &PlayerControllerWrapper::GetBallVelocityIncrementSpeedDefault).
+		def("SetBallVelocityIncrementSpeedDefault", &PlayerControllerWrapper::SetBallVelocityIncrementSpeedDefault).
+		def("GetBallVelocityIncrementSpeedMax", &PlayerControllerWrapper::GetBallVelocityIncrementSpeedMax).
+		def("SetBallVelocityIncrementSpeedMax", &PlayerControllerWrapper::SetBallVelocityIncrementSpeedMax).
+		def("GetCrosshairTraceDistance", &PlayerControllerWrapper::GetCrosshairTraceDistance).
+		def("SetCrosshairTraceDistance", &PlayerControllerWrapper::SetCrosshairTraceDistance).
+		def("GetTracedCrosshairActor", &PlayerControllerWrapper::GetTracedCrosshairActor).
+		def("SetTracedCrosshairActor", &PlayerControllerWrapper::SetTracedCrosshairActor).
+		def("GetRotateActorCameraLocationOffset", &PlayerControllerWrapper::GetRotateActorCameraLocationOffset).
+		def("SetRotateActorCameraLocationOffset", &PlayerControllerWrapper::SetRotateActorCameraLocationOffset).
+		def("GetRotateActorCameraRotationOffset", &PlayerControllerWrapper::GetRotateActorCameraRotationOffset).
+		def("SetRotateActorCameraRotationOffset", &PlayerControllerWrapper::SetRotateActorCameraRotationOffset).
+		def("GetRotateActorCameraSide", &PlayerControllerWrapper::GetRotateActorCameraSide).
+		def("SetRotateActorCameraSide", &PlayerControllerWrapper::SetRotateActorCameraSide).
+		def("GetDesiredCameraSide", &PlayerControllerWrapper::GetDesiredCameraSide).
+		def("SetDesiredCameraSide", &PlayerControllerWrapper::SetDesiredCameraSide).
+		def("GetPawnTypeChangedTime", &PlayerControllerWrapper::GetPawnTypeChangedTime).
+		def("SetPawnTypeChangedTime", &PlayerControllerWrapper::SetPawnTypeChangedTime).
+		def("GetSelectedSpawnArchetype", &PlayerControllerWrapper::GetSelectedSpawnArchetype).
+		def("SetSelectedSpawnArchetype", &PlayerControllerWrapper::SetSelectedSpawnArchetype).
+		def("GetDebugInputs", &PlayerControllerWrapper::GetDebugInputs).
+		def("SetDebugInputs", &PlayerControllerWrapper::SetDebugInputs).
+		def("GetMinClientInputRate", &PlayerControllerWrapper::GetMinClientInputRate).
+		def("SetMinClientInputRate", &PlayerControllerWrapper::SetMinClientInputRate).
+		def("GetMedianClientInputRate", &PlayerControllerWrapper::GetMedianClientInputRate).
+		def("SetMedianClientInputRate", &PlayerControllerWrapper::SetMedianClientInputRate).
+		def("GetMaxClientInputRate", &PlayerControllerWrapper::GetMaxClientInputRate).
+		def("SetMaxClientInputRate", &PlayerControllerWrapper::SetMaxClientInputRate).
+		def("GetConfiguredClientInputRate", &PlayerControllerWrapper::GetConfiguredClientInputRate).
+		def("SetConfiguredClientInputRate", &PlayerControllerWrapper::SetConfiguredClientInputRate).
+		def("GetTimeSinceLastMovePacket", &PlayerControllerWrapper::GetTimeSinceLastMovePacket).
+		def("SetTimeSinceLastMovePacket", &PlayerControllerWrapper::SetTimeSinceLastMovePacket).
+		def("GetTimeLastReplicatedMovePacket", &PlayerControllerWrapper::GetTimeLastReplicatedMovePacket).
+		def("SetTimeLastReplicatedMovePacket", &PlayerControllerWrapper::SetTimeLastReplicatedMovePacket).
+		def("GetMouseXDeadZone", &PlayerControllerWrapper::GetMouseXDeadZone).
+		def("SetMouseXDeadZone", &PlayerControllerWrapper::SetMouseXDeadZone).
+		def("GetMouseYDeadZone", &PlayerControllerWrapper::GetMouseYDeadZone).
+		def("SetMouseYDeadZone", &PlayerControllerWrapper::SetMouseYDeadZone).
+		def("GetMouseXDeadZoneAir", &PlayerControllerWrapper::GetMouseXDeadZoneAir).
+		def("SetMouseXDeadZoneAir", &PlayerControllerWrapper::SetMouseXDeadZoneAir).
+		def("GetMouseYDeadZoneAir", &PlayerControllerWrapper::GetMouseYDeadZoneAir).
+		def("SetMouseYDeadZoneAir", &PlayerControllerWrapper::SetMouseYDeadZoneAir).
+		def("GetLastInputs", &PlayerControllerWrapper::GetLastInputs).
+		def("SetLastInputs", &PlayerControllerWrapper::SetLastInputs).
+		def("GetPendingViewPRI", &PlayerControllerWrapper::GetPendingViewPRI).
+		def("SetPendingViewPRI", &PlayerControllerWrapper::SetPendingViewPRI).
+		def("GetLastInputPitch", &PlayerControllerWrapper::GetLastInputPitch).
+		def("SetLastInputPitch", &PlayerControllerWrapper::SetLastInputPitch).
+		def("GetLastInputYaw", &PlayerControllerWrapper::GetLastInputYaw).
+		def("SetLastInputYaw", &PlayerControllerWrapper::SetLastInputYaw).
+		def("GetMouseInputMax", &PlayerControllerWrapper::GetMouseInputMax).
+		def("SetMouseInputMax", &PlayerControllerWrapper::SetMouseInputMax).
+		def("GetPrimaryPlayerController", &PlayerControllerWrapper::GetPrimaryPlayerController).
+		def("SetPrimaryPlayerController", &PlayerControllerWrapper::SetPrimaryPlayerController).
+		def("GetEngineShare", &PlayerControllerWrapper::GetEngineShare).
+		def("SetEngineShare", &PlayerControllerWrapper::SetEngineShare);
 
 	class_<RBActorWrapper, bases<ActorWrapper>>("RBActorWrapper", no_init).
 		def("GetMaxLinearSpeed", &RBActorWrapper::GetMaxLinearSpeed).
@@ -476,7 +631,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetWeldedTo", &RBActorWrapper::GetWeldedTo).
 		def("GetPreWeldMass", &RBActorWrapper::GetPreWeldMass);
 
-
 	class_<BallWrapper, bases<RBActorWrapper>>("BallWrapper", no_init).
 		def("GetbAllowPlayerExplosionOverride", &BallWrapper::GetbAllowPlayerExplosionOverride).
 		def("SetbAllowPlayerExplosionOverride", &BallWrapper::SetbAllowPlayerExplosionOverride).
@@ -492,8 +646,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbPredictionOnGround", &BallWrapper::SetbPredictionOnGround).
 		def("GetbCanBeAttached", &BallWrapper::GetbCanBeAttached).
 		def("SetbCanBeAttached", &BallWrapper::SetbCanBeAttached).
-		def("GetbBallDemolish", &BallWrapper::GetbBallDemolish).
-		def("SetbBallDemolish", &BallWrapper::SetbBallDemolish).
 		def("GetbNewFalling", &BallWrapper::GetbNewFalling).
 		def("SetbNewFalling", &BallWrapper::SetbNewFalling).
 		def("GetbItemFreeze", &BallWrapper::GetbItemFreeze).
@@ -544,15 +696,12 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetBallSloMoNext", &BallWrapper::SetBallSloMoNext).
 		def("GetBallSloMoDiffSpeed", &BallWrapper::GetBallSloMoDiffSpeed).
 		def("SetBallSloMoDiffSpeed", &BallWrapper::SetBallSloMoDiffSpeed).
-		//def("GetBallBelongsTo", &BallWrapper::GetBallBelongsTo).
-		//def("SetBallBelongsTo", &BallWrapper::SetBallBelongsTo).
 		def("GetBallTouchScore", &BallWrapper::GetBallTouchScore).
 		def("SetBallTouchScore", &BallWrapper::SetBallTouchScore).
 		def("GetGroundForce", &BallWrapper::GetGroundForce).
 		def("SetGroundForce", &BallWrapper::SetGroundForce).
 		def("GetCurrentAffector", &BallWrapper::GetCurrentAffector).
 		def("SetCurrentAffector", &BallWrapper::SetCurrentAffector);
-
 
 	class_<CarComponentWrapper, bases<ActorWrapper>>("CarComponentWrapper", no_init).
 		def("GetbDisabled", &CarComponentWrapper::GetbDisabled).
@@ -582,7 +731,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetReplicatedActivityTime", &CarComponentWrapper::GetReplicatedActivityTime).
 		def("SetReplicatedActivityTime", &CarComponentWrapper::SetReplicatedActivityTime);
 
-
 	class_<AirControlComponentWrapper, bases<CarComponentWrapper>>("AirControlComponentWrapper", no_init).
 		def("GetAirTorque", &AirControlComponentWrapper::GetAirTorque).
 		def("SetAirTorque", &AirControlComponentWrapper::SetAirTorque).
@@ -596,7 +744,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetControlScale", &AirControlComponentWrapper::SetControlScale).
 		def("GetAirControlSensitivity", &AirControlComponentWrapper::GetAirControlSensitivity).
 		def("SetAirControlSensitivity", &AirControlComponentWrapper::SetAirControlSensitivity);
-
 
 	class_<BoostWrapper, bases<CarComponentWrapper>>("BoostWrapper", no_init).
 		def("GetBoostConsumptionRate", &BoostWrapper::GetBoostConsumptionRate).
@@ -629,7 +776,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbNoBoost", &BoostWrapper::SetbNoBoost).
 		def("GetReplicatedBoostAmount", &BoostWrapper::GetReplicatedBoostAmount).
 		def("SetReplicatedBoostAmount", &BoostWrapper::SetReplicatedBoostAmount);
-
 
 	class_<DodgeComponentWrapper, bases<CarComponentWrapper>>("DodgeComponentWrapper", no_init).
 		def("GetDodgeInputThreshold", &DodgeComponentWrapper::GetDodgeInputThreshold).
@@ -669,12 +815,10 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetDodgeDirection", &DodgeComponentWrapper::GetDodgeDirection).
 		def("SetDodgeDirection", &DodgeComponentWrapper::SetDodgeDirection);
 
-
 	class_<DoubleJumpComponentWrapper, bases<CarComponentWrapper>>("DoubleJumpComponentWrapper", no_init).
 		def("SetJumpImpulse", &DoubleJumpComponentWrapper::SetJumpImpulse).
 		def("GetImpulseScale", &DoubleJumpComponentWrapper::GetImpulseScale).
 		def("SetImpulseScale", &DoubleJumpComponentWrapper::SetImpulseScale);
-
 
 	class_<FlipCarComponentWrapper, bases<CarComponentWrapper>>("FlipCarComponentWrapper", no_init).
 		def("GetFlipCarImpulse", &FlipCarComponentWrapper::GetFlipCarImpulse).
@@ -685,7 +829,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetFlipCarTime", &FlipCarComponentWrapper::SetFlipCarTime).
 		def("GetbFlipRight", &FlipCarComponentWrapper::GetbFlipRight).
 		def("SetbFlipRight", &FlipCarComponentWrapper::SetbFlipRight);
-
 
 	class_<JumpComponentWrapper, bases<CarComponentWrapper>>("JumpComponentWrapper", no_init).
 		def("GetMinJumpTime", &JumpComponentWrapper::GetMinJumpTime).
@@ -709,8 +852,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetbDeactivate", &JumpComponentWrapper::GetbDeactivate).
 		def("SetbDeactivate", &JumpComponentWrapper::SetbDeactivate);
 
-
 	class_<RumblePickupComponentWrapper, bases<CarComponentWrapper>>("RumblePickupComponentWrapper", no_init).
+		def("GetPickupName", &RumblePickupComponentWrapper::GetPickupName).
 		def("GetbHudIgnoreUseTime", &RumblePickupComponentWrapper::GetbHudIgnoreUseTime).
 		def("SetbHudIgnoreUseTime", &RumblePickupComponentWrapper::SetbHudIgnoreUseTime).
 		def("GetbHasActivated", &RumblePickupComponentWrapper::GetbHasActivated).
@@ -719,7 +862,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbIsActive", &RumblePickupComponentWrapper::SetbIsActive).
 		def("GetActivationDuration", &RumblePickupComponentWrapper::GetActivationDuration).
 		def("SetActivationDuration", &RumblePickupComponentWrapper::SetActivationDuration);
-
 
 	class_<GravityPickup, bases<RumblePickupComponentWrapper>>("GravityPickup", no_init).
 		def("GetBallGravity", &GravityPickup::GetBallGravity).
@@ -736,7 +878,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetLastRecordedBallHitTime", &GravityPickup::SetLastRecordedBallHitTime).
 		def("GetPrevBall", &GravityPickup::GetPrevBall).
 		def("SetPrevBall", &GravityPickup::SetPrevBall);
-
 
 	class_<TargetedPickup, bases<RumblePickupComponentWrapper>>("TargetedPickup", no_init).
 		def("GetbCanTargetBall", &TargetedPickup::GetbCanTargetBall).
@@ -760,7 +901,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetTargeted", &TargetedPickup::GetTargeted).
 		def("SetTargeted", &TargetedPickup::SetTargeted);
 
-
 	class_<BallFreezePickup, bases<TargetedPickup>>("BallFreezePickup", no_init).
 		def("GetbMaintainMomentum", &BallFreezePickup::GetbMaintainMomentum).
 		def("SetbMaintainMomentum", &BallFreezePickup::SetbMaintainMomentum).
@@ -780,7 +920,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetOrigSpeed", &BallFreezePickup::SetOrigSpeed).
 		def("GetRepOrigSpeed", &BallFreezePickup::GetRepOrigSpeed).
 		def("SetRepOrigSpeed", &BallFreezePickup::SetRepOrigSpeed);
-
 
 	class_<GrapplingHookPickup, bases<TargetedPickup>>("GrapplingHookPickup", no_init).
 		def("GetImpulse", &GrapplingHookPickup::GetImpulse).
@@ -833,7 +972,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetCurrentRopeLength", &GrapplingHookPickup::SetCurrentRopeLength).
 		def("GetAttachTime", &GrapplingHookPickup::GetAttachTime).
 		def("SetAttachTime", &GrapplingHookPickup::SetAttachTime);
-
 
 	class_<SpringPickup, bases<TargetedPickup>>("SpringPickup", no_init).
 		def("GetForce", &SpringPickup::GetForce).
@@ -905,9 +1043,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetSpringedLength", &SpringPickup::GetSpringedLength).
 		def("SetSpringedLength", &SpringPickup::SetSpringedLength);
 
-
 	class_<BallLassoPickup, bases<SpringPickup>>("BallLassoPickup", no_init);
-
 
 	class_<TornadoPickup, bases<RumblePickupComponentWrapper>>("TornadoPickup", no_init).
 		def("GetHeight", &TornadoPickup::GetHeight).
@@ -940,9 +1076,48 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetVel", &TornadoPickup::SetVel).
 		def("GetAffecting", &TornadoPickup::GetAffecting);
 
+	class_<EngineTAWrapper, bases<ObjectWrapper>>("EngineTAWrapper", no_init).
+		def("GetbEnableClientPrediction", &EngineTAWrapper::GetbEnableClientPrediction).
+		def("SetbEnableClientPrediction", &EngineTAWrapper::SetbEnableClientPrediction).
+		def("GetbClientPhysicsUpdate", &EngineTAWrapper::GetbClientPhysicsUpdate).
+		def("SetbClientPhysicsUpdate", &EngineTAWrapper::SetbClientPhysicsUpdate).
+		def("GetbDisableClientCorrections", &EngineTAWrapper::GetbDisableClientCorrections).
+		def("SetbDisableClientCorrections", &EngineTAWrapper::SetbDisableClientCorrections).
+		def("GetbDebugClientCorrections", &EngineTAWrapper::GetbDebugClientCorrections).
+		def("SetbDebugClientCorrections", &EngineTAWrapper::SetbDebugClientCorrections).
+		def("GetbForceClientCorrection", &EngineTAWrapper::GetbForceClientCorrection).
+		def("SetbForceClientCorrection", &EngineTAWrapper::SetbForceClientCorrection).
+		def("GetbDebugSimTimeScale", &EngineTAWrapper::GetbDebugSimTimeScale).
+		def("SetbDebugSimTimeScale", &EngineTAWrapper::SetbDebugSimTimeScale).
+		def("GetPhysicsFramerate", &EngineTAWrapper::GetPhysicsFramerate).
+		def("SetPhysicsFramerate", &EngineTAWrapper::SetPhysicsFramerate).
+		def("GetMaxPhysicsSubsteps", &EngineTAWrapper::GetMaxPhysicsSubsteps).
+		def("SetMaxPhysicsSubsteps", &EngineTAWrapper::SetMaxPhysicsSubsteps).
+		def("GetMaxUploadedClientFrames", &EngineTAWrapper::GetMaxUploadedClientFrames).
+		def("SetMaxUploadedClientFrames", &EngineTAWrapper::SetMaxUploadedClientFrames).
+		def("GetMaxClientReplayFrames", &EngineTAWrapper::GetMaxClientReplayFrames).
+		def("SetMaxClientReplayFrames", &EngineTAWrapper::SetMaxClientReplayFrames).
+		def("GetPhysicsFrame", &EngineTAWrapper::GetPhysicsFrame).
+		def("SetPhysicsFrame", &EngineTAWrapper::SetPhysicsFrame).
+		def("GetRenderAlpha", &EngineTAWrapper::GetRenderAlpha).
+		def("SetRenderAlpha", &EngineTAWrapper::SetRenderAlpha).
+		def("GetReplicatedPhysicsFrame", &EngineTAWrapper::GetReplicatedPhysicsFrame).
+		def("SetReplicatedPhysicsFrame", &EngineTAWrapper::SetReplicatedPhysicsFrame).
+		def("GetDirtyPhysicsFrame", &EngineTAWrapper::GetDirtyPhysicsFrame).
+		def("SetDirtyPhysicsFrame", &EngineTAWrapper::SetDirtyPhysicsFrame).
+		def("GetTickNotifyIndex", &EngineTAWrapper::GetTickNotifyIndex).
+		def("SetTickNotifyIndex", &EngineTAWrapper::SetTickNotifyIndex).
+		def("GetShellArchetypePath", &EngineTAWrapper::GetShellArchetypePath).
+		def("GetLastBugReportTime", &EngineTAWrapper::GetLastBugReportTime).
+		def("SetLastBugReportTime", &EngineTAWrapper::SetLastBugReportTime).
+		def("GetDebugClientCorrectionStartTime", &EngineTAWrapper::GetDebugClientCorrectionStartTime).
+		def("SetDebugClientCorrectionStartTime", &EngineTAWrapper::SetDebugClientCorrectionStartTime).
+		def("GetDebugClientCorrectionCount", &EngineTAWrapper::GetDebugClientCorrectionCount).
+		def("SetDebugClientCorrectionCount", &EngineTAWrapper::SetDebugClientCorrectionCount).
+		def("GetStatGraphs", &EngineTAWrapper::GetStatGraphs).
+		def("SetStatGraphs", &EngineTAWrapper::SetStatGraphs);
 
 	class_<GameEventWrapper, bases<ActorWrapper>>("GameEventWrapper", no_init).
-
 		def("GetGameMode", &GameEventWrapper::GetGameMode).
 		def("SetGameMode", &GameEventWrapper::SetGameMode).
 		def("GetReplicatedStateIndex", &GameEventWrapper::GetReplicatedStateIndex).
@@ -980,10 +1155,13 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetRespawnTime", &GameEventWrapper::SetRespawnTime).
 		def("GetMatchTimeDilation", &GameEventWrapper::GetMatchTimeDilation).
 		def("SetMatchTimeDilation", &GameEventWrapper::SetMatchTimeDilation).
+		def("GetActivator", &GameEventWrapper::GetActivator).
+		def("SetActivator", &GameEventWrapper::SetActivator).
 		def("GetActivatorCar", &GameEventWrapper::GetActivatorCar).
 		def("SetActivatorCar", &GameEventWrapper::SetActivatorCar).
 		def("GetPRIs", &GameEventWrapper::GetPRIs).
 		def("GetCars", &GameEventWrapper::GetCars).
+		def("GetLocalPlayers", &GameEventWrapper::GetLocalPlayers).
 		def("GetStartPointIndex", &GameEventWrapper::GetStartPointIndex).
 		def("SetStartPointIndex", &GameEventWrapper::SetStartPointIndex).
 		def("GetGameStateTimeRemaining", &GameEventWrapper::GetGameStateTimeRemaining).
@@ -996,9 +1174,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetIdleKickWarningTime", &GameEventWrapper::SetIdleKickWarningTime).
 		def("GetGameOwner", &GameEventWrapper::GetGameOwner).
 		def("SetGameOwner", &GameEventWrapper::SetGameOwner).
+		def("GetRichPresenceString", &GameEventWrapper::GetRichPresenceString).
 		def("GetReplicatedRoundCountDownNumber", &GameEventWrapper::GetReplicatedRoundCountDownNumber).
 		def("SetReplicatedRoundCountDownNumber", &GameEventWrapper::SetReplicatedRoundCountDownNumber);
-
 
 	class_<TeamGameEventWrapper, bases<GameEventWrapper>>("TeamGameEventWrapper", no_init).
 		def("GetTeamArchetypes", &TeamGameEventWrapper::GetTeamArchetypes).
@@ -1018,13 +1196,13 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetbAlwaysAutoSelectTeam", &TeamGameEventWrapper::GetbAlwaysAutoSelectTeam).
 		def("SetbAlwaysAutoSelectTeam", &TeamGameEventWrapper::SetbAlwaysAutoSelectTeam);
 
-
 	class_<GoalWrapper, bases<ObjectWrapper>>("GoalWrapper", no_init).
 		def("GetGoalOrientation", &GoalWrapper::GetGoalOrientation).
 		def("SetGoalOrientation", &GoalWrapper::SetGoalOrientation).
 		def("GetOverrideGoalIndicatorOrientations", &GoalWrapper::GetOverrideGoalIndicatorOrientations).
 		def("GetTeamNum", &GoalWrapper::GetTeamNum).
 		def("SetTeamNum", &GoalWrapper::SetTeamNum).
+		def("GetGoalIndicatorArchetype", &GoalWrapper::GetGoalIndicatorArchetype).
 		def("GetbNoGoalIndicator", &GoalWrapper::GetbNoGoalIndicator).
 		def("SetbNoGoalIndicator", &GoalWrapper::SetbNoGoalIndicator).
 		def("GetbOnlyGoalsFromDirection", &GoalWrapper::GetbOnlyGoalsFromDirection).
@@ -1049,19 +1227,20 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetLocation", &GoalWrapper::SetLocation).
 		def("GetDirection", &GoalWrapper::GetDirection).
 		def("SetDirection", &GoalWrapper::SetDirection).
+		def("GetRight", &GoalWrapper::GetRight).
+		def("SetRight", &GoalWrapper::SetRight).
+		def("GetUp", &GoalWrapper::GetUp).
+		def("SetUp", &GoalWrapper::SetUp).
 		def("GetRotation", &GoalWrapper::GetRotation).
 		def("SetRotation", &GoalWrapper::SetRotation).
-		//def("GetLocalMin", &GoalWrapper::GetLocalMin).
-		//def("SetLocalMin", &GoalWrapper::SetLocalMin).
-		//def("GetLocalMax", &GoalWrapper::GetLocalMax).
-		//def("SetLocalMax", &GoalWrapper::SetLocalMax).
 		def("GetLocalExtent", &GoalWrapper::GetLocalExtent).
 		def("SetLocalExtent", &GoalWrapper::SetLocalExtent).
 		def("GetWorldCenter", &GoalWrapper::GetWorldCenter).
 		def("SetWorldCenter", &GoalWrapper::SetWorldCenter).
 		def("GetWorldExtent", &GoalWrapper::GetWorldExtent).
-		def("SetWorldExtent", &GoalWrapper::SetWorldExtent);
-
+		def("SetWorldExtent", &GoalWrapper::SetWorldExtent).
+		def("GetWorldFrontCenter", &GoalWrapper::GetWorldFrontCenter).
+		def("SetWorldFrontCenter", &GoalWrapper::SetWorldFrontCenter);
 
 	class_<VehicleWrapper, bases<RBActorWrapper>>("VehicleWrapper", no_init).
 		def("GetVehicleSim", &VehicleWrapper::GetVehicleSim).
@@ -1070,6 +1249,10 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbDriving", &VehicleWrapper::SetbDriving).
 		def("GetbReplicatedHandbrake", &VehicleWrapper::GetbReplicatedHandbrake).
 		def("SetbReplicatedHandbrake", &VehicleWrapper::SetbReplicatedHandbrake).
+		def("GetbJumped", &VehicleWrapper::GetbJumped).
+		def("SetbJumped", &VehicleWrapper::SetbJumped).
+		def("GetbDoubleJumped", &VehicleWrapper::GetbDoubleJumped).
+		def("SetbDoubleJumped", &VehicleWrapper::SetbDoubleJumped).
 		def("GetbOnGround", &VehicleWrapper::GetbOnGround).
 		def("SetbOnGround", &VehicleWrapper::SetbOnGround).
 		def("GetbSuperSonic", &VehicleWrapper::GetbSuperSonic).
@@ -1082,6 +1265,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetReplicatedThrottle", &VehicleWrapper::SetReplicatedThrottle).
 		def("GetReplicatedSteer", &VehicleWrapper::GetReplicatedSteer).
 		def("SetReplicatedSteer", &VehicleWrapper::SetReplicatedSteer).
+		def("GetPlayerController", &VehicleWrapper::GetPlayerController).
+		def("SetPlayerController", &VehicleWrapper::SetPlayerController).
 		def("GetPRI", &VehicleWrapper::GetPRI).
 		def("SetPRI", &VehicleWrapper::SetPRI).
 		def("GetVehicleUpdateTag", &VehicleWrapper::GetVehicleUpdateTag).
@@ -1090,17 +1275,21 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetLocalCollisionOffset", &VehicleWrapper::SetLocalCollisionOffset).
 		def("GetLocalCollisionExtent", &VehicleWrapper::GetLocalCollisionExtent).
 		def("SetLocalCollisionExtent", &VehicleWrapper::SetLocalCollisionExtent).
-		def("GetLastHitBallFrame", &VehicleWrapper::GetLastHitBallFrame).
-		def("SetLastHitBallFrame", &VehicleWrapper::SetLastHitBallFrame).
+		def("GetLastBallTouchFrame", &VehicleWrapper::GetLastBallTouchFrame).
+		def("SetLastBallTouchFrame", &VehicleWrapper::SetLastBallTouchFrame).
+		def("GetLastBallImpactFrame", &VehicleWrapper::GetLastBallImpactFrame).
+		def("SetLastBallImpactFrame", &VehicleWrapper::SetLastBallImpactFrame).
 		def("GetBoostComponent", &VehicleWrapper::GetBoostComponent).
 		def("GetDodgeComponent", &VehicleWrapper::GetDodgeComponent).
 		def("GetAirControlComponent", &VehicleWrapper::GetAirControlComponent).
 		def("GetJumpComponent", &VehicleWrapper::GetJumpComponent).
+		def("GetDoubleJumpComponent", &VehicleWrapper::GetDoubleJumpComponent).
+		def("SetDoubleJumpComponent", &VehicleWrapper::SetDoubleJumpComponent).
 		def("GetTimeBelowSupersonicSpeed", &VehicleWrapper::GetTimeBelowSupersonicSpeed).
 		def("SetTimeBelowSupersonicSpeed", &VehicleWrapper::SetTimeBelowSupersonicSpeed);
 
-
 	class_<ReplayWrapper, bases<ObjectWrapper>>("ReplayWrapper", no_init).
+		def("GetReplayName", &ReplayWrapper::GetReplayName).
 		def("GetEngineVersion", &ReplayWrapper::GetEngineVersion).
 		def("SetEngineVersion", &ReplayWrapper::SetEngineVersion).
 		def("GetLicenseeVersion", &ReplayWrapper::GetLicenseeVersion).
@@ -1115,6 +1304,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetBuildID", &ReplayWrapper::SetBuildID).
 		def("GetChangelist", &ReplayWrapper::GetChangelist).
 		def("SetChangelist", &ReplayWrapper::SetChangelist).
+		def("GetBuildVersion", &ReplayWrapper::GetBuildVersion).
 		def("GetRecordFPS", &ReplayWrapper::GetRecordFPS).
 		def("SetRecordFPS", &ReplayWrapper::SetRecordFPS).
 		def("GetKeyframeDelay", &ReplayWrapper::GetKeyframeDelay).
@@ -1123,8 +1313,12 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetMaxChannels", &ReplayWrapper::SetMaxChannels).
 		def("GetMaxReplaySizeMB", &ReplayWrapper::GetMaxReplaySizeMB).
 		def("SetMaxReplaySizeMB", &ReplayWrapper::SetMaxReplaySizeMB).
+		def("GetFilename", &ReplayWrapper::GetFilename).
+		def("GetId", &ReplayWrapper::GetId).
+		def("GetDate", &ReplayWrapper::GetDate).
 		def("GetNumFrames", &ReplayWrapper::GetNumFrames).
 		def("SetNumFrames", &ReplayWrapper::SetNumFrames).
+		def("GetPlayerName", &ReplayWrapper::GetPlayerName).
 		def("GetbFileCorrupted", &ReplayWrapper::GetbFileCorrupted).
 		def("SetbFileCorrupted", &ReplayWrapper::SetbFileCorrupted).
 		def("GetbForceKeyframe", &ReplayWrapper::GetbForceKeyframe).
@@ -1139,7 +1333,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetCurrentFrame", &ReplayWrapper::SetCurrentFrame).
 		def("GetNextKeyframe", &ReplayWrapper::GetNextKeyframe).
 		def("SetNextKeyframe", &ReplayWrapper::SetNextKeyframe).
-		//def("GetCurrentTime", &ReplayWrapper::GetCurrentTime).
+		//def("GetCurrentTime", &ReplayWrapper::GetTickCount).
 		def("SetCurrentTime", &ReplayWrapper::SetCurrentTime).
 		def("GetAccumulatedDeltaTime", &ReplayWrapper::GetAccumulatedDeltaTime).
 		def("SetAccumulatedDeltaTime", &ReplayWrapper::SetAccumulatedDeltaTime).
@@ -1150,6 +1344,108 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetPlayersOnlyTicks", &ReplayWrapper::GetPlayersOnlyTicks).
 		def("SetPlayersOnlyTicks", &ReplayWrapper::SetPlayersOnlyTicks);
 
+	class_<SampleHistoryWrapper, bases<ObjectWrapper>>("SampleHistoryWrapper", no_init).
+		def("GetRecordSettings", &SampleHistoryWrapper::GetRecordSettings).
+		def("SetRecordSettings", &SampleHistoryWrapper::SetRecordSettings).
+		def("GetTitle", &SampleHistoryWrapper::GetTitle).
+		def("GetYMin", &SampleHistoryWrapper::GetYMin).
+		def("SetYMin", &SampleHistoryWrapper::SetYMin).
+		def("GetYMax", &SampleHistoryWrapper::GetYMax).
+		def("SetYMax", &SampleHistoryWrapper::SetYMax).
+		def("GetGoodValue", &SampleHistoryWrapper::GetGoodValue).
+		def("SetGoodValue", &SampleHistoryWrapper::SetGoodValue).
+		def("GetBadValue", &SampleHistoryWrapper::GetBadValue).
+		def("SetBadValue", &SampleHistoryWrapper::SetBadValue).
+		def("GetBaseValue", &SampleHistoryWrapper::GetBaseValue).
+		def("SetBaseValue", &SampleHistoryWrapper::SetBaseValue).
+		def("GetSampleIndex", &SampleHistoryWrapper::GetSampleIndex).
+		def("SetSampleIndex", &SampleHistoryWrapper::SetSampleIndex).
+		def("GetAccumTime", &SampleHistoryWrapper::GetAccumTime).
+		def("SetAccumTime", &SampleHistoryWrapper::SetAccumTime).
+		def("GetPendingSample", &SampleHistoryWrapper::GetPendingSample).
+		def("SetPendingSample", &SampleHistoryWrapper::SetPendingSample).
+		def("GetbHasPendingSample", &SampleHistoryWrapper::GetbHasPendingSample).
+		def("SetbHasPendingSample", &SampleHistoryWrapper::SetbHasPendingSample);
+
+	class_<SampleRecordSettingsWrapper, bases<ObjectWrapper>>("SampleRecordSettingsWrapper", no_init).
+		def("GetMaxSampleAge", &SampleRecordSettingsWrapper::GetMaxSampleAge).
+		def("SetMaxSampleAge", &SampleRecordSettingsWrapper::SetMaxSampleAge).
+		def("GetRecordRate", &SampleRecordSettingsWrapper::GetRecordRate).
+		def("SetRecordRate", &SampleRecordSettingsWrapper::SetRecordRate);
+
+	class_<StatGraphWrapper, bases<ObjectWrapper>>("StatGraphWrapper", no_init).
+		def("GetRecordSettings", &StatGraphWrapper::GetRecordSettings).
+		def("SetRecordSettings", &StatGraphWrapper::SetRecordSettings).
+		def("GetLastTickTime", &StatGraphWrapper::GetLastTickTime).
+		def("SetLastTickTime", &StatGraphWrapper::SetLastTickTime).
+		def("GetSampleHistories", &StatGraphWrapper::GetSampleHistories);
+
+	class_<InputBufferGraphWrapper, bases<StatGraphWrapper>>("InputBufferGraphWrapper", no_init).
+		def("GetBuffer", &InputBufferGraphWrapper::GetBuffer).
+		def("SetBuffer", &InputBufferGraphWrapper::SetBuffer).
+		def("GetBufferMax", &InputBufferGraphWrapper::GetBufferMax).
+		def("SetBufferMax", &InputBufferGraphWrapper::SetBufferMax).
+		def("GetOverUnderFrames", &InputBufferGraphWrapper::GetOverUnderFrames).
+		def("SetOverUnderFrames", &InputBufferGraphWrapper::SetOverUnderFrames).
+		def("GetPhysicsRate", &InputBufferGraphWrapper::GetPhysicsRate).
+		def("SetPhysicsRate", &InputBufferGraphWrapper::SetPhysicsRate).
+		def("GetMaxPhysicsRate", &InputBufferGraphWrapper::GetMaxPhysicsRate).
+		def("SetMaxPhysicsRate", &InputBufferGraphWrapper::SetMaxPhysicsRate).
+		def("GetMinPhysicsRate", &InputBufferGraphWrapper::GetMinPhysicsRate).
+		def("SetMinPhysicsRate", &InputBufferGraphWrapper::SetMinPhysicsRate);
+
+	class_<NetStatGraphWrapper, bases<StatGraphWrapper>>("NetStatGraphWrapper", no_init).
+		def("GetPacketsOut", &NetStatGraphWrapper::GetPacketsOut).
+		def("SetPacketsOut", &NetStatGraphWrapper::SetPacketsOut).
+		def("GetPacketsIn", &NetStatGraphWrapper::GetPacketsIn).
+		def("SetPacketsIn", &NetStatGraphWrapper::SetPacketsIn).
+		def("GetLostPacketsOut", &NetStatGraphWrapper::GetLostPacketsOut).
+		def("SetLostPacketsOut", &NetStatGraphWrapper::SetLostPacketsOut).
+		def("GetLostPacketsIn", &NetStatGraphWrapper::GetLostPacketsIn).
+		def("SetLostPacketsIn", &NetStatGraphWrapper::SetLostPacketsIn).
+		def("GetBytesOut", &NetStatGraphWrapper::GetBytesOut).
+		def("SetBytesOut", &NetStatGraphWrapper::SetBytesOut).
+		def("GetBytesIn", &NetStatGraphWrapper::GetBytesIn).
+		def("SetBytesIn", &NetStatGraphWrapper::SetBytesIn).
+		def("GetLatency", &NetStatGraphWrapper::GetLatency).
+		def("SetLatency", &NetStatGraphWrapper::SetLatency).
+		def("GetExpectedOutPacketRate", &NetStatGraphWrapper::GetExpectedOutPacketRate).
+		def("SetExpectedOutPacketRate", &NetStatGraphWrapper::SetExpectedOutPacketRate).
+		def("GetExpectedInPacketRate", &NetStatGraphWrapper::GetExpectedInPacketRate).
+		def("SetExpectedInPacketRate", &NetStatGraphWrapper::SetExpectedInPacketRate).
+		def("GetMaxBytesRate", &NetStatGraphWrapper::GetMaxBytesRate).
+		def("SetMaxBytesRate", &NetStatGraphWrapper::SetMaxBytesRate);
+
+	class_<PerfStatGraphWrapper, bases<StatGraphWrapper>>("PerfStatGraphWrapper", no_init).
+		def("GetFPS", &PerfStatGraphWrapper::GetFPS).
+		def("SetFPS", &PerfStatGraphWrapper::SetFPS).
+		def("GetFrameTime", &PerfStatGraphWrapper::GetFrameTime).
+		def("SetFrameTime", &PerfStatGraphWrapper::SetFrameTime).
+		def("GetGameThreadTime", &PerfStatGraphWrapper::GetGameThreadTime).
+		def("SetGameThreadTime", &PerfStatGraphWrapper::SetGameThreadTime).
+		def("GetRenderThreadTime", &PerfStatGraphWrapper::GetRenderThreadTime).
+		def("SetRenderThreadTime", &PerfStatGraphWrapper::SetRenderThreadTime).
+		def("GetGPUFrameTime", &PerfStatGraphWrapper::GetGPUFrameTime).
+		def("SetGPUFrameTime", &PerfStatGraphWrapper::SetGPUFrameTime).
+		def("GetFrameTimeHistories", &PerfStatGraphWrapper::GetFrameTimeHistories).
+		def("GetMaxFPS", &PerfStatGraphWrapper::GetMaxFPS).
+		def("SetMaxFPS", &PerfStatGraphWrapper::SetMaxFPS).
+		def("GetTargetFPS", &PerfStatGraphWrapper::GetTargetFPS).
+		def("SetTargetFPS", &PerfStatGraphWrapper::SetTargetFPS);
+
+	class_<StatGraphSystemWrapper, bases<ObjectWrapper>>("StatGraphSystemWrapper", no_init).
+		def("GetGraphSampleTime", &StatGraphSystemWrapper::GetGraphSampleTime).
+		def("SetGraphSampleTime", &StatGraphSystemWrapper::SetGraphSampleTime).
+		def("GetGraphLevel", &StatGraphSystemWrapper::GetGraphLevel).
+		def("SetGraphLevel", &StatGraphSystemWrapper::SetGraphLevel).
+		def("GetPerfStatGraph", &StatGraphSystemWrapper::GetPerfStatGraph).
+		def("SetPerfStatGraph", &StatGraphSystemWrapper::SetPerfStatGraph).
+		def("GetNetStatGraph", &StatGraphSystemWrapper::GetNetStatGraph).
+		def("SetNetStatGraph", &StatGraphSystemWrapper::SetNetStatGraph).
+		def("GetInputBufferGraph", &StatGraphSystemWrapper::GetInputBufferGraph).
+		def("SetInputBufferGraph", &StatGraphSystemWrapper::SetInputBufferGraph).
+		def("GetStatGraphs", &StatGraphSystemWrapper::GetStatGraphs).
+		def("GetVisibleStatGraphs", &StatGraphSystemWrapper::GetVisibleStatGraphs);
 
 	class_<TeamWrapper, bases<ActorWrapper>>("TeamWrapper", no_init).
 		def("GetFontColor", &TeamWrapper::GetFontColor).
@@ -1159,9 +1455,22 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetGameEvent", &TeamWrapper::GetGameEvent).
 		def("SetGameEvent", &TeamWrapper::SetGameEvent).
 		def("GetMembers", &TeamWrapper::GetMembers).
+		def("GetCustomTeamName", &TeamWrapper::GetCustomTeamName).
+		def("GetSanitizedTeamName", &TeamWrapper::GetSanitizedTeamName).
+		def("GetClubID", &TeamWrapper::GetClubID).
+		def("SetClubID", &TeamWrapper::SetClubID).
 		def("GetbForfeit", &TeamWrapper::GetbForfeit).
 		def("SetbForfeit", &TeamWrapper::SetbForfeit);
 
+	class_<VehiclePickupWrapper, bases<ActorWrapper>>("VehiclePickupWrapper", no_init).
+		def("GetRespawnDelay", &VehiclePickupWrapper::GetRespawnDelay).
+		def("SetRespawnDelay", &VehiclePickupWrapper::SetRespawnDelay).
+		def("GetbPickedUp", &VehiclePickupWrapper::GetbPickedUp).
+		def("SetbPickedUp", &VehiclePickupWrapper::SetbPickedUp).
+		def("GetbNetRelevant", &VehiclePickupWrapper::GetbNetRelevant).
+		def("SetbNetRelevant", &VehiclePickupWrapper::SetbNetRelevant).
+		def("GetbNoPickup", &VehiclePickupWrapper::GetbNoPickup).
+		def("SetbNoPickup", &VehiclePickupWrapper::SetbNoPickup);
 
 	class_<VehicleSimWrapper, bases<ObjectWrapper>>("VehicleSimWrapper", no_init).
 		def("GetWheels", &VehicleSimWrapper::GetWheels).
@@ -1193,7 +1502,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetCar", &VehicleSimWrapper::SetCar).
 		def("GetSteeringSensitivity", &VehicleSimWrapper::GetSteeringSensitivity).
 		def("SetSteeringSensitivity", &VehicleSimWrapper::SetSteeringSensitivity);
-
 
 	class_<WheelWrapper, bases<ObjectWrapper>>("WheelWrapper", no_init).
 		def("GetSteerFactor", &WheelWrapper::GetSteerFactor).
@@ -1232,9 +1540,12 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbHadContact", &WheelWrapper::SetbHadContact).
 		def("GetFrictionCurveInput", &WheelWrapper::GetFrictionCurveInput).
 		def("SetFrictionCurveInput", &WheelWrapper::SetFrictionCurveInput).
+		def("GetAerialThrottleToVelocityFactor", &WheelWrapper::GetAerialThrottleToVelocityFactor).
+		def("SetAerialThrottleToVelocityFactor", &WheelWrapper::SetAerialThrottleToVelocityFactor).
+		def("GetAerialAccelerationFactor", &WheelWrapper::GetAerialAccelerationFactor).
+		def("SetAerialAccelerationFactor", &WheelWrapper::SetAerialAccelerationFactor).
 		def("GetSpinSpeed", &WheelWrapper::GetSpinSpeed).
 		def("SetSpinSpeed", &WheelWrapper::SetSpinSpeed);
-
 
 	class_<PriWrapper, bases<PlayerReplicationInfoWrapper>>("PriWrapper", no_init).
 		def("GetMatchScore", &PriWrapper::GetMatchScore).
@@ -1283,8 +1594,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbIsInSplitScreen", &PriWrapper::SetbIsInSplitScreen).
 		def("GetbDeveloper", &PriWrapper::GetbDeveloper).
 		def("SetbDeveloper", &PriWrapper::SetbDeveloper).
-		def("GetbVoteToForfeitDisabled", &PriWrapper::GetbVoteToForfeitDisabled).
-		def("SetbVoteToForfeitDisabled", &PriWrapper::SetbVoteToForfeitDisabled).
+		def("GetbStartVoteToForfeitDisabled", &PriWrapper::GetbStartVoteToForfeitDisabled).
+		def("SetbStartVoteToForfeitDisabled", &PriWrapper::SetbStartVoteToForfeitDisabled).
 		def("GetbUsingItems", &PriWrapper::GetbUsingItems).
 		def("SetbUsingItems", &PriWrapper::SetbUsingItems).
 		def("GetPlayerHistoryValid", &PriWrapper::GetPlayerHistoryValid).
@@ -1301,6 +1612,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetWaitingStartTime", &PriWrapper::SetWaitingStartTime).
 		def("GetTotalGameTimePlayed", &PriWrapper::GetTotalGameTimePlayed).
 		def("SetTotalGameTimePlayed", &PriWrapper::SetTotalGameTimePlayed).
+		def("GetCameraSettings", &PriWrapper::GetCameraSettings).
+		def("SetCameraSettings", &PriWrapper::SetCameraSettings).
 		def("GetCameraPitch", &PriWrapper::GetCameraPitch).
 		def("SetCameraPitch", &PriWrapper::SetCameraPitch).
 		def("GetCameraYaw", &PriWrapper::GetCameraYaw).
@@ -1309,8 +1622,11 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetPawnType", &PriWrapper::SetPawnType).
 		def("GetReplicatedWorstNetQualityBeyondLatency", &PriWrapper::GetReplicatedWorstNetQualityBeyondLatency).
 		def("SetReplicatedWorstNetQualityBeyondLatency", &PriWrapper::SetReplicatedWorstNetQualityBeyondLatency).
+		def("GetPartyLeader", &PriWrapper::GetPartyLeader).
+		def("SetPartyLeader", &PriWrapper::SetPartyLeader).
 		def("GetTotalXP", &PriWrapper::GetTotalXP).
 		def("SetTotalXP", &PriWrapper::SetTotalXP).
+		def("GetSanitizedPlayerName", &PriWrapper::GetSanitizedPlayerName).
 		def("GetDodgeInputThreshold", &PriWrapper::GetDodgeInputThreshold).
 		def("SetDodgeInputThreshold", &PriWrapper::SetDodgeInputThreshold).
 		def("GetSteeringSensitivity", &PriWrapper::GetSteeringSensitivity).
@@ -1332,23 +1648,22 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetCarTouches", &PriWrapper::GetCarTouches).
 		def("SetCarTouches", &PriWrapper::SetCarTouches).
 		def("GetReplacingBotPRI", &PriWrapper::GetReplacingBotPRI).
-		def("SetReplacingBotPRI", &PriWrapper::SetReplacingBotPRI);
-
+		def("SetReplacingBotPRI", &PriWrapper::SetReplacingBotPRI).
+		def("GetClubID", &PriWrapper::GetClubID).
+		def("SetClubID", &PriWrapper::SetClubID).
+		def("GetPublicIP", &PriWrapper::GetPublicIP).
+		def("GetSpectatorShortcut", &PriWrapper::GetSpectatorShortcut).
+		def("SetSpectatorShortcut", &PriWrapper::SetSpectatorShortcut);
 
 	class_<CarWrapper, bases<VehicleWrapper>>("CarWrapper", no_init).
 		def("GetDefaultCarComponents", &CarWrapper::GetDefaultCarComponents).
-		def("GetDoubleJumpComponent", &CarWrapper::GetDoubleJumpComponent).
 		def("GetFlipComponent", &CarWrapper::GetFlipComponent).
 		def("GetDemolishTarget", &CarWrapper::GetDemolishTarget).
 		def("SetDemolishTarget", &CarWrapper::SetDemolishTarget).
 		def("GetDemolishSpeed", &CarWrapper::GetDemolishSpeed).
 		def("SetDemolishSpeed", &CarWrapper::SetDemolishSpeed).
-		def("GetMaxTimeForDodge", &CarWrapper::GetMaxTimeForDodge).
-		def("SetMaxTimeForDodge", &CarWrapper::SetMaxTimeForDodge).
-		def("GetLastWheelsHitBallTime", &CarWrapper::GetLastWheelsHitBallTime).
-		def("SetLastWheelsHitBallTime", &CarWrapper::SetLastWheelsHitBallTime).
-		def("GetReplicatedCarScale", &CarWrapper::GetReplicatedCarScale).
-		def("SetReplicatedCarScale", &CarWrapper::SetReplicatedCarScale).
+		def("GetbLoadoutSet", &CarWrapper::GetbLoadoutSet).
+		def("SetbLoadoutSet", &CarWrapper::SetbLoadoutSet).
 		def("GetbDemolishOnOpposingGround", &CarWrapper::GetbDemolishOnOpposingGround).
 		def("SetbDemolishOnOpposingGround", &CarWrapper::SetbDemolishOnOpposingGround).
 		def("GetbWasOnOpposingGround", &CarWrapper::GetbWasOnOpposingGround).
@@ -1357,14 +1672,18 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbDemolishOnGoalZone", &CarWrapper::SetbDemolishOnGoalZone).
 		def("GetbWasInGoalZone", &CarWrapper::GetbWasInGoalZone).
 		def("SetbWasInGoalZone", &CarWrapper::SetbWasInGoalZone).
-		def("GetbJumped", &CarWrapper::GetbJumped).
-		def("SetbJumped", &CarWrapper::SetbJumped).
-		def("GetbDoubleJumped", &CarWrapper::GetbDoubleJumped).
-		def("SetbDoubleJumped", &CarWrapper::SetbDoubleJumped).
 		def("GetbOverrideHandbrakeOn", &CarWrapper::GetbOverrideHandbrakeOn).
 		def("SetbOverrideHandbrakeOn", &CarWrapper::SetbOverrideHandbrakeOn).
+		def("GetbCollidesWithVehicles", &CarWrapper::GetbCollidesWithVehicles).
+		def("SetbCollidesWithVehicles", &CarWrapper::SetbCollidesWithVehicles).
 		def("GetbOverrideBoostOn", &CarWrapper::GetbOverrideBoostOn).
 		def("SetbOverrideBoostOn", &CarWrapper::SetbOverrideBoostOn).
+		def("GetMaxTimeForDodge", &CarWrapper::GetMaxTimeForDodge).
+		def("SetMaxTimeForDodge", &CarWrapper::SetMaxTimeForDodge).
+		def("GetLastWheelsHitBallTime", &CarWrapper::GetLastWheelsHitBallTime).
+		def("SetLastWheelsHitBallTime", &CarWrapper::SetLastWheelsHitBallTime).
+		def("GetReplicatedCarScale", &CarWrapper::GetReplicatedCarScale).
+		def("SetReplicatedCarScale", &CarWrapper::SetReplicatedCarScale).
 		def("GetAttackerPRI", &CarWrapper::GetAttackerPRI).
 		def("SetAttackerPRI", &CarWrapper::SetAttackerPRI).
 		def("GetAttachedBall", &CarWrapper::GetAttachedBall).
@@ -1384,14 +1703,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetGameEvent", &CarWrapper::GetGameEvent).
 		def("SetGameEvent", &CarWrapper::SetGameEvent);
 
-
 	class_<ServerWrapper, bases<TeamGameEventWrapper>>("ServerWrapper", no_init).
-		def("GetBall", &ServerWrapper::GetBall).
-		//	def("is_training", &ServerWrapper::IsTraining).
-		//	def("is_in_free_play", &GameEventWrapper::IsInFreePlay).
-		//	def("is_server", &GameEventWrapper::IsServer).
-		//	def("kick_bots", &GameEventWrapper::KickBots).
-		//	def("get_pri_car", &GameEventWrapper::GetPRICar);
 		def("GetTestCarArchetype", &ServerWrapper::GetTestCarArchetype).
 		def("SetTestCarArchetype", &ServerWrapper::SetTestCarArchetype).
 		def("GetBallArchetype", &ServerWrapper::GetBallArchetype).
@@ -1416,8 +1728,12 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetGameTimeRemaining", &ServerWrapper::SetGameTimeRemaining).
 		def("GetSecondsRemaining", &ServerWrapper::GetSecondsRemaining).
 		def("SetSecondsRemaining", &ServerWrapper::SetSecondsRemaining).
+		def("GetWaitTimeRemaining", &ServerWrapper::GetWaitTimeRemaining).
+		def("SetWaitTimeRemaining", &ServerWrapper::SetWaitTimeRemaining).
 		def("GetTotalGameTimePlayed", &ServerWrapper::GetTotalGameTimePlayed).
 		def("SetTotalGameTimePlayed", &ServerWrapper::SetTotalGameTimePlayed).
+		def("GetOvertimeTimePlayed", &ServerWrapper::GetOvertimeTimePlayed).
+		def("SetOvertimeTimePlayed", &ServerWrapper::SetOvertimeTimePlayed).
 		def("GetbRoundActive", &ServerWrapper::GetbRoundActive).
 		def("SetbRoundActive", &ServerWrapper::SetbRoundActive).
 		def("GetbPlayReplays", &ServerWrapper::GetbPlayReplays).
@@ -1434,8 +1750,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbNoContest", &ServerWrapper::SetbNoContest).
 		def("GetbDisableGoalDelay", &ServerWrapper::GetbDisableGoalDelay).
 		def("SetbDisableGoalDelay", &ServerWrapper::SetbDisableGoalDelay).
-		//def("GetbDisableSpawnInRedZone", &ServerWrapper::GetbDisableSpawnInRedZone).
-		//def("SetbDisableSpawnInRedZone", &ServerWrapper::SetbDisableSpawnInRedZone).
 		def("GetbShowNoScorerGoalMessage", &ServerWrapper::GetbShowNoScorerGoalMessage).
 		def("SetbShowNoScorerGoalMessage", &ServerWrapper::SetbShowNoScorerGoalMessage).
 		def("GetbMatchEnded", &ServerWrapper::GetbMatchEnded).
@@ -1490,12 +1804,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetAssistMaxTime", &ServerWrapper::SetAssistMaxTime).
 		def("GetBallHasBeenHitStartDelay", &ServerWrapper::GetBallHasBeenHitStartDelay).
 		def("SetBallHasBeenHitStartDelay", &ServerWrapper::SetBallHasBeenHitStartDelay).
-		//def("GetLowFPSRate", &ServerWrapper::GetLowFPSRate).
-		//def("SetLowFPSRate", &ServerWrapper::SetLowFPSRate).
-		//def("GetLowFPSTimeThreshold", &ServerWrapper::GetLowFPSTimeThreshold).
-		//def("SetLowFPSTimeThreshold", &ServerWrapper::SetLowFPSTimeThreshold).
-		//def("GetLowFPSTime", &ServerWrapper::GetLowFPSTime).
-		//def("SetLowFPSTime", &ServerWrapper::SetLowFPSTime).
 		def("GetPodiumDelay", &ServerWrapper::GetPodiumDelay).
 		def("SetPodiumDelay", &ServerWrapper::SetPodiumDelay).
 		def("GetPodiumTime", &ServerWrapper::GetPodiumTime).
@@ -1507,26 +1815,13 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetLobbyTime", &ServerWrapper::GetLobbyTime).
 		def("SetLobbyTime", &ServerWrapper::SetLobbyTime).
 		def("GetLobbySpawnRestartTime", &ServerWrapper::GetLobbySpawnRestartTime).
-		def("SetLobbySpawnRestartTime", &ServerWrapper::SetLobbySpawnRestartTime);
-
-
+		def("SetLobbySpawnRestartTime", &ServerWrapper::SetLobbySpawnRestartTime).
+		def("GetPauser", &ServerWrapper::GetPauser).
+		def("SetPauser", &ServerWrapper::SetPauser);
 
 	class_<TutorialWrapper, bases<ServerWrapper>>("TutorialWrapper", no_init).
-		def("get_team_num", &TutorialWrapper::GetTeamNum).
-		def("set_team_num", &TutorialWrapper::SetTeamNum).
-		def("get_redo_count", &TutorialWrapper::GetRedoCount).
-		def("set_redo_count", &TutorialWrapper::SetRedoCount).
-		def("get_redo_total", &TutorialWrapper::GetRedoTotal).
-		def("set_redo_total", &TutorialWrapper::SetRedoTotal).
-		//def("get_countdown_time_left", &TutorialWrapper::GetCountdownTimeLeft).
-		//def("set_countdown_time_left", &TutorialWrapper::SetCountdownTimeLeft).
-		def("get_ball_goal_num", &TutorialWrapper::GetBallGoalNum).
-		def("set_ball_goal_num", &TutorialWrapper::SetBallGoalNum).
-		//def("get_only_score_in_ball_goal_num", &TutorialWrapper::GetOnlyScoreInBallGoalNum).
-		//def("set_only_score_in_ball_goal_num", &TutorialWrapper::SetOnlyScoreInBallGoalNum).
-		//def("get_is_unlimited_boost", &TutorialWrapper::GetIsUnlimitedBoost).
-		//def("set_is_unlimited_boost", &TutorialWrapper::SetIsUnlimitedBoost).
-		//def("get_show_boost_meter", &TutorialWrapper::GetShowBoostMeter).
+		def("GetGameBall", &TutorialWrapper::GetGameBall).
+		def("GetGamePawn", &TutorialWrapper::GetGamePawn).
 		def("SetShowBoostMeter", &TutorialWrapper::SetShowBoostMeter).
 		def("GetBallBounceScale", &TutorialWrapper::GetBallBounceScale).
 		def("SetBallBounceScale", &TutorialWrapper::SetBallBounceScale).
@@ -1550,6 +1845,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GenerateShot", &TutorialWrapper::GenerateShot).
 		def("GenerateGoalAimLocation", &TutorialWrapper::GenerateGoalAimLocation).
 		def("GetGoalExtent", &TutorialWrapper::GetGoalExtent).
+		def("GetTotalFieldExtent", &TutorialWrapper::GetTotalFieldExtent).
+		def("SetTotalFieldExtent", &TutorialWrapper::SetTotalFieldExtent).
 		def("GetTotalFieldExtent", &TutorialWrapper::GetTotalFieldExtent).
 		def("SetTotalFieldExtent", &TutorialWrapper::SetTotalFieldExtent).
 		def("GetTeamNum", &TutorialWrapper::GetTeamNum).
@@ -1586,6 +1883,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetWaveSpawnCount", &TutorialWrapper::SetWaveSpawnCount).
 		def("GetRandomSpawnIndex", &TutorialWrapper::GetRandomSpawnIndex).
 		def("SetRandomSpawnIndex", &TutorialWrapper::SetRandomSpawnIndex).
+		def("GetStartMessageArchetype", &TutorialWrapper::GetStartMessageArchetype).
 		def("GetBallSpawnLocation", &TutorialWrapper::GetBallSpawnLocation).
 		def("SetBallSpawnLocation", &TutorialWrapper::SetBallSpawnLocation).
 		def("GetPointsScoredThisRound", &TutorialWrapper::GetPointsScoredThisRound).
@@ -1605,6 +1903,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetRedoTotal", &TutorialWrapper::GetRedoTotal).
 		def("SetRedoTotal", &TutorialWrapper::SetRedoTotal);
 
+	class_<BoostPickupWrapper, bases<VehiclePickupWrapper>>("BoostPickupWrapper", no_init).
+		def("GetBoostAmount", &BoostPickupWrapper::GetBoostAmount).
+		def("SetBoostAmount", &BoostPickupWrapper::SetBoostAmount);
 
 	class_<ReplayDirectorWrapper, bases<ActorWrapper>>("ReplayDirectorWrapper", no_init).
 		def("GetSlomoPreScoreTime", &ReplayDirectorWrapper::GetSlomoPreScoreTime).
@@ -1662,7 +1963,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetForceCutToFocusActors", &ReplayDirectorWrapper::GetForceCutToFocusActors).
 		def("SetForceCutToFocusActors", &ReplayDirectorWrapper::SetForceCutToFocusActors);
 
-
 	class_<CameraWrapper, bases<ActorWrapper>>("CameraWrapper", no_init).
 		def("GetSwivelFastSpeed", &CameraWrapper::GetSwivelFastSpeed).
 		def("SetSwivelFastSpeed", &CameraWrapper::SetSwivelFastSpeed).
@@ -1683,7 +1983,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetbDemolished", &CameraWrapper::GetbDemolished).
 		def("SetbDemolished", &CameraWrapper::SetbDemolished);
 
-
 	class_<ReplaySoccarWrapper, bases<ReplayWrapper>>("ReplaySoccarWrapper", no_init).
 		def("GetTeamSize", &ReplaySoccarWrapper::GetTeamSize).
 		def("SetTeamSize", &ReplaySoccarWrapper::SetTeamSize).
@@ -1696,7 +1995,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetTeam1Score", &ReplaySoccarWrapper::GetTeam1Score).
 		def("SetTeam1Score", &ReplaySoccarWrapper::SetTeam1Score);
 
-
 	class_<GameEditorWrapper, bases<ServerWrapper>>("GameEditorWrapper", no_init).
 		def("GetActiveRoundNumber", &GameEditorWrapper::GetActiveRoundNumber).
 		def("SetActiveRoundNumber", &GameEditorWrapper::SetActiveRoundNumber).
@@ -1706,7 +2004,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetHistoryPosition", &GameEditorWrapper::SetHistoryPosition).
 		def("GetMaxUndoHistory", &GameEditorWrapper::GetMaxUndoHistory).
 		def("SetMaxUndoHistory", &GameEditorWrapper::SetMaxUndoHistory);
-
 
 	class_<TrainingEditorWrapper, bases<GameEditorWrapper>>("TrainingEditorWrapper", no_init).
 		def("GetMinRoundTime", &TrainingEditorWrapper::GetMinRoundTime).
@@ -1735,15 +2032,18 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetSaveDelayTime", &TrainingEditorWrapper::GetSaveDelayTime).
 		def("SetSaveDelayTime", &TrainingEditorWrapper::SetSaveDelayTime).
 		def("GetSaveCooldown", &TrainingEditorWrapper::GetSaveCooldown).
-		def("SetSaveCooldown", &TrainingEditorWrapper::SetSaveCooldown);
-
+		def("SetSaveCooldown", &TrainingEditorWrapper::SetSaveCooldown).
+		def("GetTrainingFileName", &TrainingEditorWrapper::GetTrainingFileName);
 
 	class_<SaveDataWrapper, bases<ObjectWrapper>>("SaveDataWrapper", no_init).
+		def("GetDirectoryPath", &SaveDataWrapper::GetDirectoryPath).
+		def("GetSaveType", &SaveDataWrapper::GetSaveType).
+		def("GetSaveExt", &SaveDataWrapper::GetSaveExt).
 		def("GetbExactFileMatch", &SaveDataWrapper::GetbExactFileMatch).
 		def("SetbExactFileMatch", &SaveDataWrapper::SetbExactFileMatch);
 
-
 	class_<GameEditorSaveDataWrapper, bases<SaveDataWrapper>>("GameEditorSaveDataWrapper", no_init).
+		def("GetLoadedSaveName", &GameEditorSaveDataWrapper::GetLoadedSaveName).
 		def("GetTrainingData", &GameEditorSaveDataWrapper::GetTrainingData).
 		def("SetTrainingData", &GameEditorSaveDataWrapper::SetTrainingData).
 		def("GetPlayerTeamNumber", &GameEditorSaveDataWrapper::GetPlayerTeamNumber).
@@ -1751,23 +2051,32 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetbUnowned", &GameEditorSaveDataWrapper::GetbUnowned).
 		def("SetbUnowned", &GameEditorSaveDataWrapper::SetbUnowned).
 		def("GetShotsCompleted", &GameEditorSaveDataWrapper::GetShotsCompleted).
-		def("SetShotsCompleted", &GameEditorSaveDataWrapper::SetShotsCompleted);
-
+		def("SetShotsCompleted", &GameEditorSaveDataWrapper::SetShotsCompleted).
+		def("GetFavoritesFolderPath", &GameEditorSaveDataWrapper::GetFavoritesFolderPath).
+		def("GetMyTrainingFolderPath", &GameEditorSaveDataWrapper::GetMyTrainingFolderPath).
+		def("GetDownloadedFolderPath", &GameEditorSaveDataWrapper::GetDownloadedFolderPath);
 
 	class_<TrainingEditorSaveDataWrapper, bases<ObjectWrapper>>("TrainingEditorSaveDataWrapper", no_init).
+		def("GetCode", &TrainingEditorSaveDataWrapper::GetCode).
+		def("GetTM_Name", &TrainingEditorSaveDataWrapper::GetTM_Name).
 		def("GetType", &TrainingEditorSaveDataWrapper::GetType).
 		def("SetType", &TrainingEditorSaveDataWrapper::SetType).
 		def("GetDifficulty", &TrainingEditorSaveDataWrapper::GetDifficulty).
 		def("SetDifficulty", &TrainingEditorSaveDataWrapper::SetDifficulty).
+		def("GetCreatorName", &TrainingEditorSaveDataWrapper::GetCreatorName).
+		def("GetDescription", &TrainingEditorSaveDataWrapper::GetDescription).
 		def("GetNumRounds", &TrainingEditorSaveDataWrapper::GetNumRounds).
-		def("SetNumRounds", &TrainingEditorSaveDataWrapper::SetNumRounds);
-
+		def("SetNumRounds", &TrainingEditorSaveDataWrapper::SetNumRounds).
+		def("GetCreatedAt", &TrainingEditorSaveDataWrapper::GetCreatedAt).
+		def("SetCreatedAt", &TrainingEditorSaveDataWrapper::SetCreatedAt).
+		def("GetUpdatedAt", &TrainingEditorSaveDataWrapper::GetUpdatedAt).
+		def("SetUpdatedAt", &TrainingEditorSaveDataWrapper::SetUpdatedAt).
+		def("GetCreatorPlayerID", &TrainingEditorSaveDataWrapper::GetCreatorPlayerID).
+		def("SetCreatorPlayerID", &TrainingEditorSaveDataWrapper::SetCreatorPlayerID);
 
 	class_<AttachmentPickup, bases<RumblePickupComponentWrapper>>("AttachmentPickup", no_init);
 
-
 	class_<BallCarSpringPickup, bases<SpringPickup>>("BallCarSpringPickup", no_init);
-
 
 	class_<VelcroPickup, bases<RumblePickupComponentWrapper>>("VelcroPickup", no_init).
 		def("GetBallOffset", &VelcroPickup::GetBallOffset).
@@ -1799,7 +2108,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetBreakTime", &VelcroPickup::GetBreakTime).
 		def("SetBreakTime", &VelcroPickup::SetBreakTime);
 
-
 	class_<BasketballPickup, bases<RumblePickupComponentWrapper>>("BasketballPickup", no_init).
 		def("GetBallOffset", &BasketballPickup::GetBallOffset).
 		def("SetBallOffset", &BasketballPickup::SetBallOffset).
@@ -1812,13 +2120,11 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetOldBallMass", &BasketballPickup::GetOldBallMass).
 		def("SetOldBallMass", &BasketballPickup::SetOldBallMass);
 
-
 	class_<BattarangPickup, bases<BallLassoPickup>>("BattarangPickup", no_init).
 		def("GetSpinSpeed", &BattarangPickup::GetSpinSpeed).
 		def("SetSpinSpeed", &BattarangPickup::SetSpinSpeed).
 		def("GetCurRotation", &BattarangPickup::GetCurRotation).
 		def("SetCurRotation", &BattarangPickup::SetCurRotation);
-
 
 	class_<BoostModPickup, bases<RumblePickupComponentWrapper>>("BoostModPickup", no_init).
 		def("GetbUnlimitedBoost", &BoostModPickup::GetbUnlimitedBoost).
@@ -1828,11 +2134,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetOldBoostStrength", &BoostModPickup::GetOldBoostStrength).
 		def("SetOldBoostStrength", &BoostModPickup::SetOldBoostStrength);
 
-
 	class_<BoostOverridePickup, bases<TargetedPickup>>("BoostOverridePickup", no_init).
 		def("GetOtherCar", &BoostOverridePickup::GetOtherCar).
 		def("SetOtherCar", &BoostOverridePickup::SetOtherCar);
-
 
 	class_<CarSpeedPickup, bases<RumblePickupComponentWrapper>>("CarSpeedPickup", no_init).
 		def("GetGravityScale", &CarSpeedPickup::GetGravityScale).
@@ -1841,7 +2145,6 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetAddedForce", &CarSpeedPickup::SetAddedForce).
 		def("GetOrigGravityScale", &CarSpeedPickup::GetOrigGravityScale).
 		def("SetOrigGravityScale", &CarSpeedPickup::SetOrigGravityScale);
-
 
 	class_<DemolishPickup, bases<RumblePickupComponentWrapper>>("DemolishPickup", no_init).
 		def("GetDemolishTarget", &DemolishPickup::GetDemolishTarget).
@@ -1853,11 +2156,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetOldSpeed", &DemolishPickup::GetOldSpeed).
 		def("SetOldSpeed", &DemolishPickup::SetOldSpeed);
 
-
 	class_<HandbrakeOverridePickup, bases<TargetedPickup>>("HandbrakeOverridePickup", no_init).
 		def("GetOtherCar", &HandbrakeOverridePickup::GetOtherCar).
 		def("SetOtherCar", &HandbrakeOverridePickup::SetOtherCar);
-
 
 	class_<HitForcePickup, bases<RumblePickupComponentWrapper>>("HitForcePickup", no_init).
 		def("GetbBallForce", &HitForcePickup::GetbBallForce).
@@ -1879,11 +2180,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetLastFXTime", &HitForcePickup::GetLastFXTime).
 		def("SetLastFXTime", &HitForcePickup::SetLastFXTime);
 
-
 	class_<SwapperPickup, bases<TargetedPickup>>("SwapperPickup", no_init).
 		def("GetOtherCar", &SwapperPickup::GetOtherCar).
 		def("SetOtherCar", &SwapperPickup::SetOtherCar);
-
 
 	class_<TimeBombPickup, bases<RumblePickupComponentWrapper>>("TimeBombPickup", no_init).
 		def("GetRadius", &TimeBombPickup::GetRadius).
@@ -1904,6 +2203,9 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbDemolish", &TimeBombPickup::SetbDemolish).
 		def("GetbImpulse", &TimeBombPickup::GetbImpulse).
 		def("SetbImpulse", &TimeBombPickup::SetbImpulse);
+
+
+
 
 
 	PYTHON_ARRAY(ActorWrapper)

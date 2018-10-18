@@ -3,7 +3,7 @@
 #include <boost/python.hpp>
 #include "utils/parser.h"
 #include "utils/io.h"
-
+#pragma comment(lib, "python36.lib")
 unusedbutneededtocompile abc;
 const string PY_PATH = "./bakkesmod/py/";
 
@@ -21,6 +21,12 @@ dict main_namespace;
 dict global_namespace;
 dict local_namespace;
 
+#pragma optimize(off, "")
+void test()
+{
+	unusedbutneededtocompile abc;
+}
+#pragma optimize(on, "")
 void PythonPlugin::reinit_python() {
 	try {
 		//global_namespace.clear();
@@ -40,7 +46,9 @@ void PythonPlugin::reinit_python() {
 
 void PythonPlugin::onLoad()
 {
+
 	_bakPy = make_unique<BakPy>(BakPy(gameWrapper, cvarManager));
+	test();
 	cvarManager->registerNotifier("py_exec", [this, &cm = this->cvarManager, &gw = this->gameWrapper](vector<string> params) {
 		if (params.size() < 2) {
 			cm->log("usage: " + params.at(0) + " filename.py [params]");

@@ -1,4 +1,5 @@
 #pragma once
+
 #define BOOST_PYTHON_STATIC_LIB   
 #include "boost/python/detail/wrap_python.hpp"
 #pragma comment( lib, "bakkesmod.lib" )

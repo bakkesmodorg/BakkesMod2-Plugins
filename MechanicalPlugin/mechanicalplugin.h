@@ -14,10 +14,11 @@ private:
 	shared_ptr<bool> disableHandbrake;
 	shared_ptr<bool> disableJump;
 	shared_ptr<bool> disableBoost;
+	shared_ptr<bool> holdBoost;
 public:
 	virtual void onLoad();
 	virtual void onUnload();
-	void OnPreAsync(std::string funcName);
+	void OnPreAsync(CarWrapper cw, void * params, string funcName);
 
 
 	void OnFreeplayLoad(std::string eventName);
