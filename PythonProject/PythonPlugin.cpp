@@ -113,7 +113,7 @@ void PythonPlugin::onLoad()
 		}
 	}, "Registers python script which will be ticked every gametick", PERMISSION_ALL);
 
-	gameWrapper->HookEvent("Function Engine.GameViewportClient.Tick", bind(&PythonPlugin::on_tick, this, _1));
+	gameWrapper->HookEvent("Function TAGame.Car_TA.SetVehicleInput", bind(&PythonPlugin::on_tick, this, _1));
 
 #endif
 
