@@ -74,9 +74,15 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 void RCONPlugin::run_server() {
 	try {
 		// Set logging settings
-		//ws_server.set_access_channels(websocketpp::log::alevel::all);
-		//ws_server.clear_access_channels(websocketpp::log::alevel::frame_payload);
-
+		ws_server.set_access_channels(websocketpp::log::alevel::all);
+		//ws_server.set_access_channels(websocketpp::log::alevel::access_core);
+		//ws_server.set_access_channels(websocketpp::log::alevel::app);
+		static std::ofstream wslog("ws.log.txt");
+		static std::ofstream wserlog("ws.errlog.txt");
+		ws_server.get_alog().set_ostream(&wslog);
+		ws_server.get_elog().set_ostream(&wserlog);
+		ws_server.get_alog().write(websocketpp::log::alevel::app, "ws_server constructor");
+		ws_server.get_elog().write(websocketpp::log::alevel::app, "ws_server constructor elog");
 		// Initialize Asio
 		ws_server.init_asio();
 
@@ -133,7 +139,42 @@ void RCONPlugin::onLoad()
 		}
 	}, "Sends text to all connected clients. Usage: sendback abc def ghi \"hij klm\"", PERMISSION_ALL); 
 
+	cvarManager->registerNotifier("ws_inventory", [this](vector<string> commands) {
+		if (commands.size() < 3)
+			return;
+		cvarManager->log("Sending invent");
+		for (auth_iter iterator = auths.begin(); iterator != auths.end(); iterator++)
+		{
+			if (is_authenticated(iterator->first) && iterator->first.get()->get_state() == websocketpp::session::state::open)
+			{
 
+				std::string str = "invent_dump";
+				for (int i = 1; i < 3; i++)
+				{
+					str += " \"" + commands.at(i) + "\"";
+				}
+				cvarManager->executeCommand(str);
+				std::string format = commands.at(2).compare("csv") == 0 ? "csv" : "json"; //Dont want any path injection stuff
+				std::ifstream ifs("./bakkesmod/data/inventory." + format);
+				std::string content((std::istreambuf_iterator<char>(ifs)),
+					(std::istreambuf_iterator<char>()));
+
+
+				string::size_type pos = 0; // Must initialize
+				std::stringstream a;
+				a << std::endl;
+				std::string endl = a.str();
+				while ((pos = content.find(endl, pos)) != string::npos)
+				{
+					content.erase(pos, endl.size());
+				}
+				auto ec = iterator->first->send(content + "\n", websocketpp::frame::opcode::binary);
+
+				cvarManager->log(ec.message());
+			}
+		}
+
+	}, "Sends text to all connected clients. Usage: sendback abc def ghi \"hij klm\"", PERMISSION_ALL);
 	//thread t(run_server);
 	run_server();
 	//ws_server.run();

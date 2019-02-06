@@ -509,8 +509,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbHasPitchedBack", &PlayerControllerWrapper::SetbHasPitchedBack).
 		def("GetbAllowAsymmetricalMute", &PlayerControllerWrapper::GetbAllowAsymmetricalMute).
 		def("SetbAllowAsymmetricalMute", &PlayerControllerWrapper::SetbAllowAsymmetricalMute).
-		def("GetbResetCamera", &PlayerControllerWrapper::GetbResetCamera).
-		def("SetbResetCamera", &PlayerControllerWrapper::SetbResetCamera).
+		//def("GetbResetCamera", &PlayerControllerWrapper::GetbResetCamera).
+		//def("SetbResetCamera", &PlayerControllerWrapper::SetbResetCamera).
 		def("GetTimeClientAckdAdjustSimTime", &PlayerControllerWrapper::GetTimeClientAckdAdjustSimTime).
 		def("SetTimeClientAckdAdjustSimTime", &PlayerControllerWrapper::SetTimeClientAckdAdjustSimTime).
 		def("GetReplicatedInputBufferSize", &PlayerControllerWrapper::GetReplicatedInputBufferSize).
@@ -588,10 +588,10 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetLastInputs", &PlayerControllerWrapper::SetLastInputs).
 		def("GetPendingViewPRI", &PlayerControllerWrapper::GetPendingViewPRI).
 		def("SetPendingViewPRI", &PlayerControllerWrapper::SetPendingViewPRI).
-		def("GetLastInputPitch", &PlayerControllerWrapper::GetLastInputPitch).
-		def("SetLastInputPitch", &PlayerControllerWrapper::SetLastInputPitch).
-		def("GetLastInputYaw", &PlayerControllerWrapper::GetLastInputYaw).
-		def("SetLastInputYaw", &PlayerControllerWrapper::SetLastInputYaw).
+		//def("GetLastInputPitch", &PlayerControllerWrapper::GetLastInputPitch).
+		//def("SetLastInputPitch", &PlayerControllerWrapper::SetLastInputPitch).
+		//def("GetLastInputYaw", &PlayerControllerWrapper::GetLastInputYaw).
+		//def("SetLastInputYaw", &PlayerControllerWrapper::SetLastInputYaw).
 		def("GetMouseInputMax", &PlayerControllerWrapper::GetMouseInputMax).
 		def("SetMouseInputMax", &PlayerControllerWrapper::SetMouseInputMax).
 		def("GetPrimaryPlayerController", &PlayerControllerWrapper::GetPrimaryPlayerController).
@@ -646,8 +646,8 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetbPredictionOnGround", &BallWrapper::SetbPredictionOnGround).
 		def("GetbCanBeAttached", &BallWrapper::GetbCanBeAttached).
 		def("SetbCanBeAttached", &BallWrapper::SetbCanBeAttached).
-		def("GetbNewFalling", &BallWrapper::GetbNewFalling).
-		def("SetbNewFalling", &BallWrapper::SetbNewFalling).
+		//def("GetbNewFalling", &BallWrapper::GetbNewFalling).
+		//def("SetbNewFalling", &BallWrapper::SetbNewFalling).
 		def("GetbItemFreeze", &BallWrapper::GetbItemFreeze).
 		def("SetbItemFreeze", &BallWrapper::SetbItemFreeze).
 		def("GetRadius", &BallWrapper::GetRadius).
@@ -684,7 +684,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetPredictionTimestep", &BallWrapper::SetPredictionTimestep).
 		def("GetLastPredictionTime", &BallWrapper::GetLastPredictionTime).
 		def("SetLastPredictionTime", &BallWrapper::SetLastPredictionTime).
-		def("GetBallSloMoRadius", &BallWrapper::GetBallSloMoRadius).
+		/*def("GetBallSloMoRadius", &BallWrapper::GetBallSloMoRadius).
 		def("SetBallSloMoRadius", &BallWrapper::SetBallSloMoRadius).
 		def("GetBallSloMoDuration", &BallWrapper::GetBallSloMoDuration).
 		def("SetBallSloMoDuration", &BallWrapper::SetBallSloMoDuration).
@@ -697,7 +697,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("GetBallSloMoDiffSpeed", &BallWrapper::GetBallSloMoDiffSpeed).
 		def("SetBallSloMoDiffSpeed", &BallWrapper::SetBallSloMoDiffSpeed).
 		def("GetBallTouchScore", &BallWrapper::GetBallTouchScore).
-		def("SetBallTouchScore", &BallWrapper::SetBallTouchScore).
+		def("SetBallTouchScore", &BallWrapper::SetBallTouchScore).*/
 		def("GetGroundForce", &BallWrapper::GetGroundForce).
 		def("SetGroundForce", &BallWrapper::SetGroundForce).
 		def("GetCurrentAffector", &BallWrapper::GetCurrentAffector).
@@ -1626,7 +1626,7 @@ BOOST_PYTHON_MODULE(bakkesmod)
 		def("SetPartyLeader", &PriWrapper::SetPartyLeader).
 		def("GetTotalXP", &PriWrapper::GetTotalXP).
 		def("SetTotalXP", &PriWrapper::SetTotalXP).
-		def("GetSanitizedPlayerName", &PriWrapper::GetSanitizedPlayerName).
+		//def("GetSanitizedPlayerName", &PriWrapper::GetSanitizedPlayerName).
 		def("GetDodgeInputThreshold", &PriWrapper::GetDodgeInputThreshold).
 		def("SetDodgeInputThreshold", &PriWrapper::SetDodgeInputThreshold).
 		def("GetSteeringSensitivity", &PriWrapper::GetSteeringSensitivity).
