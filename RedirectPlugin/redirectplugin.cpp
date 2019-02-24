@@ -19,9 +19,9 @@ void RedirectPlugin::onLoad()
 	cvarManager->registerCvar("redirect_predict_multiplier_y", "2", "Y offset to use when passing (playerVelocityY * value)");
 
 	cvarManager->registerNotifier("redirect_shoot", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
-		if (!gameWrapper->IsInTutorial())
+		if (!gameWrapper->IsInFreeplay())
 			return;
-		TutorialWrapper training = gameWrapper->GetGameEventAsTutorial();
+		ServerWrapper training = gameWrapper->GetGameEventAsServer();
 
 		if (training.GetGameCar().IsNull() || training.GetBall().IsNull())
 			return;

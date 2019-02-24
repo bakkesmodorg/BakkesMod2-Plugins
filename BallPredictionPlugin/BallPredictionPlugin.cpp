@@ -23,7 +23,7 @@ void BallPredictionPlugin::onLoad()
 	predictStepSize = make_shared<float>(40.f);
 	cvarManager->registerCvar("cl_soccar_predictball", "0", "Show ball prediction", true, true, 0, true, 1).bindTo(predictOn);
 	
-	cvarManager->registerCvar("cl_soccar_predictball_steps", "480", "Predict ball steps", true, true, 0, true, 1000).bindTo(predictSteps);
+	cvarManager->registerCvar("cl_soccar_predictball_steps", "160", "Predict ball steps", true, true, 0, true, 1000).bindTo(predictSteps);
 	cvarManager->registerCvar("cl_soccar_predictball_stepsize", "40", "Predict ball stepsize", true, true, 0, true, 1000).bindTo(predictStepSize);
 
 	cvarManager->getCvar("cl_soccar_predictball").addOnValueChanged(std::bind(&BallPredictionPlugin::OnPredictOnValueChanged, this, std::placeholders::_1, std::placeholders::_2));
@@ -200,13 +200,14 @@ void BallPredictionPlugin::Predict(std::string eventName)
 }
 
 bool b = false;
+const int max_apex = 5;
 void BallPredictionPlugin::Render(CanvasWrapper canvas)
 {
 	if (*predictOn && gameWrapper->IsInGame())
 	{
 		
 		Vector2 currentBallLocation2D = canvas.Project(predictedPoints[0].location); //Project ball current 3d location to 2d screen
-		
+		int apexes = 0;
 		for (int i = 1; i < (*predictSteps); i++)
 		{
 			PredictedPoint p = predictedPoints[i];
@@ -216,15 +217,17 @@ void BallPredictionPlugin::Render(CanvasWrapper canvas)
 				continue;
 
 			LineColor stepColor = colors[0];
+			
 			canvas.SetColor(stepColor.r, stepColor.g, stepColor.b, stepColor.a);
-			canvas.DrawLine(currentBallLocation2D, newPredictedLocation2D);
+			canvas.DrawLine(currentBallLocation2D, newPredictedLocation2D, 3);
 
 			stepColor = colors[1];
 			canvas.SetColor(stepColor.r, stepColor.g, stepColor.b, stepColor.a);
-			canvas.DrawLine(currentBallLocation2D.minus({ 1,1 }), newPredictedLocation2D.minus({ 1, 1 }));
-			canvas.DrawLine(currentBallLocation2D.minus({ -1,-1 }), newPredictedLocation2D.minus({ -1, -1 }));
-			if (p.isApex)
+			canvas.DrawLine(currentBallLocation2D.minus({ 2,2 }), newPredictedLocation2D.minus({ 2, 2 }), 2);
+			canvas.DrawLine(currentBallLocation2D.minus({ -2,-2 }), newPredictedLocation2D.minus({ -2, -2 }), 2);
+			if (p.isApex && apexes < max_apex)
 			{
+				apexes++;
 				canvas.SetColor(255, 0, 0, 200);
 				Vector2 predictedBounceLocation = canvas.Project(p.location + p.apexLocation);
 

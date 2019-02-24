@@ -80,9 +80,9 @@ void JsonShot::init(GameWrapper* gw, CVarManagerWrapper* cons)
 		if (opt.count("shootongoal") > 0) {
 			int shoot_on_goal = opt["shootongoal"];
 			currentshot.options.shoot_on_goal = shoot_on_goal;
-			if ((shoot_on_goal == 1 || shoot_on_goal == 2) && gw->IsInTutorial()) {
-				Vector location = gw->GetGameEventAsTutorial().GetGoalLocation(shoot_on_goal - 1);
-				Vector extend = gw->GetGameEventAsTutorial().GetGoalExtent(shoot_on_goal - 1);
+			if ((shoot_on_goal == 1 || shoot_on_goal == 2) && gw->IsInFreeplay()) {
+				Vector location = gw->GetGameEventAsServer().GetGoalLocation(shoot_on_goal - 1);
+				Vector extend = gw->GetGameEventAsServer().GetGoalExtent(shoot_on_goal - 1);
 				VectorString vs;
 				vs.x = "(" + to_string(location.X - extend.X / 2) + ", " + to_string(location.X + extend.X / 2) + ")";
 				vs.y = "(" + to_string(location.Y - extend.Y / 2) + ", " + to_string(location.Y + extend.Y / 2) + ")";
@@ -152,8 +152,8 @@ void JsonShot::init(GameWrapper* gw, CVarManagerWrapper* cons)
 
 void JsonShot::setVelocity(GameWrapper* gw, CVarManagerWrapper * cons, Vector ballLoc) {
 	if (!shot.options.use_velocity) {
-		if (gw->IsInTutorial()) {
-			TutorialWrapper tw = gw->GetGameEventAsTutorial();
+		if (gw->IsInFreeplay()) {
+			ServerWrapper tw = gw->GetGameEventAsServer();
 			VectorString dest = *select_randomly(shot.end.locations.begin(), shot.end.locations.end());
 			Vector vecDest(get_safe_float(dest.x), get_safe_float(dest.y), get_safe_float(dest.z));
 			Vector shotVec = tw.GenerateShot(ballLoc, vecDest, random(shot.speed.min, shot.speed.max));
@@ -192,8 +192,8 @@ void JsonShot::set(GameWrapper* gw, CVarManagerWrapper * cons)
 		cons->getCvar("shot_initial_ball_velocity_z").setValue(b.velocity.z);
 	}
 	else {
-		if (gw->IsInTutorial()) {
-			TutorialWrapper tw = gw->GetGameEventAsTutorial();
+		if (gw->IsInFreeplay()) {
+			ServerWrapper tw = gw->GetGameEventAsServer();
 			VectorString dest = *select_randomly(shot.end.locations.begin(), shot.end.locations.end());
 			Vector vecDest(get_safe_float(dest.x), get_safe_float(dest.y), get_safe_float(dest.z));
 			Vector shotVec = tw.GenerateShot(b.location.getVector(), vecDest, random(shot.speed.min, shot.speed.max));

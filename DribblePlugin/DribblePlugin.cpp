@@ -9,15 +9,18 @@ void DribblePlugin::onLoad()
 {
 	//Place the ball on top of the player
 	cvarManager->registerNotifier("ballontop", [&gw = this->gameWrapper](vector<string> commands) {
-		if (!gw->IsInTutorial())
+		if (!gw->IsInFreeplay())
 			return;
-		TutorialWrapper tutorial = gw->GetGameEventAsTutorial();
+		ServerWrapper tutorial = gw->GetGameEventAsServer();
 
-		BallWrapper ball = tutorial.GetGameBall();
+
+		if (tutorial.GetGameBalls().Count() == 0 )
+			return;
+
+		BallWrapper ball = tutorial.GetGameBalls().Get(0);
 		CarWrapper car = tutorial.GetGameCar();
-		if (tutorial.GetGameBalls().Count() == 0 || ball.IsNull() || car.IsNull())
+		if (ball.IsNull() || car.IsNull())
 			return;
-
 		Vector playerVelocity = car.GetVelocity();
 		Vector addToBall = Vector(playerVelocity.X, playerVelocity.Y, 170);
 
@@ -38,9 +41,9 @@ void DribblePlugin::onLoad()
 	cvarManager->registerCvar("shootatme_speed", "(800, 1000)");
 
 	cvarManager->registerNotifier("shootatme", [&cm = this->cvarManager, &gw = this->gameWrapper](vector<string> commands) {
-		if (!gw->IsInTutorial())
+		if (!gw->IsInFreeplay())
 			return;
-		TutorialWrapper tutorial = gw->GetGameEventAsTutorial();
+		ServerWrapper tutorial = gw->GetGameEventAsServer();
 		BallWrapper ball = tutorial.GetBall();
 		CarWrapper car = tutorial.GetGameCar();
 		Vector location = car.GetLocation();

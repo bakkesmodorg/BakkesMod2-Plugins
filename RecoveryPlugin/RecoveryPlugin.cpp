@@ -15,7 +15,7 @@ void RecoveryPlugin::onLoad()
 	cvarManager->registerCvar("recovery_cooldown", "(3000, 6000)", "Minimum time to wait after a bump", true, true, 0.f, true, 120000.f);
 
 	cvarManager->registerNotifier("recovery_start", [this](std::vector<string> params) {
-		if (!gameWrapper->IsInTutorial())
+		if (!gameWrapper->IsInFreeplay())
 		{
 			cvarManager->log("You need to be in freeplay to use this plugin.");
 			return;
@@ -38,7 +38,7 @@ void RecoveryPlugin::onUnload()
 
 void RecoveryPlugin::CheckForBump()
 {
-	if (!recoveryEnabled || !gameWrapper->IsInTutorial())
+	if (!recoveryEnabled || !gameWrapper->IsInFreeplay())
 		return; //Player stopped recovery training or left freeplay
 
 	gameWrapper->SetTimeout([this](GameWrapper* gw) {
@@ -48,9 +48,9 @@ void RecoveryPlugin::CheckForBump()
 
 float RecoveryPlugin::GetBumpTimeout()
 {
-	if (!gameWrapper->IsInTutorial() || !recoveryEnabled)
+	if (!gameWrapper->IsInFreeplay() || !recoveryEnabled)
 		return .5f;
-	TutorialWrapper training = gameWrapper->GetGameEventAsTutorial();
+	ServerWrapper training = gameWrapper->GetGameEventAsServer();
 	float lastBump = training.GetSecondsElapsed() - lastBumpTime;
 	if (lastBump > lastCooldownTime)
 	{
@@ -68,9 +68,9 @@ float RecoveryPlugin::GetBumpTimeout()
 
 void RecoveryPlugin::ExecuteBump()
 {
-	if (!gameWrapper->IsInTutorial() || !recoveryEnabled)
+	if (!gameWrapper->IsInFreeplay() || !recoveryEnabled)
 		return;
-	auto tutorial = gameWrapper->GetGameEventAsTutorial();
+	auto tutorial = gameWrapper->GetGameEventAsServer();
 
 
 

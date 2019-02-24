@@ -56,7 +56,7 @@ void MechanicalPlugin::onUnload()
 void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 {
 	//cvarManager->log("PreAsync");
-	if (gameWrapper->IsInTutorial())
+	if (gameWrapper->IsInFreeplay())
 	{
 		//cvarManager->log("PreAsync in tut");
 		//auto players = gameWrapper->GetGameEventAsServer().GetCars();
@@ -115,7 +115,7 @@ void MechanicalPlugin::OnFreeplayDestroy(std::string eventName)
 
 void MechanicalPlugin::OnEnabledChanged(std::string oldValue, CVarWrapper cvar)
 {
-	if (cvar.getBoolValue() && gameWrapper->IsInTutorial())
+	if (cvar.getBoolValue() && gameWrapper->IsInFreeplay())
 	{
 		gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
 			bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));

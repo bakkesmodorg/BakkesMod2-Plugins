@@ -33,7 +33,7 @@ public:
 	float boost_amount; //boost
 	float timestamp;
 
-	GameState(TutorialWrapper tw, float ts) {
+	GameState(ServerWrapper tw, float ts) {
 		BallWrapper b = tw.GetBall();
 		CarWrapper c = tw.GetGameCar();
 
@@ -96,7 +96,7 @@ public:
 		boost_amount = lhs.boost_amount + (((rhs.boost_amount - lhs.boost_amount) / intval)*custom_elapsed);
 	}
 
-	void apply(TutorialWrapper tw) {
+	void apply(ServerWrapper tw) {
 		BallWrapper b = tw.GetBall();
 		CarWrapper c = tw.GetGameCar();
 		b.SetLocation(ball_location);
@@ -133,7 +133,7 @@ void RewindPlugin::onLoad()
 	recorderEnabled = true;
 
 	cvarManager->registerNotifier("sv_rewind_play", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
-		if (!gameWrapper->IsInTutorial())
+		if (!gameWrapper->IsInFreeplay())
 			return;
 		if (history.size() == 0) {
 			cvarManager->log("No gamestates recorded");
@@ -144,11 +144,11 @@ void RewindPlugin::onLoad()
 		favorite = history.back();
 	}, "Plays the currently saved rewind back", PERMISSION_FREEPLAY);
 	cvarManager->registerNotifier("sv_rewind_favorite", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
-		if (!gameWrapper->IsInTutorial())
+		if (!gameWrapper->IsInFreeplay())
 			return;
 		overwriting = true;
 		overwrite = favorite;
-		TutorialWrapper tw = gameWrapper->GetGameEventAsTutorial();
+		ServerWrapper tw = gameWrapper->GetGameEventAsServer();
 		tw.GetGameCar().Stop();
 		overwrite.apply(tw);
 	}, "Sets the car to the last favorited rewind point", PERMISSION_FREEPLAY);
@@ -188,9 +188,9 @@ float snapshotElapsed = .0f;
 int rewindFunc = 0;
 void RewindPlugin::OnPreAsync(std::string funcName)
 {
-	if (gameWrapper->IsInTutorial())
+	if (gameWrapper->IsInFreeplay())
 	{
-		TutorialWrapper tw = gameWrapper->GetGameEventAsTutorial();
+		ServerWrapper tw = gameWrapper->GetGameEventAsServer();
 		
 		//cvarManager->log("Pressed: " + to_string(gameWrapper->IsKeyPressed(idx)));
 		if (gameWrapper->IsKeyPressed(rewindKey))
@@ -286,9 +286,9 @@ void RewindPlugin::OnPreAsync(std::string funcName)
 float lastRecordTime = .0f;
 void RewindPlugin::record()
 {
-	if (!gameWrapper->IsInTutorial())
+	if (!gameWrapper->IsInFreeplay())
 		return;
-	TutorialWrapper tw = gameWrapper->GetGameEventAsTutorial();
+	ServerWrapper tw = gameWrapper->GetGameEventAsServer();
 
 	if (abs(tw.GetSecondsElapsed() - lastRecordTime) < snapshot_interval)
 		return;

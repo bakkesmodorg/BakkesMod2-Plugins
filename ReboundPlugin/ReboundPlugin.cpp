@@ -16,28 +16,28 @@ void ReboundPlugin::onLoad()
 	cvarManager->registerCvar("rebound_resetspin", "0", "Whether or not to remove the existing spin on the ball", true, true, 0, true, 1);
 
 	cvarManager->registerNotifier("rebound_shoot", [&cm = this->cvarManager, &gw = this->gameWrapper](vector<string>) {
-		if (!gw->IsInTutorial())
+		if (!gw->IsInFreeplay())
 			return;
-		TutorialWrapper tw = gw->GetGameEventAsTutorial();
+		ServerWrapper tw = gw->GetGameEventAsServer();
 
 		//If there are less than 2 goals, its probably a workshop map, dont rebound here
-		if (tw.GetGoals().Count() < 2)
+		if (tw.GetGoals().Count() < 2 || tw.GetCars().Count() == 0)
 			return;
 
-		if (tw.GetGameCar().IsNull() || tw.GetBall().IsNull())
+		CarWrapper player = tw.GetCars().Get(0);
+		if (player.IsNull() || tw.GetBall().IsNull())
 			return;
 
 		Vector ballLoc = tw.GetBall().GetLocation();
 
 		//Calculate nearest goal
-		CarWrapper player = tw.GetGameCar();
-		Vector playerLocLater = tw.GetGameCar().GetLocation() + (tw.GetGameCar().GetVelocity() * 200); //Calculate where player is facing
+		Vector playerLocLater = player.GetLocation() + (player.GetVelocity() * 200); //Calculate where player is facing
 		if (abs(player.GetVelocity().X) < 1 && abs(player.GetVelocity().X) < 1) 
 		{
 			playerLocLater = ballLoc; //if player is not moving, set rebound to the goal the ball is closest to
 		}
-		Vector goal1Diff = tw.GetGoalLocation(0) - playerLocLater;
-		Vector goal2Diff = tw.GetGoalLocation(1) - playerLocLater;
+		Vector goal1Diff = tw.GetGoals().Get(0).GetLocation() - playerLocLater;
+		Vector goal2Diff = tw.GetGoals().Get(1).GetLocation() - playerLocLater;
 		float goal1DiffF = abs(goal1Diff.X) + abs(goal1Diff.Y) + abs(goal1Diff.Z);
 		float goal2DiffF = abs(goal2Diff.X) + abs(goal2Diff.Y) + abs(goal2Diff.Z);
 
