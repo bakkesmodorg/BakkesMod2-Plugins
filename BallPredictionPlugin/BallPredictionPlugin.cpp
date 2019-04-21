@@ -21,7 +21,7 @@ void BallPredictionPlugin::onLoad()
 	predictStepSize = make_shared<float>(40.f);
 	cvarManager->registerCvar("cl_soccar_predictball", "0", "Show ball prediction", true, true, 0, true, 1).bindTo(predictOn);
 
-	cvarManager->registerCvar("cl_soccar_predictball_steps", "1480", "Predict ball steps", true, true, 0, true, 1000).bindTo(predictSteps);
+	cvarManager->registerCvar("cl_soccar_predictball_steps", "480", "Predict ball steps", true, true, 0, true, 1000).bindTo(predictSteps);
 	cvarManager->registerCvar("cl_soccar_predictball_stepsize", "40", "Predict ball stepsize", true, true, 0, true, 1000).bindTo(predictStepSize);
 
 	cvarManager->getCvar("cl_soccar_predictball").addOnValueChanged(std::bind(&BallPredictionPlugin::OnPredictOnValueChanged, this, std::placeholders::_1, std::placeholders::_2));
