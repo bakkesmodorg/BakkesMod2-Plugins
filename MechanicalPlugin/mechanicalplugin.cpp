@@ -34,7 +34,7 @@ void MechanicalPlugin::onLoad()
 	cvarManager->registerCvar("mech_steer_limit", "1", "Clamps steer", true, true, 0.f, true, 1.f).bindTo(limitSteer);
 	cvarManager->registerCvar("mech_throttle_limit", "1", "Clamps throttle", true, true, 0.f, true, 1.f).bindTo(limitThrottle);
 	cvarManager->registerCvar("mech_yaw_limit", "1", "Clamps yaw", true, true, 0.f, true, 1.f).bindTo(limitYaw);
-	cvarManager->registerCvar("mech_pitch_limit", "1", "Clamps pitch", true, true, 0.f, true, 1.f).bindTo(limitYaw);
+	cvarManager->registerCvar("mech_pitch_limit", "1", "Clamps pitch", true, true, 0.f, true, 1.f).bindTo(limitPitch);
 	cvarManager->registerCvar("mech_roll_limit", "1", "Clamps roll", true, true, 0.f, true, 1.f).bindTo(limitRoll);
 
 	cvarManager->registerCvar("mech_disable_handbrake", "0", "Disables handbrake", true, true, 0.f, true, 1.f).bindTo(disableHandbrake);
