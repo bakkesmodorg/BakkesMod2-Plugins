@@ -9,7 +9,7 @@ BAKKESMOD_PLUGIN(MechanicalPlugin, "Mechanical training plugin", "0.1", PLUGINTY
 
 template <typename T>
 T clip(const T& n, const T& lower, const T& upper) {
-	return std::max(lower, std::min(n, upper));
+	return max(lower, min(n, upper));
 }
 
 void MechanicalPlugin::onLoad()
@@ -44,12 +44,6 @@ void MechanicalPlugin::onLoad()
 	cvarManager->registerCvar("mech_disable_boost", "0", "Disables boost", true, true, 0.f, true, 1.f).bindTo(disableBoost);
 	cvarManager->registerCvar("mech_hold_boost", "0", "Holds boost", true, true, 0.f, true, 1.f).bindTo(holdBoost);
 	cvarManager->registerCvar("mech_hold_roll", "0", "Holds air roll", true, true, 0.f, true, 1.f).bindTo(holdRoll);
-	
-	/*gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
-		bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));*/
-
-	//gameWrapper->HookEventWithCallerPost<PlayerControllerWrapper >("Function TAGame.PlayerController_TA.PlayerMove", std::bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-	// > HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MechanicalPlugin::OnPreAsync, this, _1));
 }
 
 void MechanicalPlugin::onUnload()
@@ -58,7 +52,6 @@ void MechanicalPlugin::onUnload()
 
 void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 {
-	//cvarManager->log("PreAsync");
 	if (gameWrapper->IsInFreeplay())
 	{
 		//cvarManager->log("PreAsync in tut");
@@ -108,8 +101,6 @@ void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 			ci->Pitch = clip(ci->Pitch, -abs(*limitPitch), abs(*limitPitch));
 			ci->Roll = clip(ci->Roll, -abs(*limitRoll), abs(*limitRoll));
 			//player.SetInput(ci);
-			
-		
 	}
 }
 
@@ -122,7 +113,7 @@ void MechanicalPlugin::OnFreeplayLoad(std::string eventName)
 
 void MechanicalPlugin::OnFreeplayDestroy(std::string eventName)
 {
-	gameWrapper->UnhookEvent("Function TAGame.RBActor_TA.PreAsyncTick");
+	gameWrapper->UnhookEvent("Function TAGame.Car_TA.SetVehicleInput");
 }
 
 void MechanicalPlugin::OnEnabledChanged(std::string oldValue, CVarWrapper cvar)
@@ -134,6 +125,6 @@ void MechanicalPlugin::OnEnabledChanged(std::string oldValue, CVarWrapper cvar)
 	}
 	else
 	{
-		gameWrapper->UnhookEvent("Function TAGame.RBActor_TA.PreAsyncTick");
+		gameWrapper->UnhookEvent("Function TAGame.Car_TA.SetVehicleInput");
 	}
 }
