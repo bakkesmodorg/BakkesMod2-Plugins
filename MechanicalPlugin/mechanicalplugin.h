@@ -15,6 +15,7 @@ private:
 	shared_ptr<bool> disableJump;
 	shared_ptr<bool> disableBoost;
 	shared_ptr<bool> holdBoost;
+	shared_ptr<bool> holdRoll;
 public:
 	virtual void onLoad();
 	virtual void onUnload();
