@@ -9,7 +9,7 @@ BAKKESMOD_PLUGIN(MechanicalPlugin, "Mechanical training plugin", "0.1", PLUGINTY
 
 template <typename T>
 T clip(const T& n, const T& lower, const T& upper) {
-	return std::max(lower, std::min(n, upper));
+	return max(lower, min(n, upper));
 }
 
 void MechanicalPlugin::onLoad()
@@ -25,6 +25,8 @@ void MechanicalPlugin::onLoad()
 	disableJump = make_shared<bool>(false);
 	disableBoost = make_shared<bool>(false);
 	holdBoost = make_shared<bool>(false);
+	holdRoll = make_shared<bool>(false);
+	
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Tutorial_TA.OnInit", bind(&MechanicalPlugin::OnFreeplayLoad, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Tutorial_TA.Destroyed", bind(&MechanicalPlugin::OnFreeplayDestroy, this, std::placeholders::_1));
 
@@ -40,13 +42,8 @@ void MechanicalPlugin::onLoad()
 	cvarManager->registerCvar("mech_disable_handbrake", "0", "Disables handbrake", true, true, 0.f, true, 1.f).bindTo(disableHandbrake);
 	cvarManager->registerCvar("mech_disable_jump", "0", "Disables jump", true, true, 0.f, true, 1.f).bindTo(disableJump);
 	cvarManager->registerCvar("mech_disable_boost", "0", "Disables boost", true, true, 0.f, true, 1.f).bindTo(disableBoost);
-
 	cvarManager->registerCvar("mech_hold_boost", "0", "Holds boost", true, true, 0.f, true, 1.f).bindTo(holdBoost);
-	/*gameWrapper->HookEventWithCaller<CarWrapper>("Function TAGame.Car_TA.SetVehicleInput",
-		bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));*/
-
-	//gameWrapper->HookEventWithCallerPost<PlayerControllerWrapper >("Function TAGame.PlayerController_TA.PlayerMove", std::bind(&MechanicalPlugin::OnPreAsync, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-	// > HookEvent("Function TAGame.RBActor_TA.PreAsyncTick", bind(&MechanicalPlugin::OnPreAsync, this, _1));
+	cvarManager->registerCvar("mech_hold_roll", "0", "Holds air roll", true, true, 0.f, true, 1.f).bindTo(holdRoll);
 }
 
 void MechanicalPlugin::onUnload()
@@ -55,7 +52,6 @@ void MechanicalPlugin::onUnload()
 
 void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 {
-	//cvarManager->log("PreAsync");
 	if (gameWrapper->IsInFreeplay())
 	{
 		//cvarManager->log("PreAsync in tut");
@@ -89,6 +85,15 @@ void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 				ci->HoldingBoost = true;
 				//cvarManager->log("blocked boost");
 			}
+		
+			if (*holdRoll)
+			{
+				//Controller input for air roll
+				//Change Yaw into Roll
+				ci->Roll = clip(ci->Yaw, -abs(*limitRoll), abs(*limitRoll));
+				ci->Yaw = 0
+				//cvarManager->log("blocked air roll");
+			}
 
 			ci->Steer = clip(ci->Steer, -abs(*limitSteer), abs(*limitSteer));
 			ci->Throttle = clip(ci->Throttle, -abs(*limitThrottle), abs(*limitThrottle));
@@ -96,8 +101,6 @@ void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 			ci->Pitch = clip(ci->Pitch, -abs(*limitPitch), abs(*limitPitch));
 			ci->Roll = clip(ci->Roll, -abs(*limitRoll), abs(*limitRoll));
 			//player.SetInput(ci);
-			
-		
 	}
 }
 
@@ -110,7 +113,7 @@ void MechanicalPlugin::OnFreeplayLoad(std::string eventName)
 
 void MechanicalPlugin::OnFreeplayDestroy(std::string eventName)
 {
-	gameWrapper->UnhookEvent("Function TAGame.RBActor_TA.PreAsyncTick");
+	gameWrapper->UnhookEvent("Function TAGame.Car_TA.SetVehicleInput");
 }
 
 void MechanicalPlugin::OnEnabledChanged(std::string oldValue, CVarWrapper cvar)
@@ -122,6 +125,6 @@ void MechanicalPlugin::OnEnabledChanged(std::string oldValue, CVarWrapper cvar)
 	}
 	else
 	{
-		gameWrapper->UnhookEvent("Function TAGame.RBActor_TA.PreAsyncTick");
+		gameWrapper->UnhookEvent("Function TAGame.Car_TA.SetVehicleInput");
 	}
 }
