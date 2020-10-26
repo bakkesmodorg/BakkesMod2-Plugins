@@ -127,12 +127,12 @@ void RewindPlugin::onLoad()
 
 	cvarManager->registerCvar("sv_rewind_button", "XboxTypeS_LeftThumbStick", "Button for rewind controls").addOnValueChanged([this](std::string old, CVarWrapper now) {
 		rewindKey = this->gameWrapper->GetFNameIndexByString(now.getStringValue());
-		cvarManager->log("Rewind button is now " + to_string(rewindKey));
+		cvarManager->log("Rewind button is now " + std::to_string(rewindKey));
 	});
 	cvarManager->getCvar("sv_rewind_button").notify();
 	recorderEnabled = true;
 
-	cvarManager->registerNotifier("sv_rewind_play", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
+	cvarManager->registerNotifier("sv_rewind_play", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](std::vector<std::string> command) {
 		if (!gameWrapper->IsInFreeplay())
 			return;
 		if (history.size() == 0) {
@@ -143,7 +143,7 @@ void RewindPlugin::onLoad()
 		recorderEnabled = true;
 		favorite = history.back();
 	}, "Plays the currently saved rewind back", PERMISSION_FREEPLAY);
-	cvarManager->registerNotifier("sv_rewind_favorite", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
+	cvarManager->registerNotifier("sv_rewind_favorite", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](std::vector<std::string> command) {
 		if (!gameWrapper->IsInFreeplay())
 			return;
 		overwriting = true;

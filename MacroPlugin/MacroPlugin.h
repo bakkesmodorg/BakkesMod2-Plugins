@@ -19,13 +19,13 @@ struct recording {
 	float starttime = .0f;
 	float endtime = .0f;
 	int framecount = .0f;
-	std::shared_ptr<vector<std::shared_ptr<frame>>> frames;
+	std::shared_ptr<std::vector<std::shared_ptr<frame>>> frames;
 };
 
 class MacroPlugin : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
-	std::vector<string> playbackData;
+	std::vector<std::string> playbackData;
 	PlotStatus currentStatus = PlotStatus_STOPPED;
 	float playbackStartTime = .0f;
 	recording currentRecording;
@@ -34,7 +34,7 @@ private:
 public:
 	virtual void onLoad();
 	virtual void onUnload();
-	void logPlaybackData(string filename);
+	void logPlaybackData(std::string filename);
 	void OnMacroCommand(std::vector<std::string> params);
 	void OnPreAsync(std::string funcName);
 	void OnRecordTick();

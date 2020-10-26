@@ -15,7 +15,7 @@ void ReboundPlugin::onLoad()
 	cvarManager->registerCvar("rebound_addedspin", "(-6, 6)", "Added rotational velocity to give when doing a backboard shot", true, true, -50000, true, 50000);
 	cvarManager->registerCvar("rebound_resetspin", "0", "Whether or not to remove the existing spin on the ball", true, true, 0, true, 1);
 
-	cvarManager->registerNotifier("rebound_shoot", [&cm = this->cvarManager, &gw = this->gameWrapper](vector<string>) {
+	cvarManager->registerNotifier("rebound_shoot", [&cm = this->cvarManager, &gw = this->gameWrapper](std::vector<std::string>) {
 		if (!gw->IsInFreeplay())
 			return;
 		ServerWrapper tw = gw->GetGameEventAsServer();

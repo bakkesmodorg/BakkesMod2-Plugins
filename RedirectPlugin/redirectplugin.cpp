@@ -18,7 +18,7 @@ void RedirectPlugin::onLoad()
 	cvarManager->registerCvar("redirect_predict_multiplier_x", "2", "X offset to use when passing (playerVelocityX * value)");
 	cvarManager->registerCvar("redirect_predict_multiplier_y", "2", "Y offset to use when passing (playerVelocityY * value)");
 
-	cvarManager->registerNotifier("redirect_shoot", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](vector<string> command) {
+	cvarManager->registerNotifier("redirect_shoot", [&cvarManager = this->cvarManager, &gameWrapper = this->gameWrapper](std::vector<std::string> command) {
 		if (!gameWrapper->IsInFreeplay())
 			return;
 		ServerWrapper training = gameWrapper->GetGameEventAsServer();

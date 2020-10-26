@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include "jsonshot.h"
 #include "utils/parser.h"
-
+using namespace std;
 static bool is_number(char c)
 {
 	return (c >= '0' && c <= '9') || c == '.' || c == '-';

@@ -36,9 +36,9 @@ void read_pod(std::ifstream& in, T& t)
 	in.read(reinterpret_cast<char*>(&t), sizeof(T));
 }
 
-void MacroPlugin::logPlaybackData(string filename)
+void MacroPlugin::logPlaybackData(std::string filename)
 {
-	ofstream myfile;
+	std::ofstream myfile;
 	myfile.open(filename);
 	for (unsigned int i = 2; i < playbackData.size(); i++)
 	{
@@ -67,7 +67,7 @@ void MacroPlugin::OnMacroCommand(std::vector<std::string> params)
 		else if (currentStatus == PlotStatus_STOPPED)
 		{
 			currentStatus = PlotStatus_RECORDING;
-			currentRecording.frames = std::make_shared<vector<std::shared_ptr<frame>>>(vector<std::shared_ptr<frame>>());
+			currentRecording.frames = std::make_shared<std::vector<std::shared_ptr<frame>>>(std::vector<std::shared_ptr<frame>>());
 			ServerWrapper server = gameWrapper->GetGameEventAsServer();
 			currentRecording.starttime = server.GetSecondsElapsed();
 			OnRecordTick(); // Save first frame already
@@ -97,10 +97,10 @@ void MacroPlugin::OnMacroCommand(std::vector<std::string> params)
 			cvarManager->log("Usage: " + params.at(0) + " filename");
 			return;
 		}
-		string filename = params.at(1);
+		std::string filename = params.at(1);
 		if (command.compare("plot_save") == 0)
 		{
-			std::ofstream out(("./bakkesmod/recordings/" + filename).c_str(), ios::out | ios::trunc | ios::binary);
+			std::ofstream out(("./bakkesmod/recordings/" + filename).c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
 			write_pod(out, currentRecording.starttime);
 			write_pod(out, currentRecording.endtime);
 			int sizzze = currentRecording.frames->size();
@@ -123,8 +123,8 @@ void MacroPlugin::OnMacroCommand(std::vector<std::string> params)
 				cvarManager->log("./bakkesmod/recordings/" + filename + " does not exist");
 				return;
 			}
-			std::ifstream in(("./bakkesmod/recordings/" + filename).c_str(), ios::binary);
-			currentRecording.frames = std::make_shared<vector<std::shared_ptr<frame>>>(vector<std::shared_ptr<frame>>());
+			std::ifstream in(("./bakkesmod/recordings/" + filename).c_str(), std::ios::binary);
+			currentRecording.frames = std::make_shared<std::vector<std::shared_ptr<frame>>>(std::vector<std::shared_ptr<frame>>());
 			read_pod(in, currentRecording.starttime);
 			read_pod(in, currentRecording.endtime);
 			read_pod(in, currentRecording.framecount);
@@ -173,7 +173,7 @@ void MacroPlugin::OnRecordTick()
 		currentRecording.frames->push_back(fr);
 
 		auto location = player0.GetLocation();
-		string data_string = to_string(server.GetSecondsElapsed()) + "," + to_string(location.X) + "," + to_string(location.Y) + "," + to_string(location.Z);
+		std::string data_string = std::to_string(server.GetSecondsElapsed()) + "," + std::to_string(location.X) + "," + std::to_string(location.Y) + "," + std::to_string(location.Z);
 		playbackData.push_back(data_string);
 	}
 }
@@ -190,10 +190,10 @@ void MacroPlugin::OnPlaybackTick()
 			if (currentPlaybackIndex > currentRecording.frames->size() - 1)
 			{
 				int nameIndex = 0;
-				string filename = "./bakkesmod/recordings/playback_" + to_string(nameIndex) + ".data";
+				std::string filename = "./bakkesmod/recordings/playback_" + std::to_string(nameIndex) + ".data";
 				while (file_exists(filename)) {
 					nameIndex++;
-					filename = "./bakkesmod/recordings/playback_" + to_string(nameIndex) + ".data";
+					filename = "./bakkesmod/recordings/playback_" + std::to_string(nameIndex) + ".data";
 				}
 				logPlaybackData(filename);
 				currentStatus = PlotStatus_STOPPED;
@@ -206,7 +206,7 @@ void MacroPlugin::OnPlaybackTick()
 		auto player0 = players.Get(0);
 		player0.SetInput(currentPlaybackFrame->input);
 		auto location = player0.GetLocation();
-		string data_string = to_string(server.GetSecondsElapsed()) + "," + to_string(location.X) + "," + to_string(location.Y) + "," + to_string(location.Z);
+		std::string data_string = std::to_string(server.GetSecondsElapsed()) + "," + std::to_string(location.X) + "," + std::to_string(location.Y) + "," + std::to_string(location.Z);
 		playbackData.push_back(data_string);
 	}
 }

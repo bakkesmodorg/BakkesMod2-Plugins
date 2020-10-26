@@ -23,11 +23,11 @@ void DefenderPlugin::onLoad()
 
 
 	//Keep these for backwards compatibility. Prefered use is defender_active now
-	cvarManager->registerNotifier("defender_start", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("defender_start", [this](std::vector<std::string> params) {
 		cvarManager->executeCommand("defender_active 1");
 	}, "Starts defender training (needs to be in freeplay in order to execute)", PERMISSION_FREEPLAY);
 
-	cvarManager->registerNotifier("defender_stop", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("defender_stop", [this](std::vector<std::string> params) {
 		cvarManager->executeCommand("defender_active 0");
 	}, "Stops defender training", PERMISSION_ALL);
 
@@ -101,7 +101,7 @@ void DefenderPlugin::HandleShot()
 	
 	Vector goalLocation = Vector(0, -5120.f, 0);
 	Vector goalExtend = Vector(893.f, -300.f, 643);//Get rid of posts/crossbar
-	cvarManager->log("Extend: " + to_string(goalLocation.X) + ", " + to_string(goalLocation.Y) + ", " + to_string(goalLocation.Z));
+	cvarManager->log("Extend: " + std::to_string(goalLocation.X) + ", " + std::to_string(goalLocation.Y) + ", " + std::to_string(goalLocation.Z));
 	Vector aimLocation = goalLocation + (goalExtend * Vector(random(cvarManager->getCvar("defender_difficulty").getFloatValue() / 10.f, 1.f) * (random(0.f, 1.f) > .5f ? 1 : -1),
 		1.f,
 		random(cvarManager->getCvar("defender_difficulty").getFloatValue() / 10.f, .95f)));

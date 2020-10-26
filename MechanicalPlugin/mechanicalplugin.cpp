@@ -14,18 +14,18 @@ T clip(const T& n, const T& lower, const T& upper) {
 
 void MechanicalPlugin::onLoad()
 {
-	enabled = make_shared<bool>(false);
-	limitSteer = make_shared<float>(1.f);
-	limitThrottle = make_shared<float>(1.f);
-	limitPitch = make_shared<float>(1.f);
-	limitYaw = make_shared<float>(1.f);
-	limitRoll = make_shared<float>(1.f);
+	enabled = std::make_shared<bool>(false);
+	limitSteer = std::make_shared<float>(1.f);
+	limitThrottle = std::make_shared<float>(1.f);
+	limitPitch = std::make_shared<float>(1.f);
+	limitYaw = std::make_shared<float>(1.f);
+	limitRoll = std::make_shared<float>(1.f);
 
-	disableHandbrake = make_shared<bool>(false);
-	disableJump = make_shared<bool>(false);
-	disableBoost = make_shared<bool>(false);
-	holdBoost = make_shared<bool>(false);
-	holdRoll = make_shared<bool>(false);
+	disableHandbrake = std::make_shared<bool>(false);
+	disableJump = std::make_shared<bool>(false);
+	disableBoost = std::make_shared<bool>(false);
+	holdBoost = std::make_shared<bool>(false);
+	holdRoll = std::make_shared<bool>(false);
 	
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Tutorial_TA.OnInit", bind(&MechanicalPlugin::OnFreeplayLoad, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Tutorial_TA.Destroyed", bind(&MechanicalPlugin::OnFreeplayDestroy, this, std::placeholders::_1));
@@ -50,7 +50,7 @@ void MechanicalPlugin::onUnload()
 {
 }
 
-void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
+void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, std::string funcName)
 {
 	if (gameWrapper->IsInFreeplay())
 	{
@@ -91,7 +91,7 @@ void MechanicalPlugin::OnPreAsync(CarWrapper cw, void * params, string funcName)
 				//Controller input for air roll
 				//Change Yaw into Roll
 				ci->Roll = clip(ci->Yaw, -abs(*limitRoll), abs(*limitRoll));
-				ci->Yaw = 0
+				ci->Yaw = 0;
 				//cvarManager->log("blocked air roll");
 			}
 

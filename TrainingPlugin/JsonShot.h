@@ -15,11 +15,11 @@ using json = nlohmann::json;
 
 
 struct VectorString {
-	string x;
-	string y;
-	string z;
+	std::string x;
+	std::string y;
+	std::string z;
 
-	VectorString(string xx, string yy, string zz) {
+	VectorString(std::string xx, std::string yy, std::string zz) {
 		x = xx;
 		y = yy;
 		z = zz;
@@ -31,11 +31,11 @@ struct VectorString {
 	}
 };
 struct RotatorString {
-	string pitch;
-	string yaw;
-	string roll;
+	std::string pitch;
+	std::string yaw;
+	std::string roll;
 
-	RotatorString(string p, string y, string r) {
+	RotatorString(std::string p, std::string y, std::string r) {
 		pitch = p;
 		yaw = y;
 		roll = r;
@@ -63,13 +63,13 @@ struct player {
 };
 
 struct start {
-	vector<ball> balls;
-	std::map<int, vector<player>> players;
+	std::vector<ball> balls;
+	std::map<int, std::vector<player>> players;
 	start() {}
 };
 
 struct dest {
-	vector<VectorString> locations;
+	std::vector<VectorString> locations;
 	dest() {}
 };
 
@@ -78,7 +78,7 @@ struct options {
 	int shoot_on_goal = 0; // 0 = false, 1 = blue, 2 = orange
 	bool disablemirror = false;
 	bool use_velocity = false;
-	string script = "";
+	std::string script = "";
 	options() {}
 };
 
@@ -90,7 +90,7 @@ struct speed {
 
 struct json_shot
 {
-	string name;
+	std::string name;
 	start start;
 	dest end;
 	speed speed;
@@ -102,13 +102,13 @@ struct json_shot
 class JsonShot
 {
 private:
-	string shotfile;
+	std::string shotfile;
 	json the_json;
 	json_shot shot;
 
 public:
 	JsonShot();
-	JsonShot(string shotfile);
+	JsonShot(std::string shotfile);
 	~JsonShot();
 	void init(GameWrapper* gw, CVarManagerWrapper* cons);
 	void setVelocity(GameWrapper * gw, CVarManagerWrapper * cons, Vector ballLoc);

@@ -5,21 +5,21 @@
 class MechanicalPlugin : public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
-	shared_ptr<bool> enabled;
-	shared_ptr<float> limitSteer;
-	shared_ptr<float> limitThrottle;
-	shared_ptr<float> limitYaw;
-	shared_ptr<float> limitPitch;
-	shared_ptr<float> limitRoll;
-	shared_ptr<bool> disableHandbrake;
-	shared_ptr<bool> disableJump;
-	shared_ptr<bool> disableBoost;
-	shared_ptr<bool> holdBoost;
-	shared_ptr<bool> holdRoll;
+	std::shared_ptr<bool> enabled;
+	std::shared_ptr<float> limitSteer;
+	std::shared_ptr<float> limitThrottle;
+	std::shared_ptr<float> limitYaw;
+	std::shared_ptr<float> limitPitch;
+	std::shared_ptr<float> limitRoll;
+	std::shared_ptr<bool> disableHandbrake;
+	std::shared_ptr<bool> disableJump;
+	std::shared_ptr<bool> disableBoost;
+	std::shared_ptr<bool> holdBoost;
+	std::shared_ptr<bool> holdRoll;
 public:
 	virtual void onLoad();
 	virtual void onUnload();
-	void OnPreAsync(CarWrapper cw, void * params, string funcName);
+	void OnPreAsync(CarWrapper cw, void * params, std::string funcName);
 
 
 	void OnFreeplayLoad(std::string eventName);

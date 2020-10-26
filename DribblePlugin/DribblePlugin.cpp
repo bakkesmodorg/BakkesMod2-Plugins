@@ -8,7 +8,7 @@ BAKKESMOD_PLUGIN(DribblePlugin, "Dribble plugin", "0.1", PLUGINTYPE_FREEPLAY)
 void DribblePlugin::onLoad()
 {
 	//Place the ball on top of the player
-	cvarManager->registerNotifier("ballontop", [&gw = this->gameWrapper](vector<string> commands) {
+	cvarManager->registerNotifier("ballontop", [&gw = this->gameWrapper](std::vector<std::string> commands) {
 		if (!gw->IsInFreeplay())
 			return;
 		ServerWrapper tutorial = gw->GetGameEventAsServer();
@@ -40,7 +40,7 @@ void DribblePlugin::onLoad()
 	cvarManager->registerCvar("shootatme_bounds_z", "(-400, 400)");
 	cvarManager->registerCvar("shootatme_speed", "(800, 1000)");
 
-	cvarManager->registerNotifier("shootatme", [&cm = this->cvarManager, &gw = this->gameWrapper](vector<string> commands) {
+	cvarManager->registerNotifier("shootatme", [&cm = this->cvarManager, &gw = this->gameWrapper](std::vector<std::string> commands) {
 		if (!gw->IsInFreeplay())
 			return;
 		ServerWrapper tutorial = gw->GetGameEventAsServer();

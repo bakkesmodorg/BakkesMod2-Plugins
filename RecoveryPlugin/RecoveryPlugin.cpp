@@ -14,7 +14,7 @@ void RecoveryPlugin::onLoad()
 	cvarManager->registerCvar("recovery_bumpspeed_linear_z", "(400, 700)", "How hard you will get thrown (height)", true, true, -2000.f, true, 1999.9);
 	cvarManager->registerCvar("recovery_cooldown", "(3000, 6000)", "Minimum time to wait after a bump", true, true, 0.f, true, 120000.f);
 
-	cvarManager->registerNotifier("recovery_start", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("recovery_start", [this](std::vector<std::string> params) {
 		if (!gameWrapper->IsInFreeplay())
 		{
 			cvarManager->log("You need to be in freeplay to use this plugin.");
@@ -25,7 +25,7 @@ void RecoveryPlugin::onLoad()
 		this->CheckForBump();
 	}, "Starts the recovery mode which will bump you with the given settings.", PERMISSION_FREEPLAY);
 
-	cvarManager->registerNotifier("recovery_stop", [this](std::vector<string> params) {
+	cvarManager->registerNotifier("recovery_stop", [this](std::vector<std::string> params) {
 		this->recoveryEnabled = false;
 	}, "Stops the recovery plugin.", PERMISSION_ALL);
 

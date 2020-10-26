@@ -85,7 +85,7 @@ void ShotSpeedPlugin::OnHitBall(std::string eventName)
 		float speed = sqrt(pow(ballLoc.X, 2) + pow(ballLoc.Y, 2) + pow(ballLoc.Z, 2));
 
 		float kmh = (speed * 60 * 60) / 100000;
-		string speedString;
+		std::string speedString;
 		speedString = to_string_with_precision(kmh, 2) + " km/h";
 		Popup p = { tutorial.GetSecondsElapsed(), speedString };
 		popups.push_back(p);
