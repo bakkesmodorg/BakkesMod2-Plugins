@@ -1,15 +1,17 @@
 #pragma once
 #pragma comment( lib, "bakkesmod.lib" )
+#define _WINSOCKAPI_
+#define ASIO_STANDALONE
+#define _WEBSOCKETPP_CPP11_TYPE_TRAITS_
 #include "bakkesmod/plugin/bakkesmodplugin.h"
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/server.hpp>
+#include "websocketpp/config/asio_no_tls.hpp"
+#include "websocketpp/server.hpp"
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 using websocketpp::lib::bind;
-
 
 
 // pull out the type of messages sent by our config
@@ -30,6 +32,7 @@ class RCONPlugin : public BakkesMod::Plugin::BakkesModPlugin
 private:
 	std::shared_ptr<bool> logRcon;
 	std::map<connection_ptr, connection_data> auths;
+	std::mutex server_running_mutex;
 	server ws_server;
 	void on_message(server* s, websocketpp::connection_hdl hdl, message_ptr msg);
 
