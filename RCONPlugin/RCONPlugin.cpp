@@ -193,7 +193,7 @@ void RCONPlugin::onLoad()
 			return;
 
 		auto loadedPlugins = gameWrapper->GetPluginManager().GetLoadedPlugins();
-		if (!std::any_of(loadedPlugins->begin(), loadedPlugins->end(), [](const auto& loadedPlugin) { return std::strcmp("BetterInventoryExport", loadedPlugin->_details->fileName) == 0; }))
+		if (!std::any_of(loadedPlugins->begin(), loadedPlugins->end(), [](const auto& loadedPlugin) { return std::strcmp("betterinventoryexport", loadedPlugin->_details->fileName) == 0; }))
 		{
 			cvarManager->log("BetterInventoryExport is not loaded, installing!");
 			cvarManager->executeCommand("bpm_install 155");
