@@ -62,13 +62,30 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 			delete input;
 			return;
 		}
-		std::string payload = msg->get_payload();
-		if (input->at(0).size() > 1 && is_allowed(input->at(0).at(1)))
+		//std::string payload = msg->get_payload();
+		
+		for (const auto& inp : *input)
 		{
-			//is_allowed
-			gameWrapper->Execute([payload, &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
-				_cvarManager->executeCommand(payload, log);
-			});
+			if (inp.size() == 0) continue;
+			std::string command = inp.at(0);
+			if (is_allowed(command))
+			{
+				//is_allowed
+				//Rebuild command
+				std::stringstream new_command;
+				for (auto txt : inp)
+				{
+					new_command << "\"" << replace(txt, "\"", "\\\"") << "\" ";
+				}
+				gameWrapper->Execute([cmd = new_command.str(), &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
+					_cvarManager->executeCommand(cmd, log);
+				});
+			}
+			else
+			{
+				cvarManager->log("RCON tried to execute command that is not allowed!");
+				cvarManager->executeCommand("sendback \"ERR:illegal_command");
+			}
 		}
 		delete input;
 	}
