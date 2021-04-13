@@ -191,8 +191,13 @@ void RCONPlugin::onLoad()
 	}, "Disconnects all rcon connections", PERMISSION_ALL);
 	
 	cvarManager->registerNotifier("rcon_start_server", [this](std::vector<std::string> commands) {
-		ws_server.get_io_service().reset();
-		server_running_mutex.unlock();
+		if (ws_server.is_listening()){
+			cvarManager->log("Server is already running");
+		}
+		else {
+			ws_server.get_io_service().reset();
+			server_running_mutex.unlock();
+		}
 	}, "Start rcon server back up", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("rcon_kill_server", [this](std::vector<std::string> commands) {
