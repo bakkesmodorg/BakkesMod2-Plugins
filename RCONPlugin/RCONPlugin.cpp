@@ -326,7 +326,6 @@ void RCONPlugin::shutdown_server() {
 void RCONPlugin::onUnload()
 {
 	shut_down = true;
-	// A full shutdown seems to crash so I just do this instead???
-	ws_server.get_io_service().stop();
 	server_running_mutex.unlock();
+	ws_server.stop();
 }
