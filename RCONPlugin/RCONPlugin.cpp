@@ -73,7 +73,8 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 				//is_allowed
 				//Rebuild command
 				std::string payload = msg->get_payload();
-				replace(payload, "\"", "\\\"");
+				//Doesn't seem neccessary? words in "" come thru in payload and sendback ok
+				//replace(payload, "\"", "\\\"");
 				gameWrapper->Execute([cmd = payload, &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
 					_cvarManager->executeCommand(cmd, log);
 				});
