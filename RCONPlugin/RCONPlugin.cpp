@@ -72,12 +72,9 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 			{
 				//is_allowed
 				//Rebuild command
-				std::stringstream new_command;
-				for (auto txt : inp)
-				{
-					new_command << "\"" << replace(txt, "\"", "\\\"") << "\" ";
-				}
-				gameWrapper->Execute([cmd = new_command.str(), &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
+				std::string payload = msg->get_payload();
+				replace(payload, "\"", "\\\"");
+				gameWrapper->Execute([cmd = payload, &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
 					_cvarManager->executeCommand(cmd, log);
 				});
 			}
@@ -109,8 +106,12 @@ bool RCONPlugin::is_allowed(std::string command)
 void RCONPlugin::run_server()
 {
 	try
-	{
-		std::lock_guard<std::mutex> lock(server_running_mutex);
+	{	
+		if (ws_server.is_listening()) {
+			cvarManager->log("Server already running");
+			return;
+		}
+		cvarManager->log("Starting server");
 		// Set logging settings
 		ws_server.set_access_channels(websocketpp::log::alevel::all);
 		//ws_server.set_access_channels(websocketpp::log::alevel::access_core);
@@ -121,11 +122,6 @@ void RCONPlugin::run_server()
 		ws_server.get_elog().set_ostream(&wserlog);
 		ws_server.get_alog().write(websocketpp::log::alevel::app, "ws_server constructor");
 		ws_server.get_elog().write(websocketpp::log::alevel::app, "ws_server constructor elog");*/
-		// Initialize Asio
-		ws_server.init_asio();
-
-		// Register our message handler
-		ws_server.set_message_handler(bind(&RCONPlugin::on_message, this, &ws_server, ::_1, ::_2));
 
 		// Listen on port 9002
 		int port = cvarManager->getCvar("rcon_port").getIntValue();
@@ -139,11 +135,13 @@ void RCONPlugin::run_server()
 	}
 	catch (websocketpp::exception const & e)
 	{
-		std::cout << e.what() << std::endl;
+		cvarManager->log(e.code().message());
+		cvarManager->log(std::to_string(e.code().value()));
+		cvarManager->log(e.what());
 	}
 	catch (...)
 	{
-		std::cout << "other exception" << std::endl;
+		cvarManager->log("Other exception");
 	}
 }
 
@@ -191,6 +189,32 @@ void RCONPlugin::onLoad()
 			}
 		}
 	}, "Disconnects all rcon connections", PERMISSION_ALL);
+	
+	cvarManager->registerNotifier("rcon_start_server", [this](std::vector<std::string> commands) {
+		ws_server.get_io_service().reset();
+		server_running_mutex.unlock();
+	}, "Start rcon server back up after being shutdown", PERMISSION_ALL);
+
+	cvarManager->registerNotifier("rcon_kill_server", [this](std::vector<std::string> commands) {
+		shutdown_server();
+	}, "Start rcon server back up after being shutdown", PERMISSION_ALL);
+
+	cvarManager->registerNotifier("rcon_restart_server", [this](std::vector<std::string> commands) {
+		//asio is async and frankely I have no idea how to check how long it takes. 
+		//on my laptop, it could reboot in less than 1/10th of a second but here is 1 full second to be safe
+		cvarManager->executeCommand("rcon_kill_server; sleep 1000; rcon_start_server;");
+	}, "Start rcon server back up after being shutdown", PERMISSION_ALL);
+
+	cvarManager->registerNotifier("rcon_wsstatus", [this](std::vector<std::string> commands) {
+		if (ws_server.is_listening()) {
+			cvarManager->log("Server is listening");
+		}
+		if (ws_server.is_server()) {
+			cvarManager->log("ws is server");
+		}
+	}, "status check", PERMISSION_ALL);
+
+
 
 	cvarManager->registerNotifier("sendback", [this](std::vector<std::string> commands) {
 		if (commands.empty())
@@ -254,13 +278,24 @@ void RCONPlugin::onLoad()
 
 	cvarManager->executeCommand("rcon_refresh_allowed");
 
-	run_server();
+	// Initialize Asio
+	ws_server.init_asio();
+
+	// Register our message handler
+	ws_server.set_message_handler(bind(&RCONPlugin::on_message, this, &ws_server, ::_1, ::_2));
+
+	//kinda like a while true loop, except the lock tells the thread to wait
+	//mutex is important because spin-waits seems like they prefer crashing
+	while (!shut_down) {
+		server_running_mutex.lock();
+		if (!shut_down) run_server();
+	}
 }
 
-void RCONPlugin::onUnload()
-{
+void RCONPlugin::shutdown_server() {
 	if (ws_server.is_listening())
 	{
+		server_running_mutex.unlock();
 		ws_server.stop_listening();
 		auth_iter iterator = auths.begin();
 		while (iterator != auths.end())
@@ -272,7 +307,20 @@ void RCONPlugin::onUnload()
 			}
 			iterator = auths.erase(iterator);
 		}
-		// Wait for the server to close cleanly.
-		server_running_mutex.lock();
+		ws_server.get_io_service().stop();
+
+		if (!shut_down) {
+			//this locks the looped thread
+			server_running_mutex.lock();
+		}
+		cvarManager->log("Server is stopping please check and wait");
 	}
+}
+
+void RCONPlugin::onUnload()
+{
+	shut_down = true;
+	// A full shutdown seems to crash so I just do this instead???
+	ws_server.get_io_service().stop();
+	server_running_mutex.unlock();
 }
