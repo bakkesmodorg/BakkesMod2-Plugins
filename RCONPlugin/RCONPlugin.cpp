@@ -193,11 +193,11 @@ void RCONPlugin::onLoad()
 	cvarManager->registerNotifier("rcon_start_server", [this](std::vector<std::string> commands) {
 		ws_server.get_io_service().reset();
 		server_running_mutex.unlock();
-	}, "Start rcon server back up after being shutdown", PERMISSION_ALL);
+	}, "Start rcon server back up", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("rcon_kill_server", [this](std::vector<std::string> commands) {
 		shutdown_server();
-	}, "Start rcon server back up after being shutdown", PERMISSION_ALL);
+	}, "Shutdown the rcon ws server", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("rcon_restart_server", [this](std::vector<std::string> commands) {
 		//asio is async and frankely I have no idea how to check how long it takes. 
