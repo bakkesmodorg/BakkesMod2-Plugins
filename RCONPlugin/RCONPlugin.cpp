@@ -126,6 +126,7 @@ void RCONPlugin::run_server()
 
 		// Listen on port 9002
 		int port = cvarManager->getCvar("rcon_port").getIntValue();
+		if (port == NULL) port = 9002;
 		ws_server.listen(port);
 
 		// Start the server accept loop
