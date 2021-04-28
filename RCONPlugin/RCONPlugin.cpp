@@ -150,7 +150,7 @@ void RCONPlugin::onLoad()
 {
 	logRcon = std::make_shared<bool>(false);
 	cvarManager->registerCvar("rcon_password", "password");
-	cvarManager->registerCvar("rcon_port", "9002"); //Registered in the main dll now
+	//cvarManager->registerCvar("rcon_port", "9002"); //Registered in the main dll now
 	cvarManager->registerCvar("rcon_timeout", "5");
 	cvarManager->registerCvar("rcon_log", "0", "Log all incoming rcon commands", true, true, 0, true, 1, true).bindTo(logRcon);
 
