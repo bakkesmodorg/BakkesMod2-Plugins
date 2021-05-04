@@ -7,6 +7,8 @@
 #include "websocketpp/config/asio_no_tls.hpp"
 #include "websocketpp/server.hpp"
 #include <regex>
+#include <atomic>
+
 typedef websocketpp::server<websocketpp::config::asio> server;
 
 using websocketpp::lib::placeholders::_1;
@@ -34,8 +36,10 @@ private:
 
 	std::shared_ptr<bool> logRcon;
 	std::map<connection_ptr, connection_data> auths;
-	std::mutex server_running_mutex;
-	bool shut_down = false;
+	std::thread server_thread;
+	//std::mutex server_running_mutex;
+	std::atomic_bool shut_down = false;
+	std::atomic_bool is_running = false;
 	server ws_server;
 	void on_message(server* s, websocketpp::connection_hdl hdl, message_ptr msg);
 

@@ -3,7 +3,7 @@
 #include "utils/parser.h"
 #include <iostream>
 
-BAKKESMOD_PLUGIN(RCONPlugin, "RCON plugin", "0.2", PLUGINTYPE_THREADED)
+BAKKESMOD_PLUGIN(RCONPlugin, "RCON plugin", "0.2", PLUGINTYPE_FREEPLAY)
 
 
 bool RCONPlugin::is_authenticated(connection_ptr hdl) {
@@ -120,6 +120,7 @@ void RCONPlugin::run_server()
 		cvarManager->log("Starting server");
 		// Set logging settings
 		
+		//ws_server.init_asio();
 		ws_server.set_access_channels(websocketpp::log::alevel::all);
 		//ws_server.set_access_channels(websocketpp::log::alevel::access_core);
 		//ws_server.set_access_channels(websocketpp::log::alevel::app);
@@ -133,9 +134,13 @@ void RCONPlugin::run_server()
 		// Listen on port 9002
 		int port = cvarManager->getCvar("rcon_port").getIntValue();
 		if (port == NULL) port = 9002;
+
+		ws_server.reset();
 		ws_server.listen(port);
 
-		cvarManager->log("RCON server started");
+		cvarManager->log("RCON server started on port " + std::to_string(port));
+		is_running = true;
+
 		// Start the server accept loop
 		ws_server.start_accept();
 
@@ -152,28 +157,45 @@ void RCONPlugin::run_server()
 	{
 		cvarManager->log("Other exception");
 	}
+	is_running = false;
+	cvarManager->log("rcon server shut down");
 }
 
 void RCONPlugin::onLoad()
 {
 	logRcon = std::make_shared<bool>(false);
 	cvarManager->registerCvar("rcon_password", "password");
+
+
+	// Initialize Asio
+	ws_server.init_asio();
+
+	// Register our message handler
+	ws_server.set_message_handler(bind(&RCONPlugin::on_message, this, &ws_server, ::_1, ::_2));
+
+	//server_thread = std::thread(std::bind(&RCONPlugin::run_server, this));
+	//server_thread.detach();
+
 	//cvarManager->registerCvar("rcon_port", "9002"); //Registered in the main dll now
 	cvarManager->registerCvar("rcon_timeout", "5");
 	cvarManager->registerCvar("rcon_log", "0", "Log all incoming rcon commands", true, true, 0, true, 1, true).bindTo(logRcon);
-	cvarManager->registerCvar("rcon_enabled", "0", "Enable the RCON plugin", true, true, 0, true, 1, true).addOnValueChanged([this](std::string s, CVarWrapper newValue)
+	cvarManager->registerCvar("rcon_enabled", "1", "Enable the RCON plugin", true, true, 0, true, 1, true).addOnValueChanged([this](std::string s, CVarWrapper newValue)
 		{
 			if (newValue.getBoolValue())
 			{
 				if (!ws_server.is_listening())
 				{
-					std::thread t(std::bind(&RCONPlugin::run_server, this));
-					t.detach();
+					server_thread = std::thread(std::bind(&RCONPlugin::run_server, this));
+					server_thread.detach();
+				}
+				else
+				{
+					cvarManager->log("RCON server is already running");
 				}
 			}
 			else
 			{
-				stop_server();
+				shutdown_server();
 			}
 		});;
 
@@ -217,26 +239,23 @@ void RCONPlugin::onLoad()
 	}, "Disconnects all rcon connections", PERMISSION_ALL);
 	
 	cvarManager->registerNotifier("rcon_start_server", [this](std::vector<std::string> commands) {
-		if (ws_server.is_listening()){
-			cvarManager->log("Server is already running");
-		}
-		else {
-			ws_server.get_io_service().reset();
-			server_running_mutex.unlock();
-		}
+		cvarManager->executeCommand("rcon_enabled 1");
 	}, "Start rcon server back up", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("rcon_kill_server", [this](std::vector<std::string> commands) {
-		shutdown_server();
+		cvarManager->executeCommand("rcon_enabled 0");
 	}, "Shutdown the rcon ws server", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("rcon_restart_server", [this](std::vector<std::string> commands) {
-		//asio is async and frankely I have no idea how to check how long it takes. 
-		//on my laptop, it could reboot in less than 1/10th of a second but here is 1 full second to be safe
-		cvarManager->executeCommand("rcon_kill_server; sleep 1000; rcon_start_server;");
+		cvarManager->executeCommand("rcon_enabled 0; rcon_enabled 1;");
 	}, "Start rcon server back up after being shutdown", PERMISSION_ALL);
 
 	cvarManager->registerNotifier("rcon_wsstatus", [this](std::vector<std::string> commands) {
+		if (is_running)
+		{
+			cvarManager->log("Server is running");
+		}
+		
 		if (ws_server.is_listening()) {
 			cvarManager->log("Server is listening");
 		}
@@ -309,24 +328,24 @@ void RCONPlugin::onLoad()
 
 	cvarManager->executeCommand("rcon_refresh_allowed");
 
-	// Initialize Asio
-	ws_server.init_asio();
-
-	// Register our message handler
-	ws_server.set_message_handler(bind(&RCONPlugin::on_message, this, &ws_server, ::_1, ::_2));
-
-	//kinda like a while true loop, except the lock tells the thread to wait
-	//mutex is important because spin-waits seems like they prefer crashing
-	while (!shut_down) {
-		server_running_mutex.lock();
-		if (!shut_down) run_server();
-	}
+	/*
+	This is a workaround since the rcon_enabled cvar is new, current clients will not have it in their config, so we notify
+	in case the server isn't running. This way, users that have explicitly disabled RCON will not have a server running, but users
+	who have it enabled will, and users who have the default value will have one running too.
+	*/
+	gameWrapper->SetTimeout([&](GameWrapper* gw)
+		{
+			if (!is_running)
+			{
+				cvarManager->getCvar("rcon_enabled").notify();
+			}
+		}, 5.f);
 }
 
 void RCONPlugin::shutdown_server() {
 	if (ws_server.is_listening())
 	{
-		server_running_mutex.unlock();
+		//server_running_mutex.unlock();
 		ws_server.stop_listening();
 		auth_iter iterator = auths.begin();
 		while (iterator != auths.end())
@@ -338,19 +357,32 @@ void RCONPlugin::shutdown_server() {
 			}
 			iterator = auths.erase(iterator);
 		}
-		ws_server.get_io_service().stop();
+		ws_server.stop();
 
-		if (!shut_down) {
-			//this locks the looped thread
-			server_running_mutex.lock();
-		}
-		cvarManager->log("Server is stopping please check and wait");
+		//if (!shut_down) {
+		//	//this locks the looped thread
+		//	server_running_mutex.lock();
+		//}
+		cvarManager->log("Server is shutting down");
+	}
+	if (server_thread.joinable())
+	{
+		server_thread.join();
 	}
 }
 
 void RCONPlugin::onUnload()
 {
 	shut_down = true;
-	server_running_mutex.unlock();
-	ws_server.stop();
+	shutdown_server();
+	/*if (ws_server.is_listening())
+	{
+		ws_server.stop_listening();
+	}
+	ws_server.stop();*/
+	//if (server_thread.joinable())
+	//{
+	//	server_thread.join();
+	//}
+	
 }
