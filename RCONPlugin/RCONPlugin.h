@@ -45,5 +45,6 @@ public:
 	virtual void onUnload();
 	bool is_authenticated(connection_ptr hdl);
 	void run_server();
+	void stop_server();
 };
 

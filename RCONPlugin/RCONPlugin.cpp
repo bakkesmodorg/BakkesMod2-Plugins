@@ -3,7 +3,7 @@
 #include "utils/parser.h"
 #include <iostream>
 
-BAKKESMOD_PLUGIN(RCONPlugin, "RCON plugin", "0.2", PLUGINTYPE_THREADED)
+BAKKESMOD_PLUGIN(RCONPlugin, "RCON plugin", "0.2", PLUGINTYPE_FREEPLAY)
 
 
 bool RCONPlugin::is_authenticated(connection_ptr hdl) {
@@ -39,7 +39,6 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 	try
 	{
 		auto input = parseConsoleInput(msg->get_payload());
-		//cvarManager->log(msg->get_payload());
 		if (!is_authenticated(con))
 		{
 			if (input->size() > 0 && input->at(0).size() == 2 && input->at(0).at(0).compare("rcon_password") == 0)
@@ -63,27 +62,33 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 			return;
 		}
 		//std::string payload = msg->get_payload();
-		
-		for (const auto& inp : *input)
+		//cvarManager->log("Got from rcon: " + msg->get_payload());
+		for (auto& inp : *input)
 		{
+			//cvarManager->log("Size: " + std::to_string(inp.size()));
 			if (inp.size() == 0) continue;
 			std::string command = inp.at(0);
+			//cvarManager->log(command);
 			if (is_allowed(command))
 			{
 				//is_allowed
 				//Rebuild command
-				std::stringstream new_command;
+				/*std::stringstream new_command;
 				for (auto txt : inp)
 				{
-					new_command << "\"" << replace(txt, "\"", "\\\"") << "\" ";
-				}
-				gameWrapper->Execute([cmd = new_command.str(), &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
+					new_command << "\"" << txt << "\" ";
+				}*/
+				gameWrapper->Execute([cmd = msg->get_payload(), &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
 					_cvarManager->executeCommand(cmd, log);
 				});
 			}
 			else
 			{
-				cvarManager->log("RCON tried to execute command that is not allowed!");
+				std::stringstream ss;
+				ss << "RCON tried to execute command that is not allowed (";
+				ss << command;
+				ss << ")!";
+				cvarManager->log(ss.str());
 				cvarManager->executeCommand("sendback \"ERR:illegal_command");
 			}
 		}
@@ -93,7 +98,7 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 	{
 		std::cout << "Echo failed because: " << e
 			<< "(" << e.message() << ")" << std::endl;
-		//cvarManager->log("Websocket error");
+		cvarManager->log("Websocket error " + (e.message()));
 	}
 }
 
@@ -112,6 +117,7 @@ void RCONPlugin::run_server()
 	{
 		std::lock_guard<std::mutex> lock(server_running_mutex);
 		// Set logging settings
+		
 		ws_server.set_access_channels(websocketpp::log::alevel::all);
 		//ws_server.set_access_channels(websocketpp::log::alevel::access_core);
 		//ws_server.set_access_channels(websocketpp::log::alevel::app);
@@ -131,6 +137,7 @@ void RCONPlugin::run_server()
 		int port = cvarManager->getCvar("rcon_port").getIntValue();
 		ws_server.listen(port);
 
+		cvarManager->log("RCON server started");
 		// Start the server accept loop
 		ws_server.start_accept();
 
@@ -139,11 +146,39 @@ void RCONPlugin::run_server()
 	}
 	catch (websocketpp::exception const & e)
 	{
-		std::cout << e.what() << std::endl;
+		cvarManager->log(e.what());
 	}
 	catch (...)
 	{
-		std::cout << "other exception" << std::endl;
+		cvarManager->log("other exception");
+	}
+}
+
+void RCONPlugin::stop_server()
+{
+	cvarManager->log("Stopping server");
+	if (ws_server.is_listening())
+	{
+		ws_server.stop_listening();
+		
+		cvarManager->log("Stopping");
+		auth_iter iterator = auths.begin();
+		while (iterator != auths.end())
+		{
+			if (iterator->first.get()->get_state() == websocketpp::session::state::open)
+			{
+				iterator->first->close(1000, "Shutting down RCON server");
+				iterator->first->terminate(make_error_code(websocketpp::error::value::general));
+			}
+			iterator = auths.erase(iterator);
+		}
+		// Wait for the server to close cleanly.
+		ws_server.stop();
+		ws_server.reset();
+		cvarManager->log("Lock start");
+		server_running_mutex.lock();
+		server_running_mutex.unlock();
+		cvarManager->log("Lock end");
 	}
 }
 
@@ -154,6 +189,23 @@ void RCONPlugin::onLoad()
 	cvarManager->registerCvar("rcon_port", "9002"); //Registered in the main dll now
 	cvarManager->registerCvar("rcon_timeout", "5");
 	cvarManager->registerCvar("rcon_log", "0", "Log all incoming rcon commands", true, true, 0, true, 1, true).bindTo(logRcon);
+	cvarManager->registerCvar("rcon_enabled", "0", "Enable the RCON plugin", true, true, 0, true, 1, true).addOnValueChanged([this](std::string s, CVarWrapper newValue)
+		{
+			if (newValue.getBoolValue())
+			{
+				if (!ws_server.is_listening())
+				{
+					std::thread t(std::bind(&RCONPlugin::run_server, this));
+					t.detach();
+				}
+			}
+			else
+			{
+				stop_server();
+			}
+		});;
+
+
 
 	cvarManager->registerNotifier("rcon_refresh_allowed", [this](std::vector<std::string> commands)
 		{
@@ -253,26 +305,9 @@ void RCONPlugin::onLoad()
 	}, "Sends inventory dump to all connected clients. Usage: ws_inventory [all] (csv|json)", PERMISSION_ALL);
 
 	cvarManager->executeCommand("rcon_refresh_allowed");
-
-	run_server();
 }
 
 void RCONPlugin::onUnload()
 {
-	if (ws_server.is_listening())
-	{
-		ws_server.stop_listening();
-		auth_iter iterator = auths.begin();
-		while (iterator != auths.end())
-		{
-			if (iterator->first.get()->get_state() == websocketpp::session::state::open)
-			{
-				iterator->first->close(1000, "Shutting down BM");
-				iterator->first->terminate(make_error_code(websocketpp::error::value::general));
-			}
-			iterator = auths.erase(iterator);
-		}
-		// Wait for the server to close cleanly.
-		server_running_mutex.lock();
-	}
+	
 }
