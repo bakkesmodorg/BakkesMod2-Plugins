@@ -35,6 +35,7 @@ private:
 	std::shared_ptr<bool> logRcon;
 	std::map<connection_ptr, connection_data> auths;
 	std::mutex server_running_mutex;
+	bool shut_down = false;
 	server ws_server;
 	void on_message(server* s, websocketpp::connection_hdl hdl, message_ptr msg);
 
@@ -45,5 +46,6 @@ public:
 	virtual void onUnload();
 	bool is_authenticated(connection_ptr hdl);
 	void run_server();
+	void shutdown_server();
 };
 
