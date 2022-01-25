@@ -2,6 +2,7 @@
 #include "bakkesmod/wrappers/PluginManagerWrapper.h"
 #include "utils/parser.h"
 #include <iostream>
+#include <random>
 
 BAKKESMOD_PLUGIN(RCONPlugin, "RCON plugin", "0.2", PLUGINTYPE_FREEPLAY)
 
@@ -169,7 +170,23 @@ void RCONPlugin::onLoad()
 {
 	logRcon = std::make_shared<bool>(false);
 	cvarManager->registerCvar("rcon_password", "password");
-
+	cvarManager->getCvar("rcon_password").addOnValueChanged([this](std::string oldVal, CVarWrapper newValue)
+		{
+			if (newValue.getStringValue() == "password")
+			{
+				static const std::string alphanum =
+					"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+				std::string tmp_s;
+				tmp_s.resize(16);
+				std::default_random_engine rng(std::random_device{}());
+				std::uniform_int_distribution<> dist(0, alphanum.size() - 1);
+				for (int i = 0; i < tmp_s.size(); ++i)
+				{
+					tmp_s[i] = alphanum[dist(rng)];
+				}
+				newValue.setValue(tmp_s);
+			}
+		});
 
 	// Initialize Asio
 	ws_server.init_asio();
