@@ -38,7 +38,9 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 	connection_ptr con = s->get_con_from_hdl(hdl);
 	try
 	{
-		auto input = parseConsoleInput(msg->get_payload());
+		const auto message = msg->get_payload();
+		if (message.size() > 10000) return;
+		auto input = parseConsoleInput(message);
 		if (!is_authenticated(con))
 		{
 			if (input->size() > 0 && input->at(0).size() == 2 && input->at(0).at(0).compare("rcon_password") == 0)
