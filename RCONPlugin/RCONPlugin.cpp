@@ -91,7 +91,7 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 				ss << command;
 				ss << ")!";
 				cvarManager->log(ss.str());
-				cvarManager->executeCommand("sendback \"ERR:illegal_command");
+				cvarManager->executeCommand("sendback \"ERR:illegal_command\"");
 			}
 		}
 		delete input;
