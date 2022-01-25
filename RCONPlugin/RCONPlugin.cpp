@@ -186,6 +186,9 @@ void RCONPlugin::onLoad()
 					tmp_s[i] = alphanum[dist(rng)];
 				}
 				newValue.setValue(tmp_s);
+				
+				//Write the config, otherwise old clients with default password will get a new one every time they launch the game if their config hasn't been saved
+				cvarManager->executeCommand("sleep 1500; writeconfig;");
 			}
 		});
 
