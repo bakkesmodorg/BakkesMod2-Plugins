@@ -79,7 +79,8 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 				std::stringstream new_command;
 				for (auto txt : inp)
 				{
-					new_command << "\"" << replace(txt, "\"", "\\\"") << "\" ";
+					replace(txt, "\"", "\\\"");
+					new_command << "\"" << txt << "\" ";
 				}
 				gameWrapper->Execute([cmd = new_command.str(), &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
 					_cvarManager->executeCommand(cmd, log);
