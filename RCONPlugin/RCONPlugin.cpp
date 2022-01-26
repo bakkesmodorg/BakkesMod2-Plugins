@@ -35,6 +35,15 @@ std::string stringify(std::vector<std::string> params)
 	return str;
 }
 
+static inline std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+	}
+	return str;
+}
+
 void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_ptr msg) {
 	connection_ptr con = s->get_con_from_hdl(hdl);
 	try
@@ -79,8 +88,19 @@ void RCONPlugin::on_message(server* s, websocketpp::connection_hdl hdl, message_
 				std::stringstream new_command;
 				for (auto txt : inp)
 				{
-					replace(txt, "\"", "\\\"");
-					new_command << "\"" << txt << "\" ";
+					//replace(txt, "\"", "\\\"");
+					if (txt.find("\"") == std::string::npos)
+					{
+						new_command << "\"" << txt << "\" ";
+					}
+					else if (txt.find("'") == std::string::npos)
+					{
+						new_command << "'" << txt << "' ";
+					}
+					else
+					{
+						new_command << "'" << ReplaceAll(txt, "\"", "\\\"") << "' ";
+					}
 				}
 				gameWrapper->Execute([cmd = new_command.str(), &_cvarManager = cvarManager, log = *logRcon](GameWrapper* gw) {
 					_cvarManager->executeCommand(cmd, log);
