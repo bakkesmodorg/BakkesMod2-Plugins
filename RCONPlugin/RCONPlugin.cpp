@@ -325,7 +325,7 @@ void RCONPlugin::onLoad()
 	}, "Sends text to all connected clients. Usage: sendback abc def ghi \"hij klm\"", PERMISSION_ALL); 
 
 	cvarManager->registerNotifier("ws_inventory", [this](std::vector<std::string> commands) {
-		if (commands.size() < 3)
+		if (commands.size() < 2)
 			return;
 
 		auto loadedPlugins = gameWrapper->GetPluginManager().GetLoadedPlugins();
@@ -339,22 +339,21 @@ void RCONPlugin::onLoad()
 			cvarManager->log("BetterInventoryExport is loaded. Using this for invent dump");
 		}
 
+		// Get format
+		std::string format = commands.at(1).compare("csv") == 0 ? "csv" : "json";
+		std::string str = "invent_dump_better " + format;
+
+		// Execute command
+		cvarManager->executeCommand(str);
+		std::ifstream ifs(gameWrapper->FixRelativePath("./bakkesmod/data/inventory." + format));
+		std::string content((std::istreambuf_iterator<char>(ifs)),
+			(std::istreambuf_iterator<char>()));
+
 		cvarManager->log("Sending inventory");
 		for (auto& [connection, data] : auths)
 		{
 			if (is_authenticated(connection) && connection->get_state() == websocketpp::session::state::open)
 			{
-				std::string str = "invent_dump_better";
-				for (int i = 1; i < 3; i++)
-				{
-					str += " \"" + commands.at(i) + "\"";
-				}
-				cvarManager->executeCommand(str);
-				std::string format = commands.at(2).compare("csv") == 0 ? "csv" : "json"; //Dont want any path injection stuff
-				std::ifstream ifs(gameWrapper->FixRelativePath("./bakkesmod/data/inventory." + format));
-				std::string content((std::istreambuf_iterator<char>(ifs)),
-					(std::istreambuf_iterator<char>()));
-
 				std::string::size_type pos = 0; // Must initialize
 				std::stringstream a;
 				a << std::endl;
@@ -369,7 +368,7 @@ void RCONPlugin::onLoad()
 			}
 		}
 
-	}, "Sends inventory dump to all connected clients. Usage: ws_inventory [all] (csv|json)", PERMISSION_ALL);
+	}, "Sends inventory dump to all connected clients. Usage: ws_inventory csv|json", PERMISSION_ALL);
 
 	cvarManager->executeCommand("rcon_refresh_allowed");
 
