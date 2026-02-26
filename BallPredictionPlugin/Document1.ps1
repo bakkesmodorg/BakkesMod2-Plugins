@@ -1,0 +1,1 @@
+dd = day number, ddd = short weekday name, dddd = full weekday name, MM = month number, MMM = short month name, MMMM = full month name, yy = short year number, yyyy = full year number, HH = hours (24-hour), h = hours (12-hour), mm = minutes, ss = seconds, f (repeated) = fractions of a second, tt = AM or PM. Also \ 
